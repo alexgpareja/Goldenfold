@@ -11,6 +11,7 @@ namespace HospitalApi.Mapping
         {
             // Paciente mappings
             CreateMap<Paciente, PacienteDTO>().ReverseMap();
+            CreateMap<PacienteCreateDTO, Paciente>().ReverseMap();
 
             // Cama mappings
             CreateMap<Cama, CamaDTO>().ReverseMap();
