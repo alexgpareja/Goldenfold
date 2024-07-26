@@ -20,6 +20,7 @@ public class ApplicationDbContext : DbContext
     {
         // Paciente
         modelBuilder.Entity<Paciente>()
+            .ToTable("pacientes")
             .HasKey(p => p.IdPaciente); 
 
         modelBuilder.Entity<Paciente>()
@@ -42,16 +43,19 @@ public class ApplicationDbContext : DbContext
             .HasKey(c => c.Ubicacion); 
 
         modelBuilder.Entity<Cama>()
+            .ToTable("camas")
             .HasMany(c => c.Asignaciones)
             .WithOne(a => a.Cama)
             .HasForeignKey(a => a.Ubicacion); 
 
         // Habitacion
         modelBuilder.Entity<Habitacion>()
+            .ToTable("habitaciones")
             .HasKey(h => h.IdHabitacion);
 
         // Asignacion
         modelBuilder.Entity<Asignacion>()
+            .ToTable("asignaciones")
             .HasKey(a => a.IdAsignacion);
 
         modelBuilder.Entity<Asignacion>()
@@ -71,6 +75,7 @@ public class ApplicationDbContext : DbContext
 
         // HistorialAlta
         modelBuilder.Entity<HistorialAlta>()
+            .ToTable("historialaltas")
             .HasKey(ha => ha.IdHistorial);
 
         modelBuilder.Entity<HistorialAlta>()
@@ -79,7 +84,8 @@ public class ApplicationDbContext : DbContext
             .HasForeignKey(ha => ha.IdPaciente); 
 
         // Usuario
-        modelBuilder.Entity<Usuario>() 
+        modelBuilder.Entity<Usuario>()
+            .ToTable("usuarios")
             .HasKey(u => u.IdUsuario);
 
         modelBuilder.Entity<Usuario>()
@@ -98,6 +104,7 @@ public class ApplicationDbContext : DbContext
 
         // Rol
         modelBuilder.Entity<Rol>()
+            .ToTable("rol")
             .HasKey(r => r.IdRol);  
 
         modelBuilder.Entity<Rol>()

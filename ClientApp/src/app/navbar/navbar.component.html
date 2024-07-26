@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navbar</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar sticky-top navbar-expand-lg navbar-light">
+        <a class="navbar-brand" href="#">
+            <img src="assets/images/logo.png" alt="Logo Goldenfold">
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item" >
+                    <a class="nav-link" routerLink="/inicio" routerLinkActive="active">Inicio</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" routerLink="/administrativo-dashboard" routerLinkActive="active">Administrativo</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" routerLink="/medico-dashboard" routerLinkActive="active">Médico</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" routerLink="/controlador-camas-dashboard" routerLinkActive="active">Controlador de Camas</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" routerLink="/administrador-sistema-dashboard" routerLinkActive="active">Administrador Sistema</a>
+                </li>
+                <button class="nav-item" onclick="document.getElementById('ingreso').style.display='block'">
+                    Login
+                </button>
+
+                <div id="ingreso" >
+
+
+                    <form class="contenido-ingreso animate" action="/action_page.php">
+                        <div class="container">
+                            <label for="user"><b>Usuario</b></label>
+                            <input type="text" placeholder="Ingresa tu usuario" name="user" id="user" required>
+
+                            <label for="contraseña"><b>Contraseña</b></label>
+                            <input type="password" placeholder="Ingresa tu contraseña" name="contraseña" id="contraseña" required>
+
+                            <button type="submit">Ingresar</button>
+                            <label>
+                                <input type="checkbox" checked="checked" name="remember"> Recordarme
+                            </label>
+                        </div>
+
+                        <div class="container" style="background-color:#f1f1f1">
+                            <button type="button" onclick="document.getElementById('ingreso').style.display='none'" class="cancelbtn">Cancelar</button>
+                            <a href="#">¿Has perdido tu contraseña? ... pues no me quedan mas.</a>
+                        </div>
+                    </form>
+                </div>
+
+            </ul>
+        </div>
+    </nav>
+</body>
+</html>

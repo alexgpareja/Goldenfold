@@ -1,0 +1,69 @@
+<div class="dashboard-container">
+  <header class="header">
+    <div class="header-content">
+      <h1>Administrador de Sistema</h1>
+      <div class="user-info">
+        <span>Admin. Laura García</span>
+        <button class="logout-btn" (click)="logout()">Cerrar Sesión</button>
+      </div>
+    </div>
+  </header>
+
+  <nav class="navbar">
+    <ul>
+      <li><a routerLink="pacientes" class="nav-link">Pacientes</a></li>
+      <li><a routerLink="altas" class="nav-link">Altas</a></li>
+      <li><a routerLink="asignaciones" class="nav-link">Asignaciones</a>
+      <li><a routerLink="usuarios" class="nav-link">Pacientes</a></li>
+      <li><a routerLink="roles" class="nav-link">Roles</a></li>
+      <li><a routerLink="habitaciones" class="nav-link">Habitaciones</a>
+      <li><a routerLink="camas" class="nav-link">Camas</a>
+      </li>
+    </ul>
+  </nav>
+
+  <div class="content">
+    <div class="usuarios-section">
+      <h2>Usuarios Registrados</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>ID Usuario</th>
+            <th>Nombre</th>
+            <th>Usuario</th>
+            <th>Rol</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="usuarios-table-body">
+          <tr>
+            <td>1</td>
+            <td>Laura García</td>
+            <td>laura.garcia</td>
+            <td>Administrador</td>
+            <td><button class="edit-btn" (click)="editUser(1)">Editar</button></td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td>Juan Pérez</td>
+            <td>juan.perez</td>
+            <td>Doctor</td>
+            <td><button class="edit-btn" (click)="editUser(2)">Editar</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="statistics-section">
+      <h2>Estadísticas</h2>
+      <div class="charts">
+        <div class="chart-container">
+          <canvas id="userRolesChart"></canvas>
+        </div>
+        <div class="chart-container">
+          <canvas id="userRegistrationChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

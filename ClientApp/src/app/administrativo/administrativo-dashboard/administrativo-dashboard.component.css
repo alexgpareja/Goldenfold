@@ -1,0 +1,172 @@
+/* General Styles */
+.dashboard-container {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f4f4;
+}
+
+.header {
+  background-color: #0078d4;
+  color: white;
+  padding: 10px 20px;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-content h1 {
+  margin: 0;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+}
+
+.logout-btn {
+  background-color: #d9534f;
+  border: none;
+  color: white;
+  padding: 8px 16px;
+  margin-left: 10px;
+  cursor: pointer;
+}
+
+.navbar {
+  padding: 10px 20px;
+  background-color: #e2e2e2;
+  display: flex;
+  justify-content: space-between;
+}
+
+.navbar ul {
+  list-style: none;
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  padding: 0;
+  margin: 0;
+}
+
+.navbar li {
+  flex: 1;
+}
+
+.nav-link {
+  display: block;
+  background-color: #0078d4;
+  color: white;
+  text-align: center;
+  padding: 10px 0;
+  margin: 10px;
+  border-radius: 5px;
+  text-decoration: none;
+  transition: background-color 0.3s;
+}
+
+.nav-link:hover {
+  background-color: #0056a4;
+}
+
+/* Content Styles */
+.content {
+  padding: 20px;
+}
+
+.overview-section, .register-section, .patients-section {
+  background-color: white;
+  padding: 20px;
+  border-radius: 4px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.overview-section h2, .register-section h2, .patients-section h2 {
+  margin-top: 0;
+}
+
+.overview-cards {
+  display: flex;
+  justify-content: space-between;
+}
+
+.card {
+  background-color: #0078d4;
+  color: white;
+  padding: 20px;
+  border-radius: 4px;
+  width: 30%;
+  text-align: center;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table, th, td {
+  border: 1px solid #ccc;
+}
+
+th, td {
+  padding: 10px;
+  text-align: left;
+}
+
+th {
+  background-color: #0078d4;
+  color: white;
+}
+
+.toggle-btn {
+  background-color: #5bc0de;
+  border: none;
+  color: white;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.form-group input, .form-group textarea, .form-group select {
+  width: calc(100% - 22px);
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.submit-btn {
+  background-color: #0078d4;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.charts {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 20px;
+}
+
+.chart-container {
+  width: 45%;
+  height: 300px;
+  display:flex;
+  justify-content: center;
+  align-items: end;
+}
