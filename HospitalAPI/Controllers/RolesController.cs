@@ -109,7 +109,11 @@ namespace HospitalApi.Controllers
 
             return NoContent();
         } */
+<<<<<<< HEAD
 
+=======
+        
+>>>>>>> af48141b5ebe58c16efeb4b4d019d42fb1eb5634
         // PUT: api/Roles/ByName/{nombre}
         /*
         [HttpPut("ByName/{nombre}")]
