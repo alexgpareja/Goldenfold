@@ -52,13 +52,15 @@ namespace HospitalApi.Controllers
                 .ToListAsync();
 
             if (!roles.Any())
-            { 
+            {
                 return NotFound("No se ha encontrado ningún rol con este nombre.");
             }
 
             var rolesDTO = _mapper.Map<IEnumerable<RolDTO>>(roles);
             return Ok(rolesDTO);
         }
+
+        /*
 
         // PUT: api/Roles/{id}
         [HttpPut("{id}")]
@@ -106,9 +108,10 @@ namespace HospitalApi.Controllers
             }
 
             return NoContent();
-        }
+        } */
 
         // PUT: api/Roles/ByName/{nombre}
+        /*
         [HttpPut("ByName/{nombre}")]
         public async Task<IActionResult> EditRolByName(string nombre, RolDTO rolDTO)
         {
@@ -145,7 +148,7 @@ namespace HospitalApi.Controllers
 
             return NoContent();
         }
-
+        */
 
         // DELETE: api/Roles/{id}
         [HttpDelete("{id}")]
@@ -165,14 +168,17 @@ namespace HospitalApi.Controllers
         }
 
         // DELETE: api/Roles/ByName/{nombre}
+        /*
         [HttpDelete("ByName/{nombre}")]
         public async Task<IActionResult> DeleteRolByName(string nombre)
         {
             // Verifica si el nombre del rol proporcionado es válido según el enum RoleType
+
             if (!Enum.TryParse(nombre, out RoleType roleType))
             {
                 return BadRequest("El nombre del rol proporcionado no es válido.");
             }
+
 
             // Busca el rol existente por nombre
             var rol = await _context.Roles.FirstOrDefaultAsync(r => r.NombreRol == roleType);
@@ -188,7 +194,7 @@ namespace HospitalApi.Controllers
 
             return NoContent();
         }
-
+        */
 
         private bool RolExists(int id)
         {
