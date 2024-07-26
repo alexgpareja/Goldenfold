@@ -67,8 +67,18 @@ namespace HospitalApi.Controllers
             return Ok(usuariosDTO);
         }
 
-        // POST: api/Usuarios
+        /// <summary>
+        /// Crea un nuevo usuario.
+        /// </summary>
+        /// <param name="usuarioDTO">Datos del usuario a crear.</param>
+        /// <returns>El usuario creado.</returns>
+        /// <response code="201">El usuario se ha creado correctamente.</response>
+        /// <response code="409">Se ha producido un error.</response>
+        /// <response code="400">Solicitud incorrecta.</response>
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(UsuarioDTO))]
+        [ProducesResponseType(StatusCodes.Status409Conflict, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
         public async Task<ActionResult<UsuarioDTO>> CreateUser(UsuarioCreateDTO usuarioDTO)
         {
             if (await _context.Usuarios.AnyAsync(u => u.NombreUsuario == usuarioDTO.NombreUsuario))

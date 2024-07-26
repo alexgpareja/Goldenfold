@@ -35,24 +35,9 @@ namespace HospitalApi.Controllers
             return Ok(pacientesDTO);
         }
 
-        // GET: api/Pacientes/{id}
-        [HttpGet("{id}")]
-        public async Task<ActionResult<PacienteDTO>> GetPacienteById(int id)
-        {
-            var paciente = await _context.Pacientes.FindAsync(id);
-
-            if (paciente == null)
-            {
-                return NotFound("No se ha encontrado ningún paciente con este id.");
-            }
-
-            var pacienteDTO = _mapper.Map<PacienteDTO>(paciente);
-            return Ok(pacienteDTO);
-        }
-
-        // GET: api/Pacientes/ByNumSS/{numeroSeguridadSocial}
-        [HttpGet("ByNumSS/{numeroSeguridadSocial}")]
-        public async Task<ActionResult<PacienteDTO>> GetPacienteByNumSS(string numeroSeguridadSocial)
+        // GET: api/Pacientes/{numeroSeguridadSocial}
+        [HttpGet("{numeroSeguridadSocial}")]
+        public async Task<ActionResult<PacienteDTO>> GetPaciente(string numeroSeguridadSocial)
         {
             // Busca el paciente con el número de seguridad social proporcionado
             var paciente = await _context.Pacientes
@@ -87,9 +72,9 @@ namespace HospitalApi.Controllers
 
         // POST: api/Pacientes
         [HttpPost]
-        public async Task<ActionResult<PacienteDTO>> AddPaciente(PacienteDTO pacienteDTO)
+        public async Task<ActionResult<PacienteDTO>> CreatePaciente(PacienteCreateDTO pacienteDTO)
         {
-            // Verificar si ya existe un paciente con el mismo número de seguridad social
+            // Verificar si ya existe un paciente con el mismo número de seguridad social en la bd
             if (await _context.Pacientes.AnyAsync(p => p.SeguridadSocial == pacienteDTO.SeguridadSocial))
             {
                 return Conflict("Ya existe un paciente con el número de seguridad social proporcionado.");
@@ -100,29 +85,34 @@ namespace HospitalApi.Controllers
             _context.Pacientes.Add(paciente);
             await _context.SaveChangesAsync();
 
-            pacienteDTO.IdPaciente = paciente.IdPaciente;
+            var pacienteCreatedDTO = _mapper.Map<PacienteDTO>(paciente);
 
-            return CreatedAtAction(nameof(GetPacienteByNumSS), new { numeroSeguridadSocial = pacienteDTO.SeguridadSocial }, pacienteDTO);
+            return CreatedAtAction(nameof(GetPaciente), new { numeroSeguridadSocial = pacienteDTO.SeguridadSocial }, pacienteCreatedDTO);
         }
 
 
-        // PUT: api/Pacientes/{id}
-        [HttpPut("{id}")]
-        public async Task<IActionResult> EditPacienteById(int id, PacienteDTO pacienteDTO)
+        // PUT: api/Pacientes/{numeroSeguridadSocial}
+        [HttpPut("{numeroSeguridadSocial}")]
+        public async Task<IActionResult> EditPaciente(string numeroSeguridadSocial, PacienteDTO pacienteDTO)
         {
-            if (id != pacienteDTO.IdPaciente)
+            var paciente = await _context.Pacientes.FirstOrDefaultAsync(p => p.SeguridadSocial == numeroSeguridadSocial);
+
+            if (paciente == null)
             {
-                return BadRequest("El ID del paciente proporcionado no coincide con el ID en la solicitud.");
+                return NotFound("No se ha encontrado ningún paciente con ese número de seguridad social.");
             }
 
-            var pacienteExistente = await _context.Pacientes.FindAsync(id);
-
-            if (pacienteExistente == null)
+            // Validar el estado
+            string estado = pacienteDTO.Estado.ToLower();
+            if (estado != "pendiente de cama" && estado != "en cama")
             {
-                return NotFound("No se encontró el paciente especificado.");
+                return BadRequest("El estado proporcionado no es válido. Solo se permiten 'Pendiente de cama' o 'En cama'.");
             }
 
-            _mapper.Map(pacienteDTO, pacienteExistente);
+            // Formatear el string del formato 
+            pacienteDTO.Estado = char.ToUpper(pacienteDTO.Estado[0]) + pacienteDTO.Estado.Substring(1).ToLower();
+
+            _mapper.Map(pacienteDTO, paciente);
 
             try
             {
@@ -130,68 +120,7 @@ namespace HospitalApi.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!PacienteExists(id))
-                {
-                    return NotFound("No se encontró el paciente especificado.");
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
-        // PUT: api/Pacientes/ByNumSS/{numeroSeguridadSocial}
-        [HttpPut("ByNumSS/{numeroSeguridadSocial}")]
-        public async Task<IActionResult> EditPacienteByNumSS(string numeroSeguridadSocial, PacienteDTO pacienteDTO)
-        {
-            // Verificar si el número de seguridad social en la URL coincide con el del DTO
-            if (numeroSeguridadSocial != pacienteDTO.SeguridadSocial)
-            {
-                return BadRequest("El número de seguridad social proporcionado no coincide con el número en la solicitud.");
-            }
-
-            // Buscar el paciente por su número de seguridad social
-            var pacienteExistente = await _context.Pacientes
-                .FirstOrDefaultAsync(p => p.SeguridadSocial == numeroSeguridadSocial);
-
-            if (pacienteExistente == null)
-            {
-                return NotFound("No se ha encontrado ningún paciente con el número de seguridad social proporcionado.");
-            }
-
-            // Validar si el estado proporcionado en el DTO es válido
-            if (!Enum.IsDefined(typeof(EstadoPaciente), pacienteDTO.Estado))
-            {
-                return BadRequest("El estado del paciente proporcionado no es válido.");
-            }
-
-            // Verificar si hay otro paciente con el mismo número de seguridad social (excepto el actual)
-            if (await _context.Pacientes.AnyAsync(p => p.SeguridadSocial != numeroSeguridadSocial && p.SeguridadSocial == pacienteDTO.SeguridadSocial))
-            {
-                return Conflict("Ya existe un paciente con el número de seguridad social proporcionado.");
-            }
-
-            // Mapear los datos del DTO al paciente existente
-            _mapper.Map(pacienteDTO, pacienteExistente);
-
-            try
-            {
-                // Guardar los cambios en la base de datos
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!PacienteExists(numeroSeguridadSocial))
-                {
-                    return NotFound("No se ha encontrado ningún paciente con el número de seguridad social proporcionado.");
-                }
-                else
-                {
-                    throw;
-                }
+                return StatusCode(500, "Ocurrió un error al actualizar el paciente.");
             }
 
             return NoContent();
@@ -201,69 +130,24 @@ namespace HospitalApi.Controllers
         [HttpPut("ByName/{nombre}")]
         public async Task<IActionResult> EditPacienteByName(string nombre, PacienteDTO pacienteDTO)
         {
-            // Buscar el paciente por su nombre
-            var pacienteExistente = await _context.Pacientes
-                .FirstOrDefaultAsync(p => p.Nombre == nombre);
-
-            if (pacienteExistente == null)
-            {
-                return NotFound("No se ha encontrado ningún paciente con el nombre proporcionado.");
-            }
-
-            // Validar que el estado proporcionado es un valor válido del enum
-            if (!Enum.IsDefined(typeof(EstadoPaciente), pacienteDTO.Estado))
-            {
-                return BadRequest("El estado proporcionado no es válido.");
-            }
-
-            // Verificar si hay otro paciente con el mismo número de seguridad social (si lo has cambiado)
-            if (await _context.Pacientes.AnyAsync(p => p.SeguridadSocial == pacienteDTO.SeguridadSocial && p.IdPaciente != pacienteExistente.IdPaciente))
-            {
-                return Conflict("Ya existe un paciente con el mismo número de seguridad social.");
-            }
-
-            // Mapear los cambios del DTO al paciente existente
-            _mapper.Map(pacienteDTO, pacienteExistente);
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!PacienteExists(pacienteExistente.IdPaciente))
-                {
-                    return NotFound("No se ha encontrado el paciente especificado.");
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
-        // DELETE: api/Pacientes/{id}
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeletePacienteById(int id)
-        {
-            var paciente = await _context.Pacientes.FindAsync(id);
+            // Buscar al paciente por nombre
+            var paciente = await _context.Pacientes
+                .Where(p => p.Nombre == nombre) 
+                .Select(p => new { p.SeguridadSocial })
+                .FirstOrDefaultAsync();
 
             if (paciente == null)
             {
-                return NotFound("No se encontró el paciente especificado.");
+                return NotFound("No se ha encontrado ningún paciente con ese nombre.");
             }
 
-            _context.Pacientes.Remove(paciente);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            // Llama al método PUT existente para actualizar el paciente usando el número de seguridad social
+            return await EditPaciente(paciente.SeguridadSocial, pacienteDTO);
         }
 
-        // DELETE: api/Pacientes/ByNumSS/{numeroSeguridadSocial}
-        [HttpDelete("ByNumSS/{numeroSeguridadSocial}")]
-        public async Task<IActionResult> DeletePacienteByNumSS(string numeroSeguridadSocial)
+        // DELETE: api/Pacientes/{numeroSeguridadSocial}
+        [HttpDelete("{numeroSeguridadSocial}")]
+        public async Task<IActionResult> DeletePaciente(string numeroSeguridadSocial)
         {
             var paciente = await _context.Pacientes
                 .FirstOrDefaultAsync(p => p.SeguridadSocial == numeroSeguridadSocial);
@@ -284,18 +168,21 @@ namespace HospitalApi.Controllers
         [HttpDelete("ByName/{nombre}")]
         public async Task<IActionResult> DeletePacienteByName(string nombre)
         {
-            var paciente = await _context.Pacientes.FirstOrDefaultAsync(p => p.Nombre == nombre);
+            // Buscar al paciente por nombre
+            var paciente = await _context.Pacientes
+                .Where(p => p.Nombre == nombre) // Asume que tienes una propiedad Nombre en el modelo Paciente
+                .Select(p => new { p.SeguridadSocial }) // Selecciona el número de seguridad social
+                .FirstOrDefaultAsync();
 
             if (paciente == null)
             {
-                return NotFound("No se ha encontrado este paciente. Asegúrate de que el nombre es correcto.");
+                return NotFound("No se ha encontrado ningún paciente con el nombre proporcionado.");
             }
 
-            _context.Pacientes.Remove(paciente);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            // Llama al método DELETE existente usando el número de seguridad social
+            return await DeletePaciente(paciente.SeguridadSocial);
         }
+
 
         private bool PacienteExists(int id)
         {

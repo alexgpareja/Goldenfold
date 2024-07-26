@@ -2,21 +2,6 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HospitalApi;
-
-public enum EstadoCama
-{
-    Disponible,
-    Ocupado,
-    EnLimpieza
-}
-
-public enum TipoCama
-{
-    General,
-    UCI,
-    Postoperatorio
-}
-
 public class Cama
 {
     [Key]
@@ -27,12 +12,12 @@ public class Cama
     [Required]
     [StringLength(50)]
     [Column("estado")]
-    public EstadoCama Estado { get; set; } = EstadoCama.Disponible;
+    public String Estado { get; set; } = "Disponible";
 
     [Required]
     [StringLength(50)]
     [Column("tipo")]
-    public TipoCama Tipo { get; set; }
+    public String Tipo { get; set; }
 
     // Propiedad de navegación
     public ICollection<Asignacion> Asignaciones { get; set; }
