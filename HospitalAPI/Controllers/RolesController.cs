@@ -48,7 +48,7 @@ namespace HospitalApi.Controllers
         public async Task<ActionResult<IEnumerable<RolDTO>>> GetRolByName(string nombre)
         {
             var roles = await _context.Roles
-                .Where(u => u.NombreRol.ToString().Contains(nombre))
+                .Where(u => u.NombreRol.ToLower().Contains(nombre.ToLower()))
                 .ToListAsync();
 
             if (!roles.Any())

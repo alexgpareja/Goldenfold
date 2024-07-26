@@ -109,10 +109,10 @@ public class ApplicationDbContext : DbContext
 
         // Rol precarga
         modelBuilder.Entity<Rol>().HasData(
-            new Rol { IdRol = 1, NombreRol = RoleType.Administrativo },
-            new Rol { IdRol = 2, NombreRol = RoleType.Medico },
-            new Rol { IdRol = 3, NombreRol = RoleType.ControladorCamas },
-            new Rol { IdRol = 4, NombreRol = RoleType.AdministradorSistemas }
+            new Rol { IdRol = 1, NombreRol = "Administrativo" },
+            new Rol { IdRol = 2, NombreRol = "Medico" },
+            new Rol { IdRol = 3, NombreRol = "ControladorCamas" },
+            new Rol { IdRol = 4, NombreRol = "AdministradorSistemas" }
         );
     }
 }
