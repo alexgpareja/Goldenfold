@@ -104,7 +104,7 @@ public class ApplicationDbContext : DbContext
 
         // Rol
         modelBuilder.Entity<Rol>()
-            .ToTable("rol")
+            .ToTable("roles")
             .HasKey(r => r.IdRol);  
 
         modelBuilder.Entity<Rol>()

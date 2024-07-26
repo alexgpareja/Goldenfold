@@ -60,32 +60,7 @@ namespace HospitalApi.Controllers
             return Ok(rolesDTO);
         }
 
-        // POST: api/Roles
-        [HttpPost]
-        public async Task<ActionResult<RolDTO>> AddRol(RolDTO rolDTO)
-        {
-            // Verifica si el nombre del rol proporcionado es válido según el enum RoleType
-            if (!Enum.IsDefined(typeof(RoleType), rolDTO.NombreRol))
-            {
-                return BadRequest("El nombre del rol proporcionado no es válido.");
-            }
-
-            // Verifica si ya existe un rol con el nombre proporcionado
-            if (await _context.Roles.AnyAsync(r => r.NombreRol == rolDTO.NombreRol))
-            {
-                return Conflict("Ya existe un rol con el nombre proporcionado.");
-            }
-
-            var rol = _mapper.Map<Rol>(rolDTO);
-
-            _context.Roles.Add(rol);
-            await _context.SaveChangesAsync();
-
-            rolDTO.IdRol = rol.IdRol;
-
-            return CreatedAtAction(nameof(GetRolById), new { id = rolDTO.IdRol }, rolDTO);
-        }
-
+        /*
 
         // PUT: api/Roles/{id}
         [HttpPut("{id}")]
@@ -133,9 +108,10 @@ namespace HospitalApi.Controllers
             }
 
             return NoContent();
-        }
-
+        } */
+        
         // PUT: api/Roles/ByName/{nombre}
+        /*
         [HttpPut("ByName/{nombre}")]
         public async Task<IActionResult> EditRolByName(string nombre, RolDTO rolDTO)
         {
@@ -172,7 +148,7 @@ namespace HospitalApi.Controllers
 
             return NoContent();
         }
-
+        */
 
         // DELETE: api/Roles/{id}
         [HttpDelete("{id}")]
@@ -192,14 +168,17 @@ namespace HospitalApi.Controllers
         }
 
         // DELETE: api/Roles/ByName/{nombre}
+        /*
         [HttpDelete("ByName/{nombre}")]
         public async Task<IActionResult> DeleteRolByName(string nombre)
         {
             // Verifica si el nombre del rol proporcionado es válido según el enum RoleType
+
             if (!Enum.TryParse(nombre, out RoleType roleType))
             {
                 return BadRequest("El nombre del rol proporcionado no es válido.");
             }
+
 
             // Busca el rol existente por nombre
             var rol = await _context.Roles.FirstOrDefaultAsync(r => r.NombreRol == roleType);
@@ -215,7 +194,7 @@ namespace HospitalApi.Controllers
 
             return NoContent();
         }
-
+        */
 
         private bool RolExists(int id)
         {
