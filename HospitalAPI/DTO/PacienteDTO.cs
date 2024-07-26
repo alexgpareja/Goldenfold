@@ -5,7 +5,7 @@
         public int IdPaciente { get; set; }
         public string Nombre { get; set; }
         public int Edad { get; set; }
-        public DateTime FechaNacimiento { get; set; }
+        public string FechaNacimiento { get; set; }
         public string Sintomas { get; set; }
         public string Estado { get; set; }
         public string SeguridadSocial { get; set; }
@@ -19,9 +19,8 @@
     {
         public string Nombre { get; set; }
         public int Edad { get; set; }
-        public DateTime FechaNacimiento { get; set; }
+        public string FechaNacimiento { get; set; }
         public string Sintomas { get; set; }
-        public string Estado { get; set; }
         public string SeguridadSocial { get; set; }
         public string Direccion { get; set; }
         public string Telefono { get; set; }

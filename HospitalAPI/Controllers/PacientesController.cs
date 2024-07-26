@@ -3,6 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using HospitalApi.Models;
 using HospitalApi.DTO;
 using AutoMapper;
+using System.Globalization;
+using System.ComponentModel.DataAnnotations;
+using System.Text.RegularExpressions;
 
 namespace HospitalApi.Controllers
 {
@@ -70,7 +73,6 @@ namespace HospitalApi.Controllers
             return Ok(pacientesDTO);
         }
 
-        // POST: api/Pacientes
         [HttpPost]
         public async Task<ActionResult<PacienteDTO>> CreatePaciente(PacienteCreateDTO pacienteDTO)
         {
@@ -80,39 +82,85 @@ namespace HospitalApi.Controllers
                 return Conflict("Ya existe un paciente con el número de seguridad social proporcionado.");
             }
 
+            // Validar el formato del número de seguridad social
+            if (pacienteDTO.SeguridadSocial.Length != 12 || !pacienteDTO.SeguridadSocial.All(char.IsDigit))
+            {
+                return BadRequest("El número de seguridad social debe tener exactamente 12 dígitos numéricos.");
+            }
+
+            // Validar y convertir el formato de la fecha de nacimiento
+            if (!DateTime.TryParseExact(pacienteDTO.FechaNacimiento, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime fechaNacimiento))
+            {
+                return BadRequest("La fecha de nacimiento debe estar en el formato AAAA-MM-DD.");
+            }
+
+            // Validar formato de email si se proporciona
+            if (!string.IsNullOrEmpty(pacienteDTO.Email) && !new EmailAddressAttribute().IsValid(pacienteDTO.Email))
+            {
+                return BadRequest("El formato del email proporcionado no es válido.");
+            }
+
+            // Validar formato de teléfono si se proporciona
+            if (!string.IsNullOrEmpty(pacienteDTO.Telefono) && !Regex.IsMatch(pacienteDTO.Telefono, @"^\d{9}$"))
+            {
+                return BadRequest("El formato del número de teléfono proporcionado no es válido. Debe tener exactamente 9 dígitos.");
+            }
+
             var paciente = _mapper.Map<Paciente>(pacienteDTO);
+            paciente.FechaNacimiento = fechaNacimiento;
 
             _context.Pacientes.Add(paciente);
             await _context.SaveChangesAsync();
 
-            var pacienteCreatedDTO = _mapper.Map<PacienteDTO>(paciente);
+            var pacienteDTOResult = _mapper.Map<PacienteDTO>(paciente);
+            return CreatedAtAction(nameof(GetPaciente), new { numeroSeguridadSocial = pacienteDTO.SeguridadSocial }, pacienteDTOResult);
 
-            return CreatedAtAction(nameof(GetPaciente), new { numeroSeguridadSocial = pacienteDTO.SeguridadSocial }, pacienteCreatedDTO);
         }
 
 
-        // PUT: api/Pacientes/{numeroSeguridadSocial}
         [HttpPut("{numeroSeguridadSocial}")]
-        public async Task<IActionResult> EditPaciente(string numeroSeguridadSocial, PacienteDTO pacienteDTO)
+        public async Task<IActionResult> UpdatePaciente(string numeroSeguridadSocial, PacienteUpdateDTO pacienteDTO)
         {
-            var paciente = await _context.Pacientes.FirstOrDefaultAsync(p => p.SeguridadSocial == numeroSeguridadSocial);
+            // Buscar el paciente por el número de seguridad social
+            var paciente = await _context.Pacientes
+                .FirstOrDefaultAsync(p => p.SeguridadSocial == numeroSeguridadSocial);
 
             if (paciente == null)
             {
-                return NotFound("No se ha encontrado ningún paciente con ese número de seguridad social.");
+                return NotFound("No se ha encontrado ningún paciente con el número de seguridad social proporcionado.");
             }
 
             // Validar el estado
-            string estado = pacienteDTO.Estado.ToLower();
+            string estado = pacienteDTO.Estado.Trim().ToLower();
             if (estado != "pendiente de cama" && estado != "en cama")
             {
                 return BadRequest("El estado proporcionado no es válido. Solo se permiten 'Pendiente de cama' o 'En cama'.");
             }
 
-            // Formatear el string del formato 
+            // Formatear el string del estado
             pacienteDTO.Estado = char.ToUpper(pacienteDTO.Estado[0]) + pacienteDTO.Estado.Substring(1).ToLower();
 
+            // Validar el formato de la fecha de nacimiento
+            if (!DateTime.TryParseExact(pacienteDTO.FechaNacimiento, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime fechaNacimiento))
+            {
+                return BadRequest("La fecha de nacimiento debe estar en el formato AAAA-MM-DD.");
+            }
+
+            // Validar formato de email si se proporciona
+            if (!string.IsNullOrEmpty(pacienteDTO.Email) && !new EmailAddressAttribute().IsValid(pacienteDTO.Email))
+            {
+                return BadRequest("El formato del email proporcionado no es válido.");
+            }
+
+            // Validar formato de teléfono si se proporciona
+            if (!string.IsNullOrEmpty(pacienteDTO.Telefono) && !Regex.IsMatch(pacienteDTO.Telefono, @"^\d{9}$"))
+            {
+                return BadRequest("El formato del número de teléfono proporcionado no es válido. Debe tener exactamente 9 dígitos.");
+            }
+
+            // Mapear los datos del DTO al paciente existente
             _mapper.Map(pacienteDTO, paciente);
+            paciente.FechaNacimiento = fechaNacimiento;
 
             try
             {
@@ -125,6 +173,7 @@ namespace HospitalApi.Controllers
 
             return NoContent();
         }
+
 
         // PUT: api/Pacientes/ByName/{nombre}
         [HttpPut("ByName/{nombre}")]
