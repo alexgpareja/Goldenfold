@@ -14,10 +14,12 @@ public class Rol
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    [Column("id_rol")]
     public int IdRol { get; set; }
 
     [Required]
     [StringLength(50)]
+    [Column("nombre_rol")]
     public RoleType NombreRol { get; set; }
 
     // Propiedad de navegaci�n

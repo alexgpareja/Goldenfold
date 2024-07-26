@@ -69,7 +69,7 @@ namespace HospitalApi.Controllers
 
         // POST: api/Usuarios
         [HttpPost]
-        public async Task<ActionResult<UsuarioCreateDTO>> AddUser(UsuarioDTO usuarioDTO)
+        public async Task<ActionResult<UsuarioDTO>> AddUser(UsuarioDTO usuarioDTO)
         {
             if (await _context.Usuarios.AnyAsync(u => u.NombreUsuario == usuarioDTO.NombreUsuario))
             {
