@@ -26,6 +26,7 @@ namespace HospitalApi.Mapping
 
             // Usuario mappings
             CreateMap<Usuario, UsuarioDTO>().ReverseMap();
+            CreateMap<UsuarioCreateDTO, Usuario>().ReverseMap();
 
             // Rol mappings
             CreateMap<Rol, RolDTO>().ReverseMap();

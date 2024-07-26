@@ -16,12 +16,12 @@ public class Usuario
 
     [Required]
     [StringLength(50)]
-    [Column("nombe_usuario")]
+    [Column("nombre_usuario")]
     public string NombreUsuario { get; set; }
 
     [Required]
     [StringLength(255)]
-    [Column("constrasenya")]
+    [Column("contrasenya")]
     public string Contrasenya { get; set; }
 
     [ForeignKey("Rol")]

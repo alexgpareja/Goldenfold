@@ -69,7 +69,7 @@ namespace HospitalApi.Controllers
 
         // POST: api/Usuarios
         [HttpPost]
-        public async Task<ActionResult<UsuarioDTO>> AddUser(UsuarioDTO usuarioDTO)
+        public async Task<ActionResult<UsuarioDTO>> CreateUser(UsuarioCreateDTO usuarioDTO)
         {
             if (await _context.Usuarios.AnyAsync(u => u.NombreUsuario == usuarioDTO.NombreUsuario))
             {
@@ -86,9 +86,10 @@ namespace HospitalApi.Controllers
             _context.Usuarios.Add(usuario);
             await _context.SaveChangesAsync();
 
-            usuarioDTO.IdUsuario = usuario.IdUsuario;
-            return CreatedAtAction(nameof(GetUserById), new { id = usuarioDTO.IdUsuario }, usuarioDTO);
+            var usuarioDTOResult = _mapper.Map<UsuarioDTO>(usuario);
+            return CreatedAtAction(nameof(GetUserById), new { id = usuarioDTOResult.IdUsuario }, usuarioDTOResult);
         }
+
 
         // PUT: api/Usuarios/{id}
         [HttpPut("{id}")]
