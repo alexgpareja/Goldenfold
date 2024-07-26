@@ -60,33 +60,6 @@ namespace HospitalApi.Controllers
             return Ok(rolesDTO);
         }
 
-        // POST: api/Roles
-        [HttpPost]
-        public async Task<ActionResult<RolDTO>> AddRol(RolDTO rolDTO)
-        {
-            // Verifica si el nombre del rol proporcionado es válido según el enum RoleType
-            if (!Enum.IsDefined(typeof(RoleType), rolDTO.NombreRol))
-            {
-                return BadRequest("El nombre del rol proporcionado no es válido.");
-            }
-
-            // Verifica si ya existe un rol con el nombre proporcionado
-            if (await _context.Roles.AnyAsync(r => r.NombreRol == rolDTO.NombreRol))
-            {
-                return Conflict("Ya existe un rol con el nombre proporcionado.");
-            }
-
-            var rol = _mapper.Map<Rol>(rolDTO);
-
-            _context.Roles.Add(rol);
-            await _context.SaveChangesAsync();
-
-            rolDTO.IdRol = rol.IdRol;
-
-            return CreatedAtAction(nameof(GetRolById), new { id = rolDTO.IdRol }, rolDTO);
-        }
-
-
         // PUT: api/Roles/{id}
         [HttpPut("{id}")]
         public async Task<IActionResult> EditRolById(int id, RolDTO rolDTO)
