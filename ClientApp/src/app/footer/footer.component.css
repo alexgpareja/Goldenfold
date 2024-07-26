@@ -88,3 +88,15 @@ address h5 {
 div {
   padding: 0px;
 }
+.footer-section {
+  padding: 20px; /* Ajusta el espacio interno si es necesario */
+}
+
+.map {
+  width: 50px; /* Ajusta el tamaño según sea necesario */
+  height: 180px; /* Ajusta la altura según sea necesario */
+  background-image: url('../../assets/images/mapa.png'); /* Ajusta la ruta según tu estructura */
+  background-size: cover; /* Ajusta el tamaño de la imagen de fondo */
+  background-position: center; /* Centra la imagen */
+  background-repeat: no-repeat; /* No repite la imagen */
+}

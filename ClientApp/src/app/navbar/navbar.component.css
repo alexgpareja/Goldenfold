@@ -29,7 +29,7 @@ span,
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1rem;
+    padding: 7px;
 }
 
 .navbar-brand img {
@@ -188,4 +188,15 @@ button.nav-item:hover{
   transform: scale(1.01);
   background-color: #80818f; /* Cambia este color a tu preferencia */
   color: white;
+}
+.navbar-brand {
+  display: block;
+  width: 130px;
+  height: 50px;
+  margin: 0px;
+  padding: 0px;
+  background-image: url('../../assets/images/logo.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
 }
