@@ -22,8 +22,12 @@ export class CamasComponent implements OnInit {
 
   obtenerCamas(): void {
     this.apiService.getCamas().subscribe({
-      next: (data: Cama[]) => {
-        this.camas = data;
+      next: (data: any[]) => { 
+        this.camas = data.map(item => ({
+          Ubicacion: item.ubicacion,
+          Estado: item.estado,
+          Tipo: item.tipo
+        }));
       },
       error: (error: any) => {
         console.error('Error al obtener las camas', error);

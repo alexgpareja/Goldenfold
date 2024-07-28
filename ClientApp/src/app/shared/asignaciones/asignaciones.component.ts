@@ -29,8 +29,16 @@ export class AsignacionesComponent implements OnInit {
 
   obtenerAsignaciones(): void {
     this.apiService.getAsignaciones().subscribe({
-      next: (data: Asignacion[]) => {
-        this.asignaciones = data;
+      next: (data: any[]) => { 
+        console.log(data); // Verifica la respuesta aquí
+        this.asignaciones = data.map(item => ({
+          IdAsignacion: item.idAsignacion,
+          IdPaciente: item.idPaciente,
+          Ubicacion: item.ubicacion,
+          FechaAsignacion: item.fechaAsignacion,
+          FechaLiberacion: item.fechaLiberacion,
+          AsignadoPor: item.asignadoPor
+        }));
       },
       error: (error: any) => {
         console.error('Error al obtener las asignaciones', error);

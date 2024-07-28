@@ -28,11 +28,17 @@ export class HistorialAltasComponent implements OnInit {
 
   obtenerHistorialAltas(): void {
     this.apiService.getHistorialAltas().subscribe({
-      next: (data: HistorialAlta[]) => {
-        this.historialAltas = data;
+      next: (data: any[]) => { 
+        this.historialAltas = data.map(item => ({
+          IdHistorial: item.idHistorial,
+          IdPaciente: item.idPaciente,
+          FechaAlta: item.fechaAlta,
+          Diagnostico: item.diagnostico,
+          Tratamiento: item.tratamiento
+        }));
       },
       error: (error: any) => {
-        console.error('Error al obtener los datos de historial de altas', error);
+        console.error('Error al obtener el historial de altas', error);
       }
     });
   }

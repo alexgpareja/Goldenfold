@@ -6,7 +6,7 @@ public class Cama
 {
     [Key]
     [StringLength(10)]
-    [Column("ubicacion")]
+    [Column("Ubicacion")]
     public string Ubicacion { get; set; }
 
     [Required]
@@ -19,7 +19,7 @@ public class Cama
     [Column("tipo")]
     public String Tipo { get; set; }
 
-    // Propiedad de navegación
+    // Propiedad de navegaciï¿½n
     public ICollection<Asignacion> Asignaciones { get; set; }
 
 }
