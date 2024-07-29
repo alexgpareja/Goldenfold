@@ -140,7 +140,7 @@ namespace HospitalApi.Controllers
 
         }
 
-
+/*
         [HttpPut("{numeroSeguridadSocial}")]
         public async Task<IActionResult> EditPaciente(string numeroSeguridadSocial, PacienteDTO pacienteDTO)
         {
@@ -265,5 +265,6 @@ namespace HospitalApi.Controllers
         {
             return _context.Pacientes.Any(p => p.SeguridadSocial == numeroSeguridadSocial);
         }
+        */
     }
 }
