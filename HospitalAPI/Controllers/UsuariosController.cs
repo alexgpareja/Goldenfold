@@ -19,6 +19,14 @@ namespace HospitalApi.Controllers
             _mapper = mapper;
         }
 
+        /// <summary>
+        /// Obtiene la lista de todos los usuarios.
+        /// </summary>
+        /// <returns>
+        /// Una lista de objetos <see cref="UsuarioDTO"/> que representan los usuarios.
+        /// </returns>
+        /// <response code="200">Devuelve la lista de usuarios.</response>
+        /// <response code="404">Si no se encuentra ningún usuario.</response>
         // GET: api/Usuarios
         [HttpGet]
         public async Task<ActionResult<IEnumerable<UsuarioDTO>>> GetUsuarios()
@@ -35,6 +43,16 @@ namespace HospitalApi.Controllers
             return Ok(usuariosDTO);
         }
 
+
+        /// <summary>
+        /// Obtiene un usuario por su ID.
+        /// </summary>
+        /// <param name="id">El ID del usuario que se desea obtener.</param>
+        /// <returns>
+        /// Un objeto <see cref="UsuarioDTO"/> que representa el usuario solicitado.
+        /// </returns>
+        /// <response code="200">Devuelve el usuario solicitado.</response>
+        /// <response code="404">Si no se encuentra un usuario con el ID proporcionado.</response>
         // GET: api/Usuarios/{id}
         [HttpGet("{id}")]
         public async Task<ActionResult<UsuarioDTO>> GetUserById(int id)
@@ -50,6 +68,16 @@ namespace HospitalApi.Controllers
             return Ok(usuarioDTO);
         }
 
+
+        /// <summary>
+        /// Obtiene una lista de usuarios cuyo nombre de usuario contiene el nombre especificado.
+        /// </summary>
+        /// <param name="nombre">El nombre o parte del nombre del usuario que se desea buscar.</param>
+        /// <returns>
+        /// Una colección de objetos <see cref="UsuarioDTO"/> que representan los usuarios cuyos nombres coinciden con la búsqueda.
+        /// </returns>
+        /// <response code="200">Devuelve una lista de usuarios coincidentes.</response>
+        /// <response code="404">Si no se encuentra ningún usuario con el nombre proporcionado.</response>
         // GET: api/Usuarios/ByName/{nombre}
         [HttpGet("ByName/{nombre}")]
         public async Task<ActionResult<IEnumerable<UsuarioDTO>>> GetUserByName(string nombre)
@@ -66,6 +94,7 @@ namespace HospitalApi.Controllers
             var usuariosDTO = _mapper.Map<IEnumerable<UsuarioDTO>>(usuarios);
             return Ok(usuariosDTO);
         }
+
 
         /// <summary>
         /// Crea un nuevo usuario.
@@ -101,56 +130,20 @@ namespace HospitalApi.Controllers
         }
 
 
-        // PUT: api/Usuarios/{id}
-        [HttpPut("{id}")]
-        public async Task<IActionResult> EditUserById(int id, UsuarioDTO usuarioDTO)
-        {
-            if (id != usuarioDTO.IdUsuario)
-            {
-                return BadRequest("El ID del usuario proporcionado no coincide con el ID en la solicitud.");
-            }
-
-            var usuarioExistente = await _context.Usuarios.FindAsync(id);
-
-            if (usuarioExistente == null)
-            {
-                return NotFound("No se encontró el usuario especificado.");
-            }
-
-            if (await _context.Usuarios.AnyAsync(u => u.IdUsuario != id && u.NombreUsuario == usuarioDTO.NombreUsuario))
-            {
-                return Conflict("El nombre de usuario ya está en uso.");
-            }
-
-            if (!await _context.Roles.AnyAsync(r => r.IdRol == usuarioDTO.IdRol))
-            {
-                return Conflict("El rol no existe");
-            }
-
-                _mapper.Map(usuarioDTO, usuarioExistente);
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!UsuarioExists(id))
-                {
-                    return NotFound("No se encontró el usuario especificado.");
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
-        // PUT: api/Usuarios/ByName/{nombre}
-        [HttpPut("ByName/{nombre}")]
-        public async Task<IActionResult> EditUserByName(string nombre, UsuarioDTO usuarioDTO)
+        /// <summary>
+        /// Actualiza un usuario existente basado en el nombre de usuario proporcionado.
+        /// </summary>
+        /// <param name="nombre">El nombre del usuario que se va a actualizar.</param>
+        /// <param name="usuarioDTO">El objeto <see cref="UsuarioDTO"/> con los datos actualizados del usuario.</param>
+        /// <returns>Una respuesta HTTP que indica el resultado de la operación de actualización.</returns>
+        /// <response code="204">Retorna un código HTTP 204 (No Content) si la actualización del usuario fue exitosa.</response>
+        /// <response code="400">Retorna un código HTTP 400 (Bad Request) si el nombre del usuario en el objeto DTO no coincide con el nombre del usuario especificado en la URL.</response>
+        /// <response code="404">Retorna un código HTTP 404 (Not Found) si no se encuentra un usuario con el nombre proporcionado.</response>
+        /// <response code="409">Retorna un código HTTP 409 (Conflict) si el nombre de usuario proporcionado en el DTO ya está en uso.</response>
+        /// <response code="500">Retorna un código HTTP 500 (Internal Server Error) si ocurre un error al actualizar el usuario en la base de datos.</response>
+        // PUT: api/Usuarios/{nombre}
+        [HttpPut("{nombre}")]
+        public async Task<IActionResult> EditUser(string nombre, UsuarioDTO usuarioDTO)
         {
             var usuarioExiste = await _context.Usuarios.FirstOrDefaultAsync(u => u.NombreUsuario == nombre);
 
@@ -179,7 +172,14 @@ namespace HospitalApi.Controllers
         }
 
 
-
+        /// <summary>
+        /// Elimina un usuario específico por su ID.
+        /// </summary>
+        /// <param name="id">El ID del usuario que se desea eliminar.</param>
+        /// <returns>Un resultado de la acción que indica el resultado de la operación.</returns>
+        /// <response code="204">Indica que la eliminación del usuario se realizó correctamente.</response>
+        /// <response code="404">Si no se encuentra el usuario especificado.</response>
+        /// <response code="500">Si ocurre un error al eliminar el usuario.</response>
         // DELETE: api/Usuarios/{id}
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUserById(int id)
@@ -197,6 +197,15 @@ namespace HospitalApi.Controllers
             return NoContent();
         }
 
+
+        /// <summary>
+        /// Elimina un usuario específico por su nombre de usuario.
+        /// </summary>
+        /// <param name="nombre">El nombre de usuario del usuario que se desea eliminar.</param>
+        /// <returns>Un resultado de la acción que indica el resultado de la operación.</returns>
+        /// <response code="204">Indica que la eliminación del usuario se realizó correctamente.</response>
+        /// <response code="404">Si no se encuentra el usuario especificado.</response>
+        /// <response code="500">Si ocurre un error al eliminar el usuario.</response>
         // DELETE: api/Usuarios/ByName/{nombre}
         [HttpDelete("ByName/{nombre}")]
         public async Task<IActionResult> DeleteUserByName(string nombre)

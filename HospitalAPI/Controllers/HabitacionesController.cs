@@ -28,27 +28,19 @@ namespace HospitalApi.Controllers
             return Ok(habitacionesDTO);
         }
 
-        // GET: api/Habitaciones/{id}
-        [HttpGet("{id}")]
-        public async Task<ActionResult<HabitacionDTO>> GetHabitacionById(int id)
+        // GET: api/Habitaciones/{NumHabitacion}
+        [HttpGet("{NumHabitacion}")]
+        public async Task<ActionResult<HabitacionDTO>> GetHabitacion(string NumHabitacion)
         {
-            var habitacion = await _context.Habitaciones.FindAsync(id);
-
-            if (habitacion == null)
+            // Convertir NumHabitacion de string a int
+            if (!int.TryParse(NumHabitacion, out int numHabitacionInt))
             {
-                return NotFound();
+                return BadRequest("El número de habitación debe ser un valor numérico.");
             }
 
-            var habitacionDTO = _mapper.Map<HabitacionDTO>(habitacion);
-            return Ok(habitacionDTO);
-        }
-
-        // GET: api/Habitaciones/ByNum/{NumHabitacion}
-        [HttpGet("ByNum/{NumHabitacion}")]
-        public async Task<ActionResult<HabitacionDTO>> GetHabitacionByNum(int NumHabitacion)
-        {
+            // Buscar la habitación por número de habitación convertido a int
             var habitacion = await _context.Habitaciones
-                .FirstOrDefaultAsync(h => h.NumeroHabitacion == NumHabitacion);
+                .FirstOrDefaultAsync(h => int.Parse(h.NumeroHabitacion) == numHabitacionInt);
 
             if (habitacion == null)
             {
@@ -59,61 +51,28 @@ namespace HospitalApi.Controllers
             return Ok(habitacionDTO);
         }
 
-
         // POST: api/Habitaciones
         [HttpPost]
-        public async Task<ActionResult<HabitacionDTO>> AddHabitacion(HabitacionDTO habitacionDTO)
+        public async Task<ActionResult<HabitacionDTO>> CreateHabitacion(HabitacionDTO habitacionDTO)
         {
+            // Verificar si ya existe una habitación con el mismo número de habitación
+            if (await _context.Habitaciones.AnyAsync(h => h.NumeroHabitacion == habitacionDTO.NumeroHabitacion))
+            {
+                return Conflict("Ya existe una habitación con el número proporcionado.");
+            }
+
             var habitacion = _mapper.Map<Habitacion>(habitacionDTO);
 
             _context.Habitaciones.Add(habitacion);
             await _context.SaveChangesAsync();
 
             habitacionDTO.IdHabitacion = habitacion.IdHabitacion;
-            return CreatedAtAction("GetHabitacion", new { id = habitacionDTO.IdHabitacion }, habitacionDTO);
+            return CreatedAtAction("GetHabitacionByNum", new { NumHabitacion = habitacionDTO.NumeroHabitacion }, habitacionDTO);
         }
 
-        // PUT: api/Habitaciones/{id}
-        [HttpPut("{id}")]
-        public async Task<IActionResult> EditHabitacionById(int id, HabitacionDTO habitacionDTO)
-        {
-            if (id != habitacionDTO.IdHabitacion)
-            {
-                return BadRequest();
-            }
-
-            var habitacion = await _context.Habitaciones.FindAsync(id);
-            if (habitacion == null)
-            {
-                return NotFound();
-            }
-
-            _mapper.Map(habitacionDTO, habitacion);
-
-            _context.Entry(habitacion).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!HabitacionExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
-        // PUT: api/Habitaciones/ByNum/{NumHabitacion}
-        [HttpPut("ByNum/{NumHabitacion}")]
-        public async Task<IActionResult> EditHabitacionByNum(int NumHabitacion, HabitacionDTO habitacionDTO)
+        // PUT: api/Habitaciones/{NumHabitacion}
+        [HttpPut("{NumHabitacion}")]
+        public async Task<IActionResult> EditHabitacionByNum(string NumHabitacion, HabitacionDTO habitacionDTO)
         {
             // Buscar la habitación actual por su número
             var habitacionExistente = await _context.Habitaciones
@@ -154,25 +113,9 @@ namespace HospitalApi.Controllers
             return NoContent();
         }
 
-        // DELETE: api/Habitaciones/{id}
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteHabitacionById(int id)
-        {
-            var habitacion = await _context.Habitaciones.FindAsync(id);
-            if (habitacion == null)
-            {
-                return NotFound();
-            }
-
-            _context.Habitaciones.Remove(habitacion);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
-
-        // DELETE: api/Habitaciones/ByNum/{NumHabitacion}
-        [HttpDelete("ByNum/{NumHabitacion}")]
-        public async Task<IActionResult> DeleteHabitacionByNum(int NumHabitacion)
+        // DELETE: api/Habitaciones/{NumHabitacion}
+        [HttpDelete("{NumHabitacion}")]
+        public async Task<IActionResult> DeleteHabitacion(string NumHabitacion)
         {
             var habitacion = await _context.Habitaciones
                 .FirstOrDefaultAsync(h => h.NumeroHabitacion == NumHabitacion);

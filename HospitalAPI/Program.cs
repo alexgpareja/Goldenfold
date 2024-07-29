@@ -6,11 +6,19 @@ using HospitalApi.Mapping;
 using System.Text.Json.Serialization;
 using System;
 using System.Reflection;
+using API;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
+// Add services to the container.
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new DateOnlyConverter());
+        options.JsonSerializerOptions.Converters.Add(new DateTimeConverter());
+    });
 
 // DbContext MariaDb
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
