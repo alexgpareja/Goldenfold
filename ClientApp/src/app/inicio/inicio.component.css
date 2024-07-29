@@ -107,7 +107,7 @@ h3 {
 }
 
 .service-image {
-  width: 200px;
+  width: 250px;
   height: 200px;
   background-size: cover;
   background-position: center;
@@ -116,12 +116,11 @@ h3 {
   transition: transform 0.3s ease, filter 0.3s ease;
 }
 
-.service-image:hover {
-  transform: scale(1.05);
-}
+
 
 .service.habitaciones .service-image {
   background-image: url('../../assets/images/habitaciones.png');
+
 }
 
 .service.camas .service-image {
