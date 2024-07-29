@@ -29,7 +29,6 @@ namespace HospitalApi
         public string Estado { get; set; } = "Pendiente de Cama";
 
         [Column("fecha_registro")]
-        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm:ss}", ApplyFormatInEditMode = true)]
         public DateTime? FechaRegistro { get; set; } = DateTime.Now;
 
         [Required]
@@ -55,8 +54,7 @@ namespace HospitalApi
         public string HistorialMedico { get; set; }
 
         [Column("fecha_nacimiento")]
-        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
-        public DateTime? FechaNacimiento { get; set; }
+        public DateOnly? FechaNacimiento { get; set; }
 
         // Propiedades de navegación
         public ICollection<HistorialAlta> HistorialAltas { get; set; }

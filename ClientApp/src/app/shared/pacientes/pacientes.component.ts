@@ -2,13 +2,16 @@ import { Component, OnInit } from '@angular/core';
 import { ApiService, Paciente } from '../../services/api.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { DatePipe } from '@angular/common';
+
 
 @Component({
   selector: 'app-pacientes',
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './pacientes.component.html',
-  styleUrls: ['./pacientes.component.css']
+  styleUrls: ['./pacientes.component.css'],
+  providers: [DatePipe]
 })
 export class PacientesComponent implements OnInit {
   pacientes: Paciente[] = [];
@@ -26,7 +29,7 @@ export class PacientesComponent implements OnInit {
     HistorialMedico: ''
   };
 
-  constructor(private apiService: ApiService) { }
+  constructor(private apiService: ApiService, private datePipe: DatePipe) { }
 
   ngOnInit(): void {
     this.obtenerPacientes();
@@ -57,6 +60,14 @@ export class PacientesComponent implements OnInit {
   }
 
   agregarPaciente(): void {
+
+    // Formatear las fechas antes de enviar al servidor
+    const pacienteParaEnviar = {
+      ...this.nuevoPaciente,
+      FechaNacimiento: this.datePipe.transform(this.nuevoPaciente.FechaNacimiento, 'yyyy-MM-dd'),
+      FechaRegistro: this.datePipe.transform(this.nuevoPaciente.FechaRegistro, 'yyyy-MM-ddTHH:mm:ss')
+    };
+
     this.apiService.addPaciente(this.nuevoPaciente).subscribe({
       next: (paciente: Paciente) => {
         this.pacientes.push(paciente);

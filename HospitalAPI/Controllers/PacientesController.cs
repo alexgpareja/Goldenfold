@@ -22,6 +22,13 @@ namespace HospitalApi.Controllers
             _mapper = mapper;
         }
 
+
+        /// <summary>
+        /// Obtiene una lista de todos los pacientes.
+        /// </summary>
+        /// <returns>Una respuesta HTTP que contiene una lista de pacientes en formato <see cref="PacienteDTO"/>.</returns>
+        /// <response code="200">Retorna un código HTTP 200 (OK) con una lista de pacientes en formato <see cref="PacienteDTO"/> si se encuentran pacientes en la base de datos.</response>
+        /// <response code="404">Retorna un código HTTP 404 (Not Found) si no se encuentran pacientes en la base de datos.</response>
         // GET: api/Pacientes
         [HttpGet]
         public async Task<ActionResult<IEnumerable<PacienteDTO>>> GetPacientes()
@@ -38,6 +45,14 @@ namespace HospitalApi.Controllers
             return Ok(pacientesDTO);
         }
 
+
+        /// <summary>
+        /// Obtiene un paciente específico por su número de seguridad social.
+        /// </summary>
+        /// <param name="numeroSeguridadSocial">El número de seguridad social del paciente que se desea obtener.</param>
+        /// <returns>Una respuesta HTTP que contiene el paciente en formato <see cref="PacienteDTO"/> si se encuentra en la base de datos.</returns>
+        /// <response code="200">Retorna un código HTTP 200 (OK) con el paciente en formato <see cref="PacienteDTO"/> si el paciente se encuentra en la base de datos.</response>
+        /// <response code="404">Retorna un código HTTP 404 (Not Found) si no se encuentra ningún paciente con el número de seguridad social proporcionado.</response>
         // GET: api/Pacientes/{numeroSeguridadSocial}
         [HttpGet("{numeroSeguridadSocial}")]
         public async Task<ActionResult<PacienteDTO>> GetPaciente(string numeroSeguridadSocial)
@@ -56,6 +71,14 @@ namespace HospitalApi.Controllers
             return Ok(pacienteDTO);
         }
 
+
+        /// <summary>
+        /// Obtiene una lista de pacientes que contienen el nombre proporcionado.
+        /// </summary>
+        /// <param name="nombre">El nombre del paciente que se desea buscar. Se realizará una búsqueda que contenga este nombre.</param>
+        /// <returns>Una respuesta HTTP que contiene una lista de pacientes en formato <see cref="PacienteDTO"/> si se encuentran en la base de datos.</returns>
+        /// <response code="200">Retorna un código HTTP 200 (OK) con una lista de pacientes en formato <see cref="PacienteDTO"/> si se encuentran pacientes que coincidan con el nombre proporcionado.</response>
+        /// <response code="404">Retorna un código HTTP 404 (Not Found) si no se encuentra ningún paciente con el nombre proporcionado.</response>
         // GET: api/Pacientes/ByName/{nombre}
         [HttpGet("ByName/{nombre}")]
         public async Task<ActionResult<IEnumerable<PacienteDTO>>> GetPacienteByName(string nombre)
@@ -89,7 +112,7 @@ namespace HospitalApi.Controllers
             }
 
             // Validar y convertir el formato de la fecha de nacimiento
-            if (!DateTime.TryParseExact(pacienteDTO.FechaNacimiento, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime fechaNacimiento))
+            if (!DateOnly.TryParseExact(pacienteDTO.FechaNacimiento, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateOnly fechaNacimiento))
             {
                 return BadRequest("La fecha de nacimiento debe estar en el formato AAAA-MM-DD.");
             }
@@ -117,9 +140,9 @@ namespace HospitalApi.Controllers
 
         }
 
-
+/*
         [HttpPut("{numeroSeguridadSocial}")]
-        public async Task<IActionResult> UpdatePaciente(string numeroSeguridadSocial, PacienteUpdateDTO pacienteDTO)
+        public async Task<IActionResult> EditPaciente(string numeroSeguridadSocial, PacienteDTO pacienteDTO)
         {
             // Buscar el paciente por el número de seguridad social
             var paciente = await _context.Pacientes
@@ -141,7 +164,7 @@ namespace HospitalApi.Controllers
             pacienteDTO.Estado = char.ToUpper(pacienteDTO.Estado[0]) + pacienteDTO.Estado.Substring(1).ToLower();
 
             // Validar el formato de la fecha de nacimiento
-            if (!DateTime.TryParseExact(pacienteDTO.FechaNacimiento, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime fechaNacimiento))
+            if (!DateOnly.TryParseExact(pacienteDTO.FechaNacimiento, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateOnly fechaNacimiento))
             {
                 return BadRequest("La fecha de nacimiento debe estar en el formato AAAA-MM-DD.");
             }
@@ -242,5 +265,6 @@ namespace HospitalApi.Controllers
         {
             return _context.Pacientes.Any(p => p.SeguridadSocial == numeroSeguridadSocial);
         }
+        */
     }
 }

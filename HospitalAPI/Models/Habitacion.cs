@@ -23,5 +23,5 @@ public class Habitacion
     [Required]
     [StringLength(2)]
     [Column("numero_habitacion")]
-    public int NumeroHabitacion { get; set; }
+    public string NumeroHabitacion { get; set; }
 }
