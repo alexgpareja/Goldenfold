@@ -1,5 +1,5 @@
-<div class="patients-section">
-  <h2>Pacientes Registrados</h2>
+<div class="pacientes-section">
+  <h2>Pacientes</h2>
   <div class="table-container">
     <table class="table">
       <thead>
@@ -20,59 +20,78 @@
       </thead>
       <tbody>
         <tr *ngFor="let paciente of pacientes">
-          <td>{{ paciente.IdPaciente }}</td>
-          <td>{{ paciente.Nombre }}</td>
-          <td>{{ paciente.Edad }}</td>
-          <td>{{ paciente.FechaNacimiento | date: 'shortDate' }}</td>
-          <td>{{ paciente.Sintomas }}</td>
-          <td>{{ paciente.Estado }}</td>
-          <td>{{ paciente.FechaRegistro | date: 'shortDate' }}</td>
-          <td>{{ paciente.SeguridadSocial }}</td>
-          <td>{{ paciente.Direccion }}</td>
-          <td>{{ paciente.Telefono }}</td>
-          <td>{{ paciente.HistorialMedico }}</td>
+          <td>{{ paciente.idPaciente }}</td>
+          <td>{{ paciente.nombre }}</td>
+          <td>{{ paciente.edad }}</td>
+          <td>{{ paciente.fechaNacimiento }}</td>
+          <td>{{ paciente.sintomas }}</td>
+          <td>{{ paciente.estado }}</td>
+          <td>{{ paciente.fechaRegistro}}</td>
+          <td>{{ paciente.seguridadSocial }}</td>
+          <td>{{ paciente.direccion }}</td>
+          <td>{{ paciente.telefono }}</td>
+          <td>{{ paciente.historialMedico }}</td>
           <td>
-            <button (click)="editarRegistro(paciente.IdPaciente)">Editar</button>
-            <button (click)="borrarRegistro(paciente.IdPaciente)">Borrar</button>
+            <button (click)="toggleActualizarPaciente(paciente)">Actualizar</button>
+            <button (click)="borrarPaciente(paciente.idPaciente)">Borrar</button>
           </td>
         </tr>
       </tbody>
     </table>
   </div>
 
+  <div class="form-container" *ngIf="pacienteParaActualizar">
+    <h3>Actualizar Paciente</h3>
+    <form (ngSubmit)="actualizarPaciente()">
+      <label for="idPaciente">ID Paciente:</label>
+      <input type="number" id="idPaciente" [(ngModel)]="pacienteParaActualizar.idPaciente" name="idPaciente" disabled>
+      <label for="nombre">Nombre:</label>
+      <input type="text" id="nombre" [(ngModel)]="pacienteParaActualizar.nombre" name="nombre">
+      <label for="edad">Edad:</label>
+      <input type="number" id="edad" [(ngModel)]="pacienteParaActualizar.edad" name="edad">
+      <label for="fechaNacimiento">Fecha de Nacimiento:</label>
+      <input type="date" id="fechaNacimiento" [(ngModel)]="pacienteParaActualizar.fechaNacimiento" name="fechaNacimiento">
+      <label for="sintomas">Síntomas:</label>
+      <input type="text" id="sintomas" [(ngModel)]="pacienteParaActualizar.sintomas" name="sintomas">
+      <label for="estado">Estado:</label>
+      <input type="text" id="estado" [(ngModel)]="pacienteParaActualizar.estado" name="estado">
+      <label for="fechaRegistro">Fecha de Registro:</label>
+      <input type="date" id="fechaRegistro" [(ngModel)]="pacienteParaActualizar.fechaRegistro" name="fechaRegistro">
+      <label for="seguridadSocial">Seguridad Social:</label>
+      <input type="text" id="seguridadSocial" [(ngModel)]="pacienteParaActualizar.seguridadSocial" name="seguridadSocial">
+      <label for="direccion">Dirección:</label>
+      <input type="text" id="direccion" [(ngModel)]="pacienteParaActualizar.direccion" name="direccion">
+      <label for="telefono">Teléfono:</label>
+      <input type="text" id="telefono" [(ngModel)]="pacienteParaActualizar.telefono" name="telefono">
+      <label for="historialMedico">Historial Médico:</label>
+      <input type="text" id="historialMedico" [(ngModel)]="pacienteParaActualizar.historialMedico" name="historialMedico">
+      <button type="submit">Guardar</button>
+    </form>
+  </div>
+
   <div class="form-container">
     <h3>Agregar Paciente</h3>
     <form (ngSubmit)="agregarPaciente()">
       <label for="nombre">Nombre:</label>
-      <input type="text" id="nombre" [(ngModel)]="nuevoPaciente.Nombre" name="nombre">
-      
+      <input type="text" id="nombre" [(ngModel)]="nuevoPaciente.nombre" name="nombre">
       <label for="edad">Edad:</label>
-      <input type="number" id="edad" [(ngModel)]="nuevoPaciente.Edad" name="edad">
-
+      <input type="number" id="edad" [(ngModel)]="nuevoPaciente.edad" name="edad">
       <label for="fechaNacimiento">Fecha de Nacimiento:</label>
-      <input type="date" id="fechaNacimiento" [(ngModel)]="nuevoPaciente.FechaNacimiento" name="fechaNacimiento">
-
+      <input type="date" id="fechaNacimiento" [(ngModel)]="nuevoPaciente.fechaNacimiento" name="fechaNacimiento">
       <label for="sintomas">Síntomas:</label>
-      <input type="text" id="sintomas" [(ngModel)]="nuevoPaciente.Sintomas" name="sintomas">
-
+      <input type="text" id="sintomas" [(ngModel)]="nuevoPaciente.sintomas" name="sintomas">
       <label for="estado">Estado:</label>
-      <input type="text" id="estado" [(ngModel)]="nuevoPaciente.Estado" name="estado">
-
+      <input type="text" id="estado" [(ngModel)]="nuevoPaciente.estado" name="estado">
       <label for="fechaRegistro">Fecha de Registro:</label>
-      <input type="date" id="fechaRegistro" [(ngModel)]="nuevoPaciente.FechaRegistro" name="fechaRegistro">
-
+      <input type="date" id="fechaRegistro" [(ngModel)]="nuevoPaciente.fechaRegistro" name="fechaRegistro">
       <label for="seguridadSocial">Seguridad Social:</label>
-      <input type="text" id="seguridadSocial" [(ngModel)]="nuevoPaciente.SeguridadSocial" name="seguridadSocial">
-
+      <input type="text" id="seguridadSocial" [(ngModel)]="nuevoPaciente.seguridadSocial" name="seguridadSocial">
       <label for="direccion">Dirección:</label>
-      <input type="text" id="direccion" [(ngModel)]="nuevoPaciente.Direccion" name="direccion">
-
+      <input type="text" id="direccion" [(ngModel)]="nuevoPaciente.direccion" name="direccion">
       <label for="telefono">Teléfono:</label>
-      <input type="text" id="telefono" [(ngModel)]="nuevoPaciente.Telefono" name="telefono">
-
+      <input type="text" id="telefono" [(ngModel)]="nuevoPaciente.telefono" name="telefono">
       <label for="historialMedico">Historial Médico:</label>
-      <input type="text" id="historialMedico" [(ngModel)]="nuevoPaciente.HistorialMedico" name="historialMedico">
-
+      <input type="text" id="historialMedico" [(ngModel)]="nuevoPaciente.historialMedico" name="historialMedico">
       <button type="submit">Agregar</button>
     </form>
   </div>

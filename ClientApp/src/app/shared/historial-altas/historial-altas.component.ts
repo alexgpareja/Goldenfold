@@ -13,12 +13,13 @@ import { ApiService, HistorialAlta } from '../../services/api.service';
 export class HistorialAltasComponent implements OnInit {
   historialAltas: HistorialAlta[] = [];
   nuevoHistorialAlta: HistorialAlta = {
-    IdHistorial: 0,
-    IdPaciente: 0,
-    FechaAlta: new Date(),
-    Diagnostico: '',
-    Tratamiento: ''
+    idHistorial: 0,
+    idPaciente: 0,
+    fechaAlta: new Date(),
+    diagnostico: '',
+    tratamiento: ''
   };
+  historialAltaParaActualizar: HistorialAlta | null = null;
 
   constructor(private apiService: ApiService) {}
 
@@ -28,14 +29,8 @@ export class HistorialAltasComponent implements OnInit {
 
   obtenerHistorialAltas(): void {
     this.apiService.getHistorialAltas().subscribe({
-      next: (data: any[]) => { 
-        this.historialAltas = data.map(item => ({
-          IdHistorial: item.idHistorial,
-          IdPaciente: item.idPaciente,
-          FechaAlta: item.fechaAlta,
-          Diagnostico: item.diagnostico,
-          Tratamiento: item.tratamiento
-        }));
+      next: (data: HistorialAlta[]) => {
+        this.historialAltas = data;
       },
       error: (error: any) => {
         console.error('Error al obtener el historial de altas', error);
@@ -48,11 +43,11 @@ export class HistorialAltasComponent implements OnInit {
       next: (nuevoHistorialAlta: HistorialAlta) => {
         this.historialAltas.push(nuevoHistorialAlta);
         this.nuevoHistorialAlta = {
-          IdHistorial: 0,
-          IdPaciente: 0,
-          FechaAlta: new Date(),
-          Diagnostico: '',
-          Tratamiento: ''
+          idHistorial: 0,
+          idPaciente: 0,
+          fechaAlta: new Date(),
+          diagnostico: '',
+          tratamiento: ''
         };
       },
       error: (error: any) => {
@@ -61,28 +56,40 @@ export class HistorialAltasComponent implements OnInit {
     });
   }
 
+  toggleActualizarHistorialAlta(historialAlta: HistorialAlta): void {
+    if (this.historialAltaParaActualizar && this.historialAltaParaActualizar.idHistorial === historialAlta.idHistorial) {
+      this.historialAltaParaActualizar = null;
+    } else {
+      this.historialAltaParaActualizar = { ...historialAlta };
+    }
+  }
+
+  actualizarHistorialAlta(): void {
+    if (this.historialAltaParaActualizar) {
+      this.apiService.updateHistorialAlta(this.historialAltaParaActualizar).subscribe({
+        next: (historialAltaActualizado: HistorialAlta) => {
+          const index = this.historialAltas.findIndex(ha => ha.idHistorial === historialAltaActualizado.idHistorial);
+          if (index !== -1) {
+            this.historialAltas[index] = historialAltaActualizado;
+          }
+          this.historialAltaParaActualizar = null;
+        },
+        error: (error: any) => {
+          console.error('Error al actualizar el historial de alta', error);
+        }
+      });
+    }
+  }
+
   borrarHistorialAlta(id: number): void {
     this.apiService.deleteHistorialAlta(id).subscribe({
       next: () => {
-        this.historialAltas = this.historialAltas.filter(historialAlta => historialAlta.IdHistorial !== id);
+        this.historialAltas = this.historialAltas.filter(historialAlta => historialAlta.idHistorial !== id);
       },
       error: (error: any) => {
         console.error('Error al borrar el historial de alta', error);
       }
     });
   }
-
-  actualizarHistorialAlta(historialAlta: HistorialAlta): void {
-    this.apiService.updateHistorialAlta(historialAlta).subscribe({
-      next: (historialAltaActualizado: HistorialAlta) => {
-        const index = this.historialAltas.findIndex(ha => ha.IdHistorial === historialAltaActualizado.IdHistorial);
-        if (index !== -1) {
-          this.historialAltas[index] = historialAltaActualizado;
-        }
-      },
-      error: (error: any) => {
-        console.error('Error al actualizar el historial de alta', error);
-      }
-    });
-  }
 }
+

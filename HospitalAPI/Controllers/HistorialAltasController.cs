@@ -24,56 +24,54 @@ namespace HospitalApi.Controllers
         public async Task<ActionResult<IEnumerable<HistorialAltaDTO>>> GetHistorialAltas()
         {
             var historialAltas = await _context.HistorialesAltas.ToListAsync();
+            if (!historialAltas.Any())
+            {
+                return NotFound("No se han encontrado altas.");
+            }
             var historialAltasDTO = _mapper.Map<IEnumerable<HistorialAltaDTO>>(historialAltas);
             return Ok(historialAltasDTO);
         }
 
         // GET: api/HistorialAltas/{id}
         [HttpGet("{id}")]
-        public async Task<ActionResult<HistorialAltaDTO>> GetHistorialAlta(int id)
+        public async Task<ActionResult<HistorialAltaDTO>> GetHistorialAltaById(int id)
         {
             var historialAlta = await _context.HistorialesAltas.FindAsync(id);
-
             if (historialAlta == null)
             {
-                return NotFound();
+                return NotFound("No se ha encontrado ninguna alta con este ID.");
             }
-
             var historialAltaDTO = _mapper.Map<HistorialAltaDTO>(historialAlta);
             return Ok(historialAltaDTO);
         }
 
         // POST: api/HistorialAltas
         [HttpPost]
-        public async Task<ActionResult<HistorialAltaDTO>> PostHistorialAlta(HistorialAltaDTO historialAltaDTO)
+        public async Task<ActionResult<HistorialAltaDTO>> CreateHistorialAlta(HistorialAltaDTO historialAltaDTO)
         {
             var historialAlta = _mapper.Map<HistorialAlta>(historialAltaDTO);
-
             _context.HistorialesAltas.Add(historialAlta);
             await _context.SaveChangesAsync();
-
             historialAltaDTO.IdHistorial = historialAlta.IdHistorial;
-            return CreatedAtAction("GetHistorialAlta", new { id = historialAltaDTO.IdHistorial }, historialAltaDTO);
+            return CreatedAtAction(nameof(GetHistorialAltaById), new { id = historialAltaDTO.IdHistorial }, historialAltaDTO);
         }
 
         // PUT: api/HistorialAltas/{id}
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutHistorialAlta(int id, HistorialAltaDTO historialAltaDTO)
+        public async Task<IActionResult> UpdateHistorialAlta(int id, HistorialAltaDTO historialAltaDTO)
         {
             if (id != historialAltaDTO.IdHistorial)
             {
-                return BadRequest();
+                return BadRequest("El ID del historial proporcionado no coincide con el ID en la solicitud.");
             }
 
             var historialAlta = await _context.HistorialesAltas.FindAsync(id);
             if (historialAlta == null)
             {
-                return NotFound();
+                return NotFound("No se encontró el historial especificado.");
             }
 
             _mapper.Map(historialAltaDTO, historialAlta);
-
-            _context.Entry(historialAlta).State = EntityState.Modified;
 
             try
             {
@@ -83,7 +81,7 @@ namespace HospitalApi.Controllers
             {
                 if (!HistorialAltaExists(id))
                 {
-                    return NotFound();
+                    return NotFound("No se encontró el historial especificado.");
                 }
                 else
                 {
@@ -94,6 +92,7 @@ namespace HospitalApi.Controllers
             return NoContent();
         }
 
+
         // DELETE: api/HistorialAltas/{id}
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteHistorialAlta(int id)
@@ -101,7 +100,7 @@ namespace HospitalApi.Controllers
             var historialAlta = await _context.HistorialesAltas.FindAsync(id);
             if (historialAlta == null)
             {
-                return NotFound();
+                return NotFound("No se encontró el historial especificado.");
             }
 
             _context.HistorialesAltas.Remove(historialAlta);

@@ -56,8 +56,8 @@ export class CamasComponent implements OnInit {
     if (this.camaParaActualizar) {
       this.apiService.updateCama(this.camaParaActualizar).subscribe({
         next: (camaActualizada: Cama) => {
-          this.obtenerCamas(); // Recarga la lista de camas
-          this.camaParaActualizar = null; // Oculta el formulario después de actualizar
+          this.obtenerCamas(); 
+          this.camaParaActualizar = null; 
         },
         error: (error: any) => {
           console.error('Error al actualizar la cama', error);

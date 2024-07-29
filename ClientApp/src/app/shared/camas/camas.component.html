@@ -20,24 +20,21 @@
             <button (click)="borrarCama(cama.ubicacion)">Borrar</button>
           </td>
         </tr>
-        <tr *ngIf="camaParaActualizar && camaParaActualizar.ubicacion === camaParaActualizar.ubicacion">
-          <td colspan="4">
-            <div class="form-container">
-              <h3>Actualizar Cama</h3>
-              <form (ngSubmit)="actualizarCama()">
-                <label for="ubicacion">Ubicación:</label>
-                <input type="text" id="ubicacion" [(ngModel)]="camaParaActualizar.ubicacion" name="ubicacion" disabled>
-                <label for="estado">Estado:</label>
-                <input type="text" id="estado" [(ngModel)]="camaParaActualizar.estado" name="estado">
-                <label for="tipo">Tipo:</label>
-                <input type="text" id="tipo" [(ngModel)]="camaParaActualizar.tipo" name="tipo">
-                <button type="submit">Guardar</button>
-              </form>
-            </div>
-          </td>
-        </tr>
       </tbody>
     </table>
+  </div>
+
+  <div class="form-container" *ngIf="camaParaActualizar">
+    <h3>Actualizar Cama</h3>
+    <form (ngSubmit)="actualizarCama()">
+      <label for="ubicacion">Ubicación:</label>
+      <input type="text" id="ubicacion" [(ngModel)]="camaParaActualizar.ubicacion" name="ubicacion" disabled>
+      <label for="estado">Estado:</label>
+      <input type="text" id="estado" [(ngModel)]="camaParaActualizar.estado" name="estado">
+      <label for="tipo">Tipo:</label>
+      <input type="text" id="tipo" [(ngModel)]="camaParaActualizar.tipo" name="tipo">
+      <button type="submit">Guardar</button>
+    </form>
   </div>
 
   <div class="form-container">

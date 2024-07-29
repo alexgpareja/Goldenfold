@@ -26,7 +26,7 @@ public class HistorialAlta
     [Column("tratamiento")]
     public string Tratamiento { get; set; }
 
-    // Propiedad de navegación
+    // Propiedad de navegaciÃ³n
     public Paciente Paciente { get; set; }
 
 }

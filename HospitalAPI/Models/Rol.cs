@@ -14,9 +14,7 @@ public class Rol
     [Column("nombre_rol")]
     public string NombreRol { get; set; }
 
-    
-
-    // Propiedad de navegaci�n
+    // Propiedad de navegación
     public ICollection<Usuario> Usuarios { get; set; }
 
 }

@@ -19,7 +19,7 @@ public class Cama
     [Column("tipo")]
     public String Tipo { get; set; }
 
-    // Propiedad de navegaci�n
+    // Propiedad de navegación
     public ICollection<Asignacion> Asignaciones { get; set; }
 
-}
+} 

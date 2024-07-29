@@ -5,32 +5,32 @@ import { Observable } from 'rxjs';
 
 // Definición de la interfaz Paciente
 export interface Paciente {
-  IdPaciente: number;
-  Nombre: string;
-  Edad: number;
-  FechaNacimiento: Date;
-  Sintomas: string;
-  Estado: string;
-  FechaRegistro: Date;
-  SeguridadSocial: string;
-  Direccion: string;
-  Telefono: string;
-  HistorialMedico: string;
+  idPaciente: number;
+  nombre: string;
+  edad: number;
+  fechaNacimiento: Date;
+  sintomas: string;
+  estado: string;
+  fechaRegistro: Date;
+  seguridadSocial: string;
+  direccion: string;
+  telefono: string;
+  historialMedico: string;
 }
 
 // Definición de la interfaz HistorialAlta
 export interface HistorialAlta {
-  IdHistorial: number;
-  IdPaciente: number;
-  FechaAlta: Date;
-  Diagnostico: string;
-  Tratamiento: string;
+  idHistorial: number;
+  idPaciente: number;
+  fechaAlta: Date;
+  diagnostico: string;
+  tratamiento: string;
 }
 
 // Definición de la interfaz Rol
 export interface Rol {
-  IdRol: number;
-  NombreRol: string;
+  idRol: number;
+  nombreRol: string;
 }
 
 // Definición de la interfaz Asignacion
@@ -60,11 +60,11 @@ export interface Cama {
 
 // Definición de la interfaz Usuario
 export interface Usuario {
-  IdUsuario: number;
-  Nombre: string;
-  NombreUsuario: string;
-  Contrasenya: string;
-  IdRol: number;
+  idUsuario: number;
+  nombre: string;
+  nombreUsuario: string;
+  contrasenya: string;
+  idRol: number;
 }
 
 @Injectable({
@@ -89,53 +89,11 @@ export class ApiService {
   }
 
   updatePaciente(paciente: Paciente): Observable<Paciente> {
-    return this.http.put<Paciente>(`${this.apiUrl}/Pacientes/${paciente.IdPaciente}`, paciente);
+    return this.http.put<Paciente>(`${this.apiUrl}/Pacientes/${paciente.idPaciente}`, paciente);
   }
 
   deletePaciente(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/Pacientes/${id}`);
-  }
-
-  // CRUD para HistorialAltas
-  getHistorialAltas(): Observable<HistorialAlta[]> {
-    return this.http.get<HistorialAlta[]>(`${this.apiUrl}/HistorialAltas`);
-  }
-
-  getHistorialAltaById(id: number): Observable<HistorialAlta> {
-    return this.http.get<HistorialAlta>(`${this.apiUrl}/HistorialAltas/${id}`);
-  }
-
-  addHistorialAlta(historialAlta: HistorialAlta): Observable<HistorialAlta> {
-    return this.http.post<HistorialAlta>(`${this.apiUrl}/HistorialAltas`, historialAlta);
-  }
-
-  updateHistorialAlta(historialAlta: HistorialAlta): Observable<HistorialAlta> {
-    return this.http.put<HistorialAlta>(`${this.apiUrl}/HistorialAltas/${historialAlta.IdHistorial}`, historialAlta);
-  }
-
-  deleteHistorialAlta(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/HistorialAltas/${id}`);
-  }
-
-  // CRUD para Roles
-  getRoles(): Observable<Rol[]> {
-    return this.http.get<Rol[]>(`${this.apiUrl}/Roles`);
-  }
-
-  getRolById(id: number): Observable<Rol> {
-    return this.http.get<Rol>(`${this.apiUrl}/Roles/${id}`);
-  }
-
-  addRol(rol: Rol): Observable<Rol> {
-    return this.http.post<Rol>(`${this.apiUrl}/Roles`, rol);
-  }
-
-  updateRol(rol: Rol): Observable<Rol> {
-    return this.http.put<Rol>(`${this.apiUrl}/Roles/${rol.IdRol}`, rol);
-  }
-
-  deleteRol(idRol: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/Roles/${idRol}`);
   }
 
   // CRUD para Asignaciones
@@ -159,6 +117,27 @@ export class ApiService {
     return this.http.delete<void>(`${this.apiUrl}/Asignaciones/${id}`);
   }
 
+  // CRUD para HistorialAltas
+  getHistorialAltas(): Observable<HistorialAlta[]> {
+    return this.http.get<HistorialAlta[]>(`${this.apiUrl}/HistorialAltas`);
+  }
+
+  getHistorialAltaById(id: number): Observable<HistorialAlta> {
+    return this.http.get<HistorialAlta>(`${this.apiUrl}/HistorialAltas/${id}`);
+  }
+
+  addHistorialAlta(historialAlta: HistorialAlta): Observable<HistorialAlta> {
+    return this.http.post<HistorialAlta>(`${this.apiUrl}/HistorialAltas`, historialAlta);
+  }
+
+  updateHistorialAlta(historialAlta: HistorialAlta): Observable<HistorialAlta> {
+    return this.http.put<HistorialAlta>(`${this.apiUrl}/HistorialAltas/${historialAlta.idHistorial}`, historialAlta);
+  }
+
+  deleteHistorialAlta(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/HistorialAltas/${id}`);
+  }
+
   // CRUD para Usuarios
   getUsuarios(): Observable<Usuario[]> {
     return this.http.get<Usuario[]>(`${this.apiUrl}/Usuarios`);
@@ -168,12 +147,16 @@ export class ApiService {
     return this.http.get<Usuario>(`${this.apiUrl}/Usuarios/${id}`);
   }
 
+  getUsuarioByName(nombre: string): Observable<Usuario> {
+    return this.http.get<Usuario>(`${this.apiUrl}/Usuarios/${nombre}`);
+  }
+
   addUsuario(Usuario: Usuario): Observable<Usuario> {
     return this.http.post<Usuario>(`${this.apiUrl}/Usuarios`, Usuario);
   }
 
   updateUsuario(Usuario: Usuario): Observable<Usuario> {
-    return this.http.put<Usuario>(`${this.apiUrl}/Usuarios/${Usuario.IdUsuario}`, Usuario);
+    return this.http.put<Usuario>(`${this.apiUrl}/Usuarios/${Usuario.idUsuario}`, Usuario);
   }
 
   deleteUsuario(id: number): Observable<void> {
@@ -194,14 +177,32 @@ export class ApiService {
   }
 
   updateCama(cama: Cama): Observable<Cama> {
-    console.log('Datos enviados a la API para actualización:', cama);
     return this.http.put<Cama>(`${this.apiUrl}/Camas/${cama.ubicacion}`, cama);
   }
-  
-  
 
   deleteCama(ubicacion: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/Camas/${ubicacion}`);
+  }
+  
+  // CRUD para Roles
+  getRoles(): Observable<Rol[]> {
+    return this.http.get<Rol[]>(`${this.apiUrl}/Roles`);
+  }
+
+  getRolById(id: number): Observable<Rol> {
+    return this.http.get<Rol>(`${this.apiUrl}/Roles/${id}`);
+  }
+
+  addRol(rol: Rol): Observable<Rol> {
+    return this.http.post<Rol>(`${this.apiUrl}/Roles`, rol);
+  }
+
+  updateRol(rol: Rol): Observable<Rol> {
+    return this.http.put<Rol>(`${this.apiUrl}/Roles/${rol.idRol}`, rol);
+  }
+
+  deleteRol(idRol: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/Roles/${idRol}`);
   }
 
   // CRUD para Habitaciones

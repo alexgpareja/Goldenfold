@@ -2,34 +2,32 @@ import { Component, OnInit } from '@angular/core';
 import { ApiService, Paciente } from '../../services/api.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { DatePipe } from '@angular/common';
-
 
 @Component({
   selector: 'app-pacientes',
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './pacientes.component.html',
-  styleUrls: ['./pacientes.component.css'],
-  providers: [DatePipe]
+  styleUrls: ['./pacientes.component.css']
 })
 export class PacientesComponent implements OnInit {
   pacientes: Paciente[] = [];
   nuevoPaciente: Paciente = {
-    IdPaciente: 0,
-    Nombre: '',
-    Edad: 0,
-    FechaNacimiento: new Date(),
-    Sintomas: '',
-    Estado: '',
-    FechaRegistro: new Date(),
-    SeguridadSocial: '',
-    Direccion: '',
-    Telefono: '',
-    HistorialMedico: ''
+    idPaciente: 0,
+    nombre: '',
+    edad: 0,
+    fechaNacimiento: new Date(),
+    sintomas: '',
+    estado: '',
+    fechaRegistro: new Date(),
+    seguridadSocial: '',
+    direccion: '',
+    telefono: '',
+    historialMedico: ''
   };
+  pacienteParaActualizar: Paciente | null = null;
 
-  constructor(private apiService: ApiService, private datePipe: DatePipe) { }
+  constructor(private apiService: ApiService) { }
 
   ngOnInit(): void {
     this.obtenerPacientes();
@@ -37,21 +35,8 @@ export class PacientesComponent implements OnInit {
 
   obtenerPacientes(): void {
     this.apiService.getPacientes().subscribe({
-      next: (data: any[]) => {
-        console.log(data); 
-        this.pacientes = data.map(item => ({
-          IdPaciente: item.idPaciente,
-          Nombre: item.nombre,
-          Edad: item.edad,
-          FechaNacimiento: new Date(item.fechaNacimiento),
-          Sintomas: item.sintomas,
-          Estado: item.estado,
-          FechaRegistro: new Date(item.fechaRegistro),
-          SeguridadSocial: item.seguridadSocial,
-          Direccion: item.direccion,
-          Telefono: item.telefono,
-          HistorialMedico: item.historialMedico
-        }));
+      next: (data: Paciente[]) => {
+        this.pacientes = data;
       },
       error: (error: any) => {
         console.error('Error al obtener los pacientes', error);
@@ -60,30 +45,22 @@ export class PacientesComponent implements OnInit {
   }
 
   agregarPaciente(): void {
-
-    // Formatear las fechas antes de enviar al servidor
-    const pacienteParaEnviar = {
-      ...this.nuevoPaciente,
-      FechaNacimiento: this.datePipe.transform(this.nuevoPaciente.FechaNacimiento, 'yyyy-MM-dd'),
-      FechaRegistro: this.datePipe.transform(this.nuevoPaciente.FechaRegistro, 'yyyy-MM-ddTHH:mm:ss')
-    };
-
     this.apiService.addPaciente(this.nuevoPaciente).subscribe({
       next: (paciente: Paciente) => {
         this.pacientes.push(paciente);
         this.nuevoPaciente = {
-          IdPaciente: 0,
-          Nombre: '',
-          Edad: 0,
-          FechaNacimiento: new Date(),
-          Sintomas: '',
-          Estado: '',
-          FechaRegistro: new Date(),
-          SeguridadSocial: '',
-          Direccion: '',
-          Telefono: '',
-          HistorialMedico: ''
-        }; // Reset form
+          idPaciente: 0,
+          nombre: '',
+          edad: 0,
+          fechaNacimiento: new Date(),
+          sintomas: '',
+          estado: '',
+          fechaRegistro: new Date(),
+          seguridadSocial: '',
+          direccion: '',
+          telefono: '',
+          historialMedico: ''
+        };
       },
       error: (error: any) => {
         console.error('Error al agregar el paciente', error);
@@ -91,21 +68,35 @@ export class PacientesComponent implements OnInit {
     });
   }
 
-  editarRegistro(id: number) {
-    console.log(`Editar registro con ID ${id}`);
-    // Aquí puedes agregar la lógica para editar el registro
+  toggleActualizarPaciente(paciente: Paciente): void {
+    if (this.pacienteParaActualizar && this.pacienteParaActualizar.idPaciente === paciente.idPaciente) {
+      this.pacienteParaActualizar = null;
+    } else {
+      this.pacienteParaActualizar = { ...paciente };
+    }
   }
 
-  copiarRegistro(id: number) {
-    console.log(`Copiar registro con ID ${id}`);
-    // Aquí puedes agregar la lógica para copiar el registro
+  actualizarPaciente(): void {
+    if (this.pacienteParaActualizar) {
+      this.apiService.updatePaciente(this.pacienteParaActualizar).subscribe({
+        next: (pacienteActualizado: Paciente) => {
+          const index = this.pacientes.findIndex(p => p.idPaciente === pacienteActualizado.idPaciente);
+          if (index !== -1) {
+            this.pacientes[index] = pacienteActualizado;
+          }
+          this.pacienteParaActualizar = null;
+        },
+        error: (error: any) => {
+          console.error('Error al actualizar el paciente', error);
+        }
+      });
+    }
   }
 
-  borrarRegistro(id: number) {
+  borrarPaciente(id: number): void {
     this.apiService.deletePaciente(id).subscribe({
       next: () => {
-        console.log(`Borrar registro con ID ${id}`);
-        this.pacientes = this.pacientes.filter(paciente => paciente.IdPaciente !== id);
+        this.pacientes = this.pacientes.filter(p => p.idPaciente !== id);
       },
       error: (error: any) => {
         console.error('Error al borrar el paciente', error);

@@ -66,7 +66,8 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<Asignacion>()
             .HasOne(a => a.Cama)  
             .WithMany(c => c.Asignaciones) 
-            .HasForeignKey(a => a.Ubicacion); 
+            .HasForeignKey(a => a.Ubicacion)
+            .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<Asignacion>()
             .HasOne(a => a.Usuario) 

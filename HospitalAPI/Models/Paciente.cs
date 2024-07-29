@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -29,7 +31,7 @@ namespace HospitalApi
         public string Estado { get; set; } = "Pendiente de Cama";
 
         [Column("fecha_registro")]
-        public DateTime? FechaRegistro { get; set; } = DateTime.Now;
+        public DateTime FechaRegistro { get; set; }
 
         [Required]
         [StringLength(12, MinimumLength = 12)]
@@ -40,8 +42,7 @@ namespace HospitalApi
         [Column("direccion")]
         public string Direccion { get; set; }
 
-        [StringLength(20)]
-        [DataType(DataType.PhoneNumber)]
+        [StringLength(9, MinimumLength = 9)]
         [Column("telefono")]
         public string Telefono { get; set; }
 
@@ -54,10 +55,18 @@ namespace HospitalApi
         public string HistorialMedico { get; set; }
 
         [Column("fecha_nacimiento")]
-        public DateOnly? FechaNacimiento { get; set; }
+        public DateTime FechaNacimiento { get; set; }
 
         // Propiedades de navegación
         public ICollection<HistorialAlta> HistorialAltas { get; set; }
         public ICollection<Asignacion> Asignaciones { get; set; }
+
+        // Constructor
+        public Paciente()
+        {
+            FechaRegistro = DateTime.Now;
+            HistorialAltas = new List<HistorialAlta>();
+            Asignaciones = new List<Asignacion>();
+        }
     }
 }
