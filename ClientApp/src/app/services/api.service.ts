@@ -53,9 +53,9 @@ export interface Habitacion {
 
 // Definición de la interfaz Cama
 export interface Cama {
-  Ubicacion: string;
-  Estado: string;
-  Tipo: string;
+  ubicacion: string;
+  estado: string;
+  tipo: string;
 }
 
 // Definición de la interfaz Usuario
@@ -71,7 +71,7 @@ export interface Usuario {
   providedIn: 'root'
 })
 export class ApiService {
-  private apiUrl = 'http://localhost:5076/api'; // URL base de la API
+  private apiUrl = 'http://localhost:5076/api'; 
 
   constructor(private http: HttpClient) { }
 
@@ -185,20 +185,23 @@ export class ApiService {
     return this.http.get<Cama[]>(`${this.apiUrl}/Camas`);
   }
 
-  getCamaByUbi(Ubicacion: string): Observable<Cama> {
-    return this.http.get<Cama>(`${this.apiUrl}/Camas/${Ubicacion}`);
+  getCamaByUbi(ubicacion: string): Observable<Cama> {
+    return this.http.get<Cama>(`${this.apiUrl}/Camas/${ubicacion}`);
   }
 
-  addCama(Cama: Cama): Observable<Cama> {
-    return this.http.post<Cama>(`${this.apiUrl}/Camas`, Cama);
+  addCama(cama: Cama): Observable<Cama> {
+    return this.http.post<Cama>(`${this.apiUrl}/Camas`, cama);
   }
 
-  updateCama(Cama: Cama): Observable<Cama> {
-    return this.http.put<Cama>(`${this.apiUrl}/Camas/${Cama.Ubicacion}`, Cama);
+  updateCama(cama: Cama): Observable<Cama> {
+    console.log('Datos enviados a la API para actualización:', cama);
+    return this.http.put<Cama>(`${this.apiUrl}/Camas/${cama.ubicacion}`, cama);
   }
+  
+  
 
-  deleteCama(Ubicacion: string): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/Camas/${Ubicacion}`);
+  deleteCama(ubicacion: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/Camas/${ubicacion}`);
   }
 
   // CRUD para Habitaciones

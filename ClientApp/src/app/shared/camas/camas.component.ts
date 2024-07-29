@@ -12,7 +12,8 @@ import { ApiService, Cama } from '../../services/api.service';
 })
 export class CamasComponent implements OnInit {
   camas: Cama[] = [];
-  nuevaCama: Cama = { Ubicacion: '', Estado: '', Tipo: '' };
+  nuevaCama: Cama = { ubicacion: '', estado: '', tipo: '' };
+  camaParaActualizar: Cama | null = null;
 
   constructor(private apiService: ApiService) { }
 
@@ -22,12 +23,8 @@ export class CamasComponent implements OnInit {
 
   obtenerCamas(): void {
     this.apiService.getCamas().subscribe({
-      next: (data: any[]) => { 
-        this.camas = data.map(item => ({
-          Ubicacion: item.ubicacion,
-          Estado: item.estado,
-          Tipo: item.tipo
-        }));
+      next: (data: Cama[]) => {
+        this.camas = data;
       },
       error: (error: any) => {
         console.error('Error al obtener las camas', error);
@@ -39,7 +36,7 @@ export class CamasComponent implements OnInit {
     this.apiService.addCama(this.nuevaCama).subscribe({
       next: (cama: Cama) => {
         this.camas.push(cama);
-        this.nuevaCama = { Ubicacion: '', Estado: '', Tipo: '' }; 
+        this.nuevaCama = { ubicacion: '', estado: '', tipo: '' };
       },
       error: (error: any) => {
         console.error('Error al agregar la cama', error);
@@ -47,24 +44,33 @@ export class CamasComponent implements OnInit {
     });
   }
 
-  actualizarCama(cama: Cama): void {
-    this.apiService.updateCama(cama).subscribe({
-      next: (camaActualizada: Cama) => {
-        const index = this.camas.findIndex(c => c.Ubicacion === camaActualizada.Ubicacion);
-        if (index !== -1) {
-          this.camas[index] = camaActualizada;
-        }
-      },
-      error: (error: any) => {
-        console.error('Error al actualizar la cama', error);
-      }
-    });
+  toggleActualizarCama(cama: Cama): void {
+    if (this.camaParaActualizar && this.camaParaActualizar.ubicacion === cama.ubicacion) {
+      this.camaParaActualizar = null;
+    } else {
+      this.camaParaActualizar = { ...cama };
+    }
   }
 
-  borrarCama(Ubicacion: string): void {
-    this.apiService.deleteCama(Ubicacion).subscribe({
+  actualizarCama(): void {
+    if (this.camaParaActualizar) {
+      this.apiService.updateCama(this.camaParaActualizar).subscribe({
+        next: (camaActualizada: Cama) => {
+          this.obtenerCamas(); // Recarga la lista de camas
+          this.camaParaActualizar = null; // Oculta el formulario después de actualizar
+        },
+        error: (error: any) => {
+          console.error('Error al actualizar la cama', error);
+        }
+      });
+    }
+  }
+  
+
+  borrarCama(ubicacion: string): void {
+    this.apiService.deleteCama(ubicacion).subscribe({
       next: () => {
-        this.camas = this.camas.filter(c => c.Ubicacion !== Ubicacion);
+        this.camas = this.camas.filter(c => c.ubicacion !== ubicacion);
       },
       error: (error: any) => {
         console.error('Error al borrar la cama', error);
