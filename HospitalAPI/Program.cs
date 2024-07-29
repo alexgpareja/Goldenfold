@@ -1,17 +1,13 @@
-using Microsoft.EntityFrameworkCore;
-using HospitalApi.Models;
-using Microsoft.OpenApi.Models;
-using AutoMapper;
 using HospitalApi.Mapping;
-using System.Text.Json.Serialization;
-using System;
+using HospitalApi.Models;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 using System.Reflection;
-using API;
+using System.Text.Json.Serialization;
+using DateTimeFormat;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddControllers();
 // Add services to the container.
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
@@ -23,19 +19,13 @@ builder.Services.AddControllers()
 // DbContext MariaDb
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"),
-                     new MySqlServerVersion(new Version(11, 4, 2)))); 
-// Add DbContext
-/*
-builder.Services.AddDbContext<ApplicationDbContext>(opt =>
-    opt.UseInMemoryDatabase("HospitalBD"));
-*/
+                     new MySqlServerVersion(new Version(11, 4, 2))));
 
 // Add AutoMapper
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile).Assembly);
 
 // Add Swagger
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddControllers();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "HospitalApi", Version = "v1" });
@@ -44,16 +34,16 @@ builder.Services.AddSwaggerGen(c =>
     c.IncludeXmlComments(xmlPath);
 });
 
-
 // Json Settings
 builder.Services.AddControllersWithViews()
-                .AddJsonOptions(options =>
-                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+    .AddJsonOptions(options =>
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
+// Configure CORS
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowSpecificOrigin",
-        builder => builder.WithOrigins("http://localhost:4200") 
+    options.AddPolicy("AllowEverything",
+        builder => builder.WithOrigins("http://localhost:4200")
                           .AllowAnyMethod()
                           .AllowAnyHeader());
 });
@@ -69,6 +59,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+// Use CORS before authorization and other middlewares
 app.UseCors("AllowSpecificOrigin");
 
 app.UseAuthorization();
@@ -76,5 +67,3 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
-
-
