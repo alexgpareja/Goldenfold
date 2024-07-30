@@ -14,6 +14,7 @@
           <th>Seguridad Social</th>
           <th>Dirección</th>
           <th>Teléfono</th>
+          <th>Email</th>
           <th>Historial Médico</th>
           <th>Acciones</th>
         </tr>
@@ -30,6 +31,7 @@
           <td>{{ paciente.seguridadSocial }}</td>
           <td>{{ paciente.direccion }}</td>
           <td>{{ paciente.telefono }}</td>
+          <td>{{ paciente.email }}</td>
           <td>{{ paciente.historialMedico }}</td>
           <td>
             <button (click)="toggleActualizarPaciente(paciente)">Actualizar</button>
@@ -63,6 +65,8 @@
       <input type="text" id="direccion" [(ngModel)]="pacienteParaActualizar.direccion" name="direccion">
       <label for="telefono">Teléfono:</label>
       <input type="text" id="telefono" [(ngModel)]="pacienteParaActualizar.telefono" name="telefono">
+      <label for="email">Email:</label>
+      <input type="email" id="email" [(ngModel)]="pacienteParaActualizar.email" name="email">
       <label for="historialMedico">Historial Médico:</label>
       <input type="text" id="historialMedico" [(ngModel)]="pacienteParaActualizar.historialMedico" name="historialMedico">
       <button type="submit">Guardar</button>
@@ -77,19 +81,21 @@
       <label for="edad">Edad:</label>
       <input type="number" id="edad" [(ngModel)]="nuevoPaciente.edad" name="edad">
       <label for="fechaNacimiento">Fecha de Nacimiento:</label>
-      <input type="date" id="fechaNacimiento" [(ngModel)]="nuevoPaciente.fechaNacimiento" name="fechaNacimiento">
+      <input type="text" id="fechaNacimiento" [(ngModel)]="nuevoPaciente.fechaNacimiento" name="fechaNacimiento">
       <label for="sintomas">Síntomas:</label>
       <input type="text" id="sintomas" [(ngModel)]="nuevoPaciente.sintomas" name="sintomas">
       <label for="estado">Estado:</label>
       <input type="text" id="estado" [(ngModel)]="nuevoPaciente.estado" name="estado">
       <label for="fechaRegistro">Fecha de Registro:</label>
-      <input type="date" id="fechaRegistro" [(ngModel)]="nuevoPaciente.fechaRegistro" name="fechaRegistro">
+      <input type="text" id="fechaRegistro" [(ngModel)]="nuevoPaciente.fechaRegistro" name="fechaRegistro">
       <label for="seguridadSocial">Seguridad Social:</label>
       <input type="text" id="seguridadSocial" [(ngModel)]="nuevoPaciente.seguridadSocial" name="seguridadSocial">
       <label for="direccion">Dirección:</label>
       <input type="text" id="direccion" [(ngModel)]="nuevoPaciente.direccion" name="direccion">
       <label for="telefono">Teléfono:</label>
       <input type="text" id="telefono" [(ngModel)]="nuevoPaciente.telefono" name="telefono">
+      <label for="email">Email:</label>
+      <input type="email" id="email" [(ngModel)]="nuevoPaciente.email" name="email">
       <label for="historialMedico">Historial Médico:</label>
       <input type="text" id="historialMedico" [(ngModel)]="nuevoPaciente.historialMedico" name="historialMedico">
       <button type="submit">Agregar</button>

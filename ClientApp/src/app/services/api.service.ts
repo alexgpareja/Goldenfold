@@ -15,6 +15,7 @@ export interface Paciente {
   seguridadSocial: string;
   direccion: string;
   telefono: string;
+  email: string;
   historialMedico: string;
 }
 

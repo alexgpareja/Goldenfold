@@ -23,6 +23,7 @@ export class PacientesComponent implements OnInit {
     seguridadSocial: '',
     direccion: '',
     telefono: '',
+    email: '',
     historialMedico: ''
   };
   pacienteParaActualizar: Paciente | null = null;
@@ -59,6 +60,7 @@ export class PacientesComponent implements OnInit {
           seguridadSocial: '',
           direccion: '',
           telefono: '',
+          email: '',
           historialMedico: ''
         };
       },
