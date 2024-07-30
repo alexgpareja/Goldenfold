@@ -24,29 +24,23 @@ namespace HospitalApi.Controllers
         public async Task<ActionResult<IEnumerable<HabitacionDTO>>> GetHabitaciones()
         {
             var habitaciones = await _context.Habitaciones.ToListAsync();
+            if (!habitaciones.Any())
+            {
+                return NotFound("No se han encontrado habitaciones.");
+            }
             var habitacionesDTO = _mapper.Map<IEnumerable<HabitacionDTO>>(habitaciones);
             return Ok(habitacionesDTO);
         }
 
-        // GET: api/Habitaciones/{NumHabitacion}
-        [HttpGet("{NumHabitacion}")]
-        public async Task<ActionResult<HabitacionDTO>> GetHabitacion(string NumHabitacion)
+        // GET: api/Habitaciones/{id}
+        [HttpGet("{id}")]
+        public async Task<ActionResult<HabitacionDTO>> GetHabitacion(int id)
         {
-            // Convertir NumHabitacion de string a int
-            if (!int.TryParse(NumHabitacion, out int numHabitacionInt))
-            {
-                return BadRequest("El número de habitación debe ser un valor numérico.");
-            }
-
-            // Buscar la habitación por número de habitación convertido a int
-            var habitacion = await _context.Habitaciones
-                .FirstOrDefaultAsync(h => int.Parse(h.NumeroHabitacion) == numHabitacionInt);
-
+            var habitacion = await _context.Habitaciones.FindAsync(id);
             if (habitacion == null)
             {
-                return NotFound("No se ha encontrado ninguna habitación con el número proporcionado.");
+                return NotFound("No se ha encontrado ninguna habitación con el ID proporcionado.");
             }
-
             var habitacionDTO = _mapper.Map<HabitacionDTO>(habitacion);
             return Ok(habitacionDTO);
         }
@@ -55,7 +49,6 @@ namespace HospitalApi.Controllers
         [HttpPost]
         public async Task<ActionResult<HabitacionDTO>> CreateHabitacion(HabitacionDTO habitacionDTO)
         {
-            // Verificar si ya existe una habitación con el mismo número de habitación
             if (await _context.Habitaciones.AnyAsync(h => h.NumeroHabitacion == habitacionDTO.NumeroHabitacion))
             {
                 return Conflict("Ya existe una habitación con el número proporcionado.");
@@ -67,32 +60,25 @@ namespace HospitalApi.Controllers
             await _context.SaveChangesAsync();
 
             habitacionDTO.IdHabitacion = habitacion.IdHabitacion;
-            return CreatedAtAction("GetHabitacionByNum", new { NumHabitacion = habitacionDTO.NumeroHabitacion }, habitacionDTO);
+            return CreatedAtAction(nameof(GetHabitacion), new { id = habitacionDTO.IdHabitacion }, habitacionDTO);
         }
 
-        // PUT: api/Habitaciones/{NumHabitacion}
-        [HttpPut("{NumHabitacion}")]
-        public async Task<IActionResult> EditHabitacionByNum(string NumHabitacion, HabitacionDTO habitacionDTO)
+        // PUT: api/Habitaciones/{id}
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateHabitacion(int id, HabitacionDTO habitacionDTO)
         {
-            // Buscar la habitación actual por su número
-            var habitacionExistente = await _context.Habitaciones
-                .FirstOrDefaultAsync(h => h.NumeroHabitacion == NumHabitacion);
-
-            if (habitacionExistente == null)
+            if (id != habitacionDTO.IdHabitacion)
             {
-                return NotFound("No se ha encontrado ninguna habitación con el número proporcionado.");
+                return BadRequest("El ID de la habitación proporcionada no coincide con el ID en la solicitud.");
             }
 
-            // Validar que el nuevo número de habitación no esté en uso
-            if (habitacionDTO.NumeroHabitacion != NumHabitacion)
+            var habitacion = await _context.Habitaciones.FindAsync(id);
+            if (habitacion == null)
             {
-                if (await _context.Habitaciones.AnyAsync(h => h.NumeroHabitacion == habitacionDTO.NumeroHabitacion))
-                {
-                    return Conflict("Ya existe una habitación con el nuevo número proporcionado.");
-                }
+                return NotFound("No se ha encontrado ninguna habitación con el ID proporcionado.");
             }
 
-            _mapper.Map(habitacionDTO, habitacionExistente);
+            _mapper.Map(habitacionDTO, habitacion);
 
             try
             {
@@ -100,7 +86,7 @@ namespace HospitalApi.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!HabitacionExists(habitacionExistente.IdHabitacion))
+                if (!HabitacionExists(id))
                 {
                     return NotFound("No se ha encontrado la habitación especificada.");
                 }
@@ -113,16 +99,14 @@ namespace HospitalApi.Controllers
             return NoContent();
         }
 
-        // DELETE: api/Habitaciones/{NumHabitacion}
-        [HttpDelete("{NumHabitacion}")]
-        public async Task<IActionResult> DeleteHabitacion(string NumHabitacion)
+        // DELETE: api/Habitaciones/{id}
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteHabitacion(int id)
         {
-            var habitacion = await _context.Habitaciones
-                .FirstOrDefaultAsync(h => h.NumeroHabitacion == NumHabitacion);
-
+            var habitacion = await _context.Habitaciones.FindAsync(id);
             if (habitacion == null)
             {
-                return NotFound("No se ha encontrado ninguna habitación con el número proporcionado.");
+                return NotFound("No se ha encontrado ninguna habitación con el ID proporcionado.");
             }
 
             _context.Habitaciones.Remove(habitacion);
@@ -130,7 +114,6 @@ namespace HospitalApi.Controllers
 
             return NoContent();
         }
-
 
         private bool HabitacionExists(int id)
         {

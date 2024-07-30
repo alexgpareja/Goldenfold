@@ -29,7 +29,7 @@ public class Asignacion
     [Column("asignado_por")]
     public int AsignadoPor { get; set; }
 
-    // Propiedades de navegación
+    // Propiedades de navegaciÃ³n
     public Paciente Paciente { get; set; }
     public Cama Cama { get; set; }
     public Usuario Usuario { get; set; }

@@ -13,15 +13,16 @@ import { ApiService, Asignacion } from '../../services/api.service';
 export class AsignacionesComponent implements OnInit {
   asignaciones: Asignacion[] = [];
   nuevaAsignacion: Asignacion = {
-    IdAsignacion: 0,
-    IdPaciente: 0,
-    Ubicacion: '',
-    FechaAsignacion: new Date(),
-    FechaLiberacion: new Date(),
-    AsignadoPor: 0
+    idAsignacion: 0,
+    idPaciente: 0,
+    ubicacion: '',
+    fechaAsignacion: new Date(),
+    fechaLiberacion: new Date(),
+    asignadoPor: 0
   };
+  asignacionParaActualizar: Asignacion | null = null;
 
-  constructor(private apiService: ApiService) { }
+  constructor(private apiService: ApiService) {}
 
   ngOnInit(): void {
     this.obtenerAsignaciones();
@@ -29,16 +30,8 @@ export class AsignacionesComponent implements OnInit {
 
   obtenerAsignaciones(): void {
     this.apiService.getAsignaciones().subscribe({
-      next: (data: any[]) => { 
-        console.log(data); // Verifica la respuesta aquí
-        this.asignaciones = data.map(item => ({
-          IdAsignacion: item.idAsignacion,
-          IdPaciente: item.idPaciente,
-          Ubicacion: item.ubicacion,
-          FechaAsignacion: item.fechaAsignacion,
-          FechaLiberacion: item.fechaLiberacion,
-          AsignadoPor: item.asignadoPor
-        }));
+      next: (data: Asignacion[]) => {
+          this.asignaciones = data;
       },
       error: (error: any) => {
         console.error('Error al obtener las asignaciones', error);
@@ -48,16 +41,16 @@ export class AsignacionesComponent implements OnInit {
 
   agregarAsignacion(): void {
     this.apiService.addAsignacion(this.nuevaAsignacion).subscribe({
-      next: (asignacion: Asignacion) => {
-        this.asignaciones.push(asignacion);
+      next: (nuevaAsignacion: Asignacion) => {
+        this.asignaciones.push(nuevaAsignacion);
         this.nuevaAsignacion = {
-          IdAsignacion: 0,
-          IdPaciente: 0,
-          Ubicacion: '',
-          FechaAsignacion: new Date(),
-          FechaLiberacion: new Date(),
-          AsignadoPor: 0
-        }; // Reset form
+          idAsignacion: 0,
+          idPaciente: 0,
+          ubicacion: '',
+          fechaAsignacion: new Date(),
+          fechaLiberacion: new Date(),
+          asignadoPor: 0
+        };
       },
       error: (error: any) => {
         console.error('Error al agregar la asignación', error);
@@ -65,28 +58,35 @@ export class AsignacionesComponent implements OnInit {
     });
   }
 
-  actualizarAsignacion(asignacion: Asignacion): void {
-    this.apiService.updateAsignacion(asignacion).subscribe({
-      next: (asignacionActualizada: Asignacion) => {
-        const index = this.asignaciones.findIndex(a => a.IdAsignacion === asignacionActualizada.IdAsignacion);
-        if (index !== -1) {
-          this.asignaciones[index] = asignacionActualizada;
+  actualizarAsignacion(): void {
+    if (this.asignacionParaActualizar) {
+      this.apiService.updateAsignacion(this.asignacionParaActualizar).subscribe({
+        next: (asignacionActualizada: Asignacion) => {
+          const index = this.asignaciones.findIndex(a => a.idAsignacion === asignacionActualizada.idAsignacion);
+          if (index !== -1) {
+            this.asignaciones[index] = asignacionActualizada;
+          }
+          this.asignacionParaActualizar = null;
+        },
+        error: (error: any) => {
+          console.error('Error al actualizar la asignación', error);
         }
-      },
-      error: (error: any) => {
-        console.error('Error al actualizar la asignación', error);
-      }
-    });
+      });
+    }
   }
 
   borrarAsignacion(id: number): void {
     this.apiService.deleteAsignacion(id).subscribe({
       next: () => {
-        this.asignaciones = this.asignaciones.filter(a => a.IdAsignacion !== id);
+        this.asignaciones = this.asignaciones.filter(a => a.idAsignacion !== id);
       },
       error: (error: any) => {
         console.error('Error al borrar la asignación', error);
       }
     });
+  }
+
+  toggleActualizarAsignacion(asignacion: Asignacion): void {
+    this.asignacionParaActualizar = asignacion;
   }
 }

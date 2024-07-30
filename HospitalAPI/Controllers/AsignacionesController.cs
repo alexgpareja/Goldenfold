@@ -24,6 +24,10 @@ namespace HospitalApi.Controllers
         public async Task<ActionResult<IEnumerable<AsignacionDTO>>> GetAsignaciones()
         {
             var asignaciones = await _context.Asignaciones.ToListAsync();
+            if (!asignaciones.Any())
+            {
+                return NotFound("No se han encontrado asignaciones.");
+            }
             var asignacionesDTO = _mapper.Map<IEnumerable<AsignacionDTO>>(asignaciones);
             return Ok(asignacionesDTO);
         }
@@ -33,48 +37,39 @@ namespace HospitalApi.Controllers
         public async Task<ActionResult<AsignacionDTO>> GetAsignacion(int id)
         {
             var asignacion = await _context.Asignaciones.FindAsync(id);
-
             if (asignacion == null)
             {
-                return NotFound();
+                return NotFound("No se ha encontrado ninguna asignación con el ID proporcionado.");
             }
-
             var asignacionDTO = _mapper.Map<AsignacionDTO>(asignacion);
             return Ok(asignacionDTO);
         }
 
         // POST: api/Asignaciones
         [HttpPost]
-        public async Task<ActionResult<AsignacionDTO>> PostAsignacion(AsignacionDTO asignacionDTO)
+        public async Task<ActionResult<AsignacionDTO>> CreateAsignacion(AsignacionDTO asignacionDTO)
         {
             var asignacion = _mapper.Map<Asignacion>(asignacionDTO);
-
             _context.Asignaciones.Add(asignacion);
             await _context.SaveChangesAsync();
-
             asignacionDTO.IdAsignacion = asignacion.IdAsignacion;
-            return CreatedAtAction("GetAsignacion", new { id = asignacionDTO.IdAsignacion }, asignacionDTO);
+            return CreatedAtAction(nameof(GetAsignacion), new { id = asignacionDTO.IdAsignacion }, asignacionDTO);
         }
 
         // PUT: api/Asignaciones/{id}
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutAsignacion(int id, AsignacionDTO asignacionDTO)
+        public async Task<IActionResult> UpdateAsignacion(int id, AsignacionDTO asignacionDTO)
         {
             if (id != asignacionDTO.IdAsignacion)
             {
-                return BadRequest();
+                return BadRequest("El ID de la asignación proporcionada no coincide con el ID en la solicitud.");
             }
-
             var asignacion = await _context.Asignaciones.FindAsync(id);
             if (asignacion == null)
             {
-                return NotFound();
+                return NotFound("No se ha encontrado ninguna asignación con el ID proporcionado.");
             }
-
             _mapper.Map(asignacionDTO, asignacion);
-
-            _context.Entry(asignacion).State = EntityState.Modified;
-
             try
             {
                 await _context.SaveChangesAsync();
@@ -83,14 +78,13 @@ namespace HospitalApi.Controllers
             {
                 if (!AsignacionExists(id))
                 {
-                    return NotFound();
+                    return NotFound("No se encontró la asignación especificada.");
                 }
                 else
                 {
                     throw;
                 }
             }
-
             return NoContent();
         }
 
@@ -101,12 +95,10 @@ namespace HospitalApi.Controllers
             var asignacion = await _context.Asignaciones.FindAsync(id);
             if (asignacion == null)
             {
-                return NotFound();
+                return NotFound("No se encontró la asignación especificada.");
             }
-
             _context.Asignaciones.Remove(asignacion);
             await _context.SaveChangesAsync();
-
             return NoContent();
         }
 

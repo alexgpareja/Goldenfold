@@ -7,7 +7,7 @@ using AutoMapper;
 namespace HospitalApi.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/[controller]")] 
     public class UsuariosController : ControllerBase
     {
         private readonly ApplicationDbContext _context;

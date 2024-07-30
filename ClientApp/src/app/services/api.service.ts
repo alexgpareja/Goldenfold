@@ -35,20 +35,20 @@ export interface Rol {
 
 // Definición de la interfaz Asignacion
 export interface Asignacion {
-  IdAsignacion: number;
-  IdPaciente: number;
-  Ubicacion: string;
-  FechaAsignacion: Date;
-  FechaLiberacion: Date;
-  AsignadoPor: number;
+  idAsignacion: number;
+  idPaciente: number;
+  ubicacion: string;
+  fechaAsignacion: Date;
+  fechaLiberacion: Date;
+  asignadoPor: number;
 }
 
 // Definición de la interfaz Habitación
 export interface Habitacion {
-  IdHabitacion: number;
-  Edificio: string;
-  Planta: string;
-  NumeroHabitacion: string;
+  idHabitacion: number;
+  edificio: string;
+  planta: string;
+  numeroHabitacion: string;
 }
 
 // Definición de la interfaz Cama
@@ -110,7 +110,7 @@ export class ApiService {
   }
 
   updateAsignacion(asignacion: Asignacion): Observable<Asignacion> {
-    return this.http.put<Asignacion>(`${this.apiUrl}/Asignaciones/${asignacion.IdAsignacion}`, asignacion);
+    return this.http.put<Asignacion>(`${this.apiUrl}/Asignaciones/${asignacion.idAsignacion}`, asignacion);
   }
 
   deleteAsignacion(id: number): Observable<void> {
@@ -219,7 +219,7 @@ export class ApiService {
   }
 
   updateHabitacion(Habitacion: Habitacion): Observable<Habitacion> {
-    return this.http.put<Habitacion>(`${this.apiUrl}/Habitaciones/${Habitacion.IdHabitacion}`, Habitacion);
+    return this.http.put<Habitacion>(`${this.apiUrl}/Habitaciones/${Habitacion.idHabitacion}`, Habitacion);
   }
 
   deleteHabitacion(id: number): Observable<void> {
