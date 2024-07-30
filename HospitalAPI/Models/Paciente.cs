@@ -55,7 +55,7 @@ namespace HospitalApi
         public string HistorialMedico { get; set; }
 
         [Column("fecha_nacimiento")]
-        public DateTime FechaNacimiento { get; set; }
+        public DateTime FechaNacimiento { get; set; } 
 
         // Propiedades de navegación
         public ICollection<HistorialAlta> HistorialAltas { get; set; }

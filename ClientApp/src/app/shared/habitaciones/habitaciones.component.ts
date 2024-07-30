@@ -12,9 +12,10 @@ import { ApiService, Habitacion } from '../../services/api.service';
 })
 export class HabitacionesComponent implements OnInit {
   habitaciones: Habitacion[] = [];
-  nuevaHabitacion: Habitacion = { IdHabitacion: 0, Edificio: '', Planta: '', NumeroHabitacion: '' };
+  nuevaHabitacion: Habitacion = { idHabitacion: 0, edificio: '', planta: '', numeroHabitacion: '' };
+  habitacionParaActualizar: Habitacion | null = null;
 
-  constructor(private apiService: ApiService) { }
+  constructor(private apiService: ApiService) {}
 
   ngOnInit(): void {
     this.obtenerHabitaciones();
@@ -22,8 +23,13 @@ export class HabitacionesComponent implements OnInit {
 
   obtenerHabitaciones(): void {
     this.apiService.getHabitaciones().subscribe({
-      next: (data: Habitacion[]) => {
-        this.habitaciones = data;
+      next: (data: any[]) => {
+        this.habitaciones = data.map(item => ({
+          idHabitacion: item.idHabitacion,
+          edificio: item.edificio,
+          planta: item.planta,
+          numeroHabitacion: item.numeroHabitacion
+        }));
       },
       error: (error: any) => {
         console.error('Error al obtener las habitaciones', error);
@@ -33,9 +39,9 @@ export class HabitacionesComponent implements OnInit {
 
   agregarHabitacion(): void {
     this.apiService.addHabitacion(this.nuevaHabitacion).subscribe({
-      next: (habitacion: Habitacion) => {
-        this.habitaciones.push(habitacion);
-        this.nuevaHabitacion = { IdHabitacion: 0, Edificio: '', Planta: '', NumeroHabitacion: '' }; // Reset form
+      next: (nuevaHabitacion: Habitacion) => {
+        this.habitaciones.push(nuevaHabitacion);
+        this.nuevaHabitacion = { idHabitacion: 0, edificio: '', planta: '', numeroHabitacion: '' };
       },
       error: (error: any) => {
         console.error('Error al agregar la habitación', error);
@@ -43,10 +49,27 @@ export class HabitacionesComponent implements OnInit {
     });
   }
 
+  actualizarHabitacion(): void {
+    if (this.habitacionParaActualizar) {
+      this.apiService.updateHabitacion(this.habitacionParaActualizar).subscribe({
+        next: (habitacionActualizada: Habitacion) => {
+          const index = this.habitaciones.findIndex(h => h.idHabitacion === habitacionActualizada.idHabitacion);
+          if (index !== -1) {
+            this.habitaciones[index] = habitacionActualizada;
+          }
+          this.habitacionParaActualizar = null; // Reset the update form
+        },
+        error: (error: any) => {
+          console.error('Error al actualizar la habitación', error);
+        }
+      });
+    }
+  }
+
   borrarHabitacion(id: number): void {
     this.apiService.deleteHabitacion(id).subscribe({
       next: () => {
-        this.habitaciones = this.habitaciones.filter(h => h.IdHabitacion !== id);
+        this.habitaciones = this.habitaciones.filter(h => h.idHabitacion !== id);
       },
       error: (error: any) => {
         console.error('Error al borrar la habitación', error);
@@ -54,17 +77,7 @@ export class HabitacionesComponent implements OnInit {
     });
   }
 
-  actualizarHabitacion(habitacion: Habitacion): void {
-    this.apiService.updateHabitacion(habitacion).subscribe({
-      next: (habitacionActualizada: Habitacion) => {
-        const index = this.habitaciones.findIndex(h => h.IdHabitacion === habitacionActualizada.IdHabitacion);
-        if (index !== -1) {
-          this.habitaciones[index] = habitacionActualizada;
-        }
-      },
-      error: (error: any) => {
-        console.error('Error al actualizar la habitación', error);
-      }
-    });
+  toggleActualizarHabitacion(habitacion: Habitacion): void {
+    this.habitacionParaActualizar = habitacion;
   }
 }
