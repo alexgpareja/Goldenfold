@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Text.Json.Serialization;
+using DateTimeFormat;
 
 namespace HospitalApi.DTO
 {
@@ -29,6 +31,6 @@ namespace HospitalApi.DTO
         public string Telefono { get; set; }
         public string Email { get; set; }
         public string HistorialMedico { get; set; }
-        public DateTime FechaNacimiento { get; set; }
+        public DateTime? FechaNacimiento { get; set; }
     }
 }

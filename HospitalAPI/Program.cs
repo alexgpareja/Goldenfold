@@ -4,17 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
 using System.Text.Json.Serialization;
-using DateTimeFormat;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllers()
-    .AddJsonOptions(options =>
-    {
-        options.JsonSerializerOptions.Converters.Add(new DateOnlyConverter());
-        options.JsonSerializerOptions.Converters.Add(new DateTimeConverter());
-    });
+builder.Services.AddControllers();
 
 // DbContext MariaDb
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
