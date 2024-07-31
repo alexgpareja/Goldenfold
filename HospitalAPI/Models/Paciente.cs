@@ -47,7 +47,6 @@ namespace HospitalApi
         public string Telefono { get; set; }
 
         [StringLength(100)]
-        [EmailAddress]
         [Column("email")]
         public string Email { get; set; }
 

@@ -33,4 +33,5 @@ namespace HospitalApi.DTO
         public string HistorialMedico { get; set; }
         public DateTime FechaNacimiento { get; set; }
     }
+
 }

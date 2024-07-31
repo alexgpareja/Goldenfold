@@ -8,4 +8,11 @@
         public string Diagnostico { get; set; }
         public string Tratamiento { get; set; }
     }
+
+    public class HistorialAltaCreateDTO
+    {
+        public int IdPaciente { get; set; }
+        public string Diagnostico { get; set; }
+        public string Tratamiento { get; set; }
+    }
 }
