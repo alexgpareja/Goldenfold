@@ -1,33 +1,47 @@
 <div class="historial-altas-section">
   <h2>Historial de Altas</h2>
+
+  <!-- Filtro -->
+  <div class="filter-container">
+    <input type="text" placeholder="Filtrar..." [(ngModel)]="filtro" (ngModelChange)="aplicarFiltro($event)">
+  </div>
+
   <div class="table-container">
     <table class="table">
       <thead>
         <tr>
-          <th>ID Historial</th>
-          <th>ID Paciente</th>
-          <th>Fecha de Alta</th>
-          <th>Diagnóstico</th>
-          <th>Tratamiento</th>
+          <th (click)="ordenar('idHistorial')">ID Historial <span *ngIf="columnaOrdenada === 'idHistorial'">{{ orden === 'asc' ? '▲' : '▼' }}</span></th>
+          <th (click)="ordenar('idPaciente')">ID Paciente <span *ngIf="columnaOrdenada === 'idPaciente'">{{ orden === 'asc' ? '▲' : '▼' }}</span></th>
+          <th (click)="ordenar('fechaAlta')">Fecha de Alta <span *ngIf="columnaOrdenada === 'fechaAlta'">{{ orden === 'asc' ? '▲' : '▼' }}</span></th>
+          <th (click)="ordenar('diagnostico')">Diagnóstico <span *ngIf="columnaOrdenada === 'diagnostico'">{{ orden === 'asc' ? '▲' : '▼' }}</span></th>
+          <th (click)="ordenar('tratamiento')">Tratamiento <span *ngIf="columnaOrdenada === 'tratamiento'">{{ orden === 'asc' ? '▲' : '▼' }}</span></th>
           <th>Acciones</th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let historialAlta of historialAltas">
-          <td>{{ historialAlta.idHistorial }}</td>
-          <td>{{ historialAlta.idPaciente }}</td>
-          <td>{{ historialAlta.fechaAlta | date: 'shortDate' }}</td>
-          <td>{{ historialAlta.diagnostico }}</td>
-          <td>{{ historialAlta.tratamiento }}</td>
+        <tr *ngFor="let historial of historialAltasPaginadas">
+          <td>{{ historial.idHistorial }}</td>
+          <td>{{ historial.idPaciente }}</td>
+          <td>{{ historial.fechaAlta | date }}</td>
+          <td>{{ historial.diagnostico }}</td>
+          <td>{{ historial.tratamiento }}</td>
           <td>
-            <button (click)="toggleActualizarHistorialAlta(historialAlta)">Actualizar</button>
-            <button (click)="borrarHistorialAlta(historialAlta.idHistorial)">Borrar</button>
+            <button (click)="toggleActualizarHistorialAlta(historial)">Actualizar</button>
+            <button (click)="borrarHistorialAlta(historial.idHistorial)">Borrar</button>
           </td>
         </tr>
       </tbody>
     </table>
   </div>
 
+  <!-- Barra de paginación -->
+  <div class="pagination">
+    <button (click)="paginaAnterior()" [disabled]="paginaActual === 1">Anterior</button>
+    <span>Página {{paginaActual}} de {{totalPaginas}}</span>
+    <button (click)="paginaSiguiente()" [disabled]="paginaActual === totalPaginas">Siguiente</button>
+  </div>
+
+  <!-- Formulario para agregar y actualizar -->
   <div class="form-container" *ngIf="historialAltaParaActualizar">
     <h3>Actualizar Historial de Alta</h3>
     <form (ngSubmit)="actualizarHistorialAlta()">

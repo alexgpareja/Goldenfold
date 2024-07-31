@@ -1,33 +1,39 @@
 <div class="pacientes-section">
-  <h2>Pacientes</h2>
+<h2>Pacientes</h2>
+
+  <!-- Filtro -->
+  <div class="filter-container">
+    <input type="text" placeholder="Buscar Paciente..." [(ngModel)]="filtro" (ngModelChange)="aplicarFiltroNombre($event)">
+  </div>
+
   <div class="table-container">
     <table class="table">
       <thead>
         <tr>
-          <th>ID Paciente</th>
-          <th>Nombre</th>
-          <th>Edad</th>
-          <th>Fecha de Nacimiento</th>
-          <th>Síntomas</th>
-          <th>Estado</th>
-          <th>Fecha de Registro</th>
-          <th>Seguridad Social</th>
-          <th>Dirección</th>
-          <th>Teléfono</th>
-          <th>Email</th>
-          <th>Historial Médico</th>
+          <th (click)="ordenar('idPaciente')">ID Paciente <span *ngIf="columnaOrdenada === 'idPaciente'">{{ orden === 'asc' ? '▲' : '▼' }}</span></th>
+          <th (click)="ordenar('nombre')">Nombre <span *ngIf="columnaOrdenada === 'nombre'">{{ orden === 'asc' ? '▲' : '▼' }}</span></th>
+          <th (click)="ordenar('edad')">Edad <span *ngIf="columnaOrdenada === 'edad'">{{ orden === 'asc' ? '▲' : '▼' }}</span></th>
+          <th (click)="ordenar('fechaNacimiento')">Fecha de Nacimiento <span *ngIf="columnaOrdenada === 'fechaNacimiento'">{{ orden === 'asc' ? '▲' : '▼' }}</span></th>
+          <th (click)="ordenar('sintomas')">Síntomas <span *ngIf="columnaOrdenada === 'sintomas'">{{ orden === 'asc' ? '▲' : '▼' }}</span></th>
+          <th (click)="ordenar('estado')">Estado <span *ngIf="columnaOrdenada === 'estado'">{{ orden === 'asc' ? '▲' : '▼' }}</span></th>
+          <th (click)="ordenar('fechaRegistro')">Fecha de Registro <span *ngIf="columnaOrdenada === 'fechaRegistro'">{{ orden === 'asc' ? '▲' : '▼' }}</span></th>
+          <th (click)="ordenar('seguridadSocial')">Seguridad Social <span *ngIf="columnaOrdenada === 'seguridadSocial'">{{ orden === 'asc' ? '▲' : '▼' }}</span></th>
+          <th (click)="ordenar('direccion')">Dirección <span *ngIf="columnaOrdenada === 'direccion'">{{ orden === 'asc' ? '▲' : '▼' }}</span></th>
+          <th (click)="ordenar('telefono')">Teléfono <span *ngIf="columnaOrdenada === 'telefono'">{{ orden === 'asc' ? '▲' : '▼' }}</span></th>
+          <th (click)="ordenar('email')">Email <span *ngIf="columnaOrdenada === 'email'">{{ orden === 'asc' ? '▲' : '▼' }}</span></th>
+          <th (click)="ordenar('historialMedico')">Historial Médico <span *ngIf="columnaOrdenada === 'historialMedico'">{{ orden === 'asc' ? '▲' : '▼' }}</span></th>
           <th>Acciones</th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let paciente of pacientes">
+        <tr *ngFor="let paciente of pacientesPaginados">
           <td>{{ paciente.idPaciente }}</td>
           <td>{{ paciente.nombre }}</td>
           <td>{{ paciente.edad }}</td>
-          <td>{{ paciente.fechaNacimiento }}</td>
+          <td>{{ paciente.fechaNacimiento | date }}</td>
           <td>{{ paciente.sintomas }}</td>
           <td>{{ paciente.estado }}</td>
-          <td>{{ paciente.fechaRegistro}}</td>
+          <td>{{ paciente.fechaRegistro | date }}</td>
           <td>{{ paciente.seguridadSocial }}</td>
           <td>{{ paciente.direccion }}</td>
           <td>{{ paciente.telefono }}</td>
@@ -41,6 +47,14 @@
       </tbody>
     </table>
   </div>
+
+  <!-- Barra de paginación -->
+  <div class="pagination">
+    <button (click)="paginaAnterior()" [disabled]="paginaActual === 1">Anterior</button>
+    <span>Página {{paginaActual}} de {{totalPaginas}}</span>
+    <button (click)="paginaSiguiente()" [disabled]="paginaActual === totalPaginas">Siguiente</button>
+  </div>
+
 
   <div class="form-container" *ngIf="pacienteParaActualizar">
     <h3>Actualizar Paciente</h3>

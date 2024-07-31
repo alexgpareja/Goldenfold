@@ -1,50 +1,48 @@
 body {
-    font-family: "Nunito Sans";
+  font-family: "Nunito Sans";
 }
 
 .header {
-    position: relative;
-    background-image: url('../../assets/images/cover2.jpg'); /* Ruta ajustada */
-    background-size: cover;
-    background-repeat: no-repeat;
-    height: 200px;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  position: relative;
+  background-image: url("../../assets/images/cover2.jpg"); /* Ruta ajustada */
+  background-size: cover;
+  background-repeat: no-repeat;
+  height: 200px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .header::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 1;
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1;
 }
 
 .header h1 {
-    font-size: 2.9rem;
-    margin: 0;
-    font-weight: 700;
-    position: relative;
-    z-index: 2;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-    padding-bottom: 10px;
+  font-size: 2.9rem;
+  margin: 0;
+  font-weight: 700;
+  position: relative;
+  z-index: 2;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  padding-bottom: 10px;
 }
 
 .row {
-    padding-bottom: 40px;
+  padding-bottom: 40px;
 }
 .header h2 {
-    font-size: 1.3rem;
-    padding-left: 25rem;
-    position: relative;
-    z-index: 2;
-    font-weight: 700;
-
-
+  font-size: 1.3rem;
+  padding-left: 25rem;
+  position: relative;
+  z-index: 2;
+  font-weight: 700;
 }
 
 .services-container {
@@ -80,7 +78,7 @@ article h4 {
   font-size: 1.4rem;
   font-weight: 700;
   text-align: center;
-  }
+}
 
 article img {
   display: flex;
@@ -91,10 +89,6 @@ article img {
   gap: 2px;
   border-radius: 10px;
   transition: transform 0.3s ease, filter 0.3s ease;
-}
-
-.service img:hover {
-  transform: scale(1.05);
 }
 
 h3 {
@@ -112,21 +106,18 @@ h3 {
   background-size: cover;
   background-position: center;
   border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra leve */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease, filter 0.3s ease;
 }
 
-
-
 .service.habitaciones .service-image {
-  background-image: url('../../assets/images/habitaciones.png');
-
+  background-image: url("../../assets/images/habitaciones.png");
 }
 
 .service.camas .service-image {
-  background-image: url('../../assets/images/camas.png');
+  background-image: url("../../assets/images/camas.png");
 }
 
 .service.pacientes .service-image {
-  background-image: url('../../assets/images/pacientes.png');
+  background-image: url("../../assets/images/pacientes.png");
 }
