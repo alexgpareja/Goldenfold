@@ -56,6 +56,8 @@ app.UseHttpsRedirection();
 // Use CORS before authorization and other middlewares
 app.UseCors("AllowSpecificOrigin");
 
+app.UseAuthentication();
+
 app.UseAuthorization();
 
 app.MapControllers();
