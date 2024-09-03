@@ -6,9 +6,11 @@ using AutoMapper;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.Authorization;
 
 namespace HospitalApi.Controllers
 {
+    [Authorize(Roles = "Administrativo")]
     [ApiController]
     [Route("api/[controller]")]
     public class PacientesController : ControllerBase
