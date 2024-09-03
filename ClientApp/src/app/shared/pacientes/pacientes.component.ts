@@ -12,6 +12,7 @@ import { FormsModule } from '@angular/forms';
 })
 export class PacientesComponent implements OnInit {
   pacientes: Paciente[] = [];
+  pacientesPaginados: Paciente[] = [];
   nuevoPaciente: Paciente = {
     idPaciente: 0,
     nombre: '',
@@ -23,11 +24,21 @@ export class PacientesComponent implements OnInit {
     seguridadSocial: '',
     direccion: '',
     telefono: '',
+    email: '',
     historialMedico: ''
   };
   pacienteParaActualizar: Paciente | null = null;
 
-  constructor(private apiService: ApiService) { }
+  paginaActual: number = 1;
+  pacientesPorPagina: number = 5;
+  totalPaginas: number = 0;
+
+  filtroNombre: string = '';
+  orden: 'asc' | 'desc' = 'asc';
+  columnaOrdenada: keyof Paciente | '' = '';
+  filtro: string = '';
+
+  constructor(private apiService: ApiService) {}
 
   ngOnInit(): void {
     this.obtenerPacientes();
@@ -37,6 +48,7 @@ export class PacientesComponent implements OnInit {
     this.apiService.getPacientes().subscribe({
       next: (data: Paciente[]) => {
         this.pacientes = data;
+        this.filtrarPacientes();
       },
       error: (error: any) => {
         console.error('Error al obtener los pacientes', error);
@@ -44,10 +56,61 @@ export class PacientesComponent implements OnInit {
     });
   }
 
+  filtrarPacientes(): void {
+    let pacientesFiltrados = this.pacientes.filter(paciente =>
+      paciente.nombre.toLowerCase().includes(this.filtroNombre.toLowerCase())
+    );
+
+    if (this.columnaOrdenada) {
+      pacientesFiltrados.sort((a, b) => {
+        const valorA = a[this.columnaOrdenada as keyof Paciente];
+        const valorB = b[this.columnaOrdenada as keyof Paciente];
+
+        if (valorA < valorB) {
+          return this.orden === 'asc' ? -1 : 1;
+        }
+        if (valorA > valorB) {
+          return this.orden === 'asc' ? 1 : -1;
+        }
+        return 0;
+      });
+    }
+
+    const inicio = (this.paginaActual - 1) * this.pacientesPorPagina;
+    const fin = inicio + this.pacientesPorPagina;
+    this.pacientesPaginados = pacientesFiltrados.slice(inicio, fin);
+    this.totalPaginas = Math.ceil(pacientesFiltrados.length / this.pacientesPorPagina);
+  }
+
+  ordenar(columna: keyof Paciente): void {
+    if (this.columnaOrdenada === columna) {
+      this.orden = this.orden === 'asc' ? 'desc' : 'asc';
+    } else {
+      this.columnaOrdenada = columna;
+      this.orden = 'asc';
+    }
+    this.filtrarPacientes();
+  }
+
+  paginaAnterior(): void {
+    if (this.paginaActual > 1) {
+      this.paginaActual--;
+      this.filtrarPacientes();
+    }
+  }
+
+  paginaSiguiente(): void {
+    if (this.paginaActual < this.totalPaginas) {
+      this.paginaActual++;
+      this.filtrarPacientes();
+    }
+  }
+
   agregarPaciente(): void {
     this.apiService.addPaciente(this.nuevoPaciente).subscribe({
       next: (paciente: Paciente) => {
         this.pacientes.push(paciente);
+        this.filtrarPacientes();
         this.nuevoPaciente = {
           idPaciente: 0,
           nombre: '',
@@ -59,6 +122,7 @@ export class PacientesComponent implements OnInit {
           seguridadSocial: '',
           direccion: '',
           telefono: '',
+          email: '',
           historialMedico: ''
         };
       },
@@ -83,6 +147,7 @@ export class PacientesComponent implements OnInit {
           const index = this.pacientes.findIndex(p => p.idPaciente === pacienteActualizado.idPaciente);
           if (index !== -1) {
             this.pacientes[index] = pacienteActualizado;
+            this.filtrarPacientes();
           }
           this.pacienteParaActualizar = null;
         },
@@ -97,10 +162,16 @@ export class PacientesComponent implements OnInit {
     this.apiService.deletePaciente(id).subscribe({
       next: () => {
         this.pacientes = this.pacientes.filter(p => p.idPaciente !== id);
+        this.filtrarPacientes();
       },
       error: (error: any) => {
         console.error('Error al borrar el paciente', error);
       }
     });
+  }
+
+  aplicarFiltroNombre(filtro: string): void {
+    this.filtroNombre = filtro;
+    this.filtrarPacientes();
   }
 }

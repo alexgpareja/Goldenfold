@@ -19,6 +19,13 @@ namespace HospitalApi.Controllers
             _mapper = mapper;
         }
 
+
+        /// <summary>
+        /// Obtiene una lista del historial de altas de todos los pacientes.
+        /// </summary>
+        /// <returns>Una respuesta HTTP que contiene una lista de historiales de alta en formato <see cref="HistorialAltaDTO"/>.</returns>
+        /// <response code="200">Retorna un código HTTP 200 (OK) con una lista de historiales de alta en formato <see cref="HistorialAltaDTO"/> si se encuentran historiales de alta en la base de datos.</response>
+        /// <response code="404">Retorna un código HTTP 404 (Not Found) si no se encuentran historiales de alta en la base de datos.</response>
         // GET: api/HistorialAltas
         [HttpGet]
         public async Task<ActionResult<IEnumerable<HistorialAltaDTO>>> GetHistorialAltas()
@@ -32,7 +39,14 @@ namespace HospitalApi.Controllers
             return Ok(historialAltasDTO);
         }
 
-        // GET: api/HistorialAltas/{id}
+        /// <summary>
+        /// Obtiene un Historial de altas específico de un paciente por su número de seguridad social.
+        /// </summary>
+        /// <param name="numeroSeguridadSocial">El número de seguridad social del paciente que se desea obtener.</param>
+        /// <returns>Una respuesta HTTP que contiene el paciente en formato <see cref="PacienteDTO"/> si se encuentra en la base de datos.</returns>
+        /// <response code="200">Retorna un código HTTP 200 (OK) con el paciente en formato <see cref="PacienteDTO"/> si el paciente se encuentra en la base de datos.</response>
+        /// <response code="404">Retorna un código HTTP 404 (Not Found) si no se encuentra ningún paciente con el número de seguridad social proporcionado.</response>
+        // GET: api/HistorialAltas/{SSPaciente}
         [HttpGet("{id}")]
         public async Task<ActionResult<HistorialAltaDTO>> GetHistorialAltaById(int id)
         {

@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using HospitalApi.Models;
 using HospitalApi.DTO;
 using AutoMapper;
+using Microsoft.IdentityModel.Tokens;
 
 namespace HospitalApi.Controllers
 {
@@ -30,9 +31,11 @@ namespace HospitalApi.Controllers
         /// <response code="404">Si no se encuentra ningún usuario.</response>
         // GET: api/Usuarios
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<UsuarioDTO>>> GetUsuarios()
+        public async Task<ActionResult<IEnumerable<UsuarioDTO>>> GetUsuarios([FromQuery] string? nombre)
         {
-            var usuarios = await _context.Usuarios.ToListAsync();
+            IQueryable<Usuario> query = _context.Usuarios;
+            if (!nombre.IsNullOrEmpty()) query = query.Where(u => u.NombreUsuario.Contains(nombre!.ToLower()));
+            var usuarios = await query.ToListAsync();
             if (!usuarios.Any())
             {
                 return NotFound("No se han encontrado usuarios.");
