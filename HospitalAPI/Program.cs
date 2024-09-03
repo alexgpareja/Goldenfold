@@ -45,7 +45,7 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddAuthorization();
 
 // DbContext MariaDb
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
+builder.Services.AddDbContext<ApplicationDbContext>(options =>  
     options.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"),
                      new MySqlServerVersion(new Version(11, 4, 2))));
 

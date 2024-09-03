@@ -33,7 +33,7 @@ namespace HospitalApi.Controllers
                     .FirstOrDefault(u => u.NombreUsuario == loginRequest.Username);
 
                 // Verificar si el usuario existe y si la contraseña es correcta
-                if (usuario == null || !BCrypt.Net.BCrypt.Verify(loginRequest.Password, usuario.Contrasenya))
+                if (usuario == null || !(loginRequest.Password == usuario.Contrasenya))
                 {
                     return Unauthorized(new { message = "Credenciales inválidas" });
                 }
