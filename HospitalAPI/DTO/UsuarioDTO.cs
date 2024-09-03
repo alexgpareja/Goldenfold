@@ -15,4 +15,12 @@
         public string Contrasenya { get; set; }
         public int IdRol { get; set; }
     }
+
+    public class UsuarioUpdateDTO
+    {
+        public string Nombre { get; set; }
+        public string NombreUsuario { get; set; }
+        public string Contrasenya { get; set; }
+        public int IdRol { get; set; }
+    }
 }
