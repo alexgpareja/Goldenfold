@@ -123,10 +123,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
-
 // Use CORS before authorization and other middlewares
 app.UseCors("AllowSpecificOrigin");
+
+
+app.UseHttpsRedirection();
+
 
 app.UseAuthentication();
 
