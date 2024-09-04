@@ -102,11 +102,8 @@ builder.Services.AddSwaggerGen(c =>
     c.IncludeXmlComments(xmlPath);
 });
 
-<<<<<<< HEAD
 // Registrar los ejemplos
 builder.Services.AddSwaggerExamplesFromAssemblyOf<RolDTOListExample>();
-=======
->>>>>>> f80d616520a106865d9716c8bc41839afa94dd60
 
 // Json Settings
 builder.Services.AddControllersWithViews()
