@@ -30,10 +30,10 @@
           <td>{{ paciente.idPaciente }}</td>
           <td>{{ paciente.nombre }}</td>
           <td>{{ paciente.edad }}</td>
-          <td>{{ paciente.fechaNacimiento | date }}</td>
+          <td>{{ paciente.fechaNacimiento | date:'dd/MM/yyyy' }}</td>
           <td>{{ paciente.sintomas }}</td>
           <td>{{ paciente.estado }}</td>
-          <td>{{ paciente.fechaRegistro | date }}</td>
+          <td>{{ paciente.fechaRegistro | date:'dd/MM/yyyy HH:mm\'h\'' }}</td>
           <td>{{ paciente.seguridadSocial }}</td>
           <td>{{ paciente.direccion }}</td>
           <td>{{ paciente.telefono }}</td>
@@ -95,7 +95,7 @@
       <label for="edad">Edad:</label>
       <input type="number" id="edad" [(ngModel)]="nuevoPaciente.edad" name="edad">
       <label for="fechaNacimiento">Fecha de Nacimiento:</label>
-      <input type="text" id="fechaNacimiento" [(ngModel)]="nuevoPaciente.fechaNacimiento" name="fechaNacimiento">
+      <input type="date" id="fechaNacimiento" [(ngModel)]="nuevoPaciente.fechaNacimiento" name="fechaNacimiento">
       <label for="sintomas">Síntomas:</label>
       <input type="text" id="sintomas" [(ngModel)]="nuevoPaciente.sintomas" name="sintomas">
       <label for="estado">Estado:</label>
