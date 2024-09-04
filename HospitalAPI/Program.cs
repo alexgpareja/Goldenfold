@@ -1,7 +1,9 @@
 using HospitalApi.Mapping;
 using HospitalApi.Models;
+using HospitalApi.SwaggerExamples;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.Filters;
 using System.Reflection;
 using System.Text.Json.Serialization;
 
@@ -22,11 +24,15 @@ builder.Services.AddAutoMapper(typeof(AutoMapperProfile).Assembly);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
+    c.ExampleFilters();
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "HospitalApi", Version = "v1" });
     var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
     c.IncludeXmlComments(xmlPath);
 });
+
+// Registrar los ejemplos
+builder.Services.AddSwaggerExamplesFromAssemblyOf<RolDTOListExample>();
 
 // Json Settings
 builder.Services.AddControllersWithViews()

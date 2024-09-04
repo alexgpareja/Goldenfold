@@ -116,7 +116,7 @@ namespace HospitalApi.Controllers
         /// Un código de estado HTTP que indica el resultado de la operación de actualización.
         /// </returns>
         /// <response code="204">Indica que la actualización fue exitosa y no hay contenido que devolver.</response>
-        /// <response code="400">Si el ID proporcionado en la URL no coincide con el ID del usuario en el cuerpo de la solicitud.</response>
+        /// <response code="400">Si los datos proporcionados no son válidos.</response>
         /// <response code="404">Si no se encuentra el usuario con el ID proporcionado.</response>
         /// <response code="409">Si el nombre de usuario proporcionado ya está en uso por otro usuario o si el rol no existe.</response>
         /// <response code="500">Si ocurre un error en el servidor al procesar la solicitud.</response>
