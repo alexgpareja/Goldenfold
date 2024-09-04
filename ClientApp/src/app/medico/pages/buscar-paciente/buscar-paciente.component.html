@@ -1,0 +1,30 @@
+<div class="search-section">
+    <h2>Buscar Paciente</h2>
+    <form (submit)="searchPatient($event)" class="search-form">
+      <div class="form-group">
+        <label for="search-name">Nombre</label>
+        <input type="text" id="search-name" [(ngModel)]="searchName" name="searchName" placeholder="Nombre del paciente" required />
+      </div>
+  
+      <button type="submit" class="submit-btn">Buscar Paciente</button>
+    </form>
+  
+    <div *ngIf="errorMensaje" class="error-message">{{ errorMensaje }}</div>
+  
+    <div *ngIf="pacientesEncontrados.length > 0" class="resultados">
+      <h3>Información del Paciente</h3>
+      <div *ngFor="let paciente of pacientesEncontrados" class="paciente-info">
+        <p><strong>Nombre:</strong> {{ paciente.nombre }}</p>
+        <p><strong>Edad:</strong> {{ paciente.edad }}</p>
+        <p><strong>Fecha de Nacimiento:</strong> {{ paciente.fechaNacimiento | date: 'dd/MM/yyyy' }}</p>
+        <p><strong>Síntomas:</strong> {{ paciente.sintomas }}</p>
+        <p><strong>Estado:</strong> {{ paciente.estado }}</p>
+        <p><strong>Seguridad Social:</strong> {{ paciente.seguridadSocial }}</p>
+        <p><strong>Dirección:</strong> {{ paciente.direccion }}</p>
+        <p><strong>Teléfono:</strong> {{ paciente.telefono }}</p>
+        <p><strong>Email:</strong> {{ paciente.email }}</p>
+        <p><strong>Historial Médico:</strong> {{ paciente.historialMedico }}</p>
+      </div>
+    </div>
+  </div>
+  

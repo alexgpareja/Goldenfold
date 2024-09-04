@@ -1,0 +1,52 @@
+<div class="register-section">
+  <h2>Registro de Paciente</h2>
+  <form (submit)="registerPatient($event)" class="register-form">
+    <!-- Campos del formulario -->
+    <div class="form-group">
+      <label for="nombre">Nombre</label>
+      <input type="text" id="nombre" [(ngModel)]="nuevoPaciente.nombre" name="nombre" required placeholder="Nombre del paciente" />
+    </div>
+
+    <div class="form-group">
+      <label for="edad">Edad</label>
+      <input type="number" id="edad" [(ngModel)]="nuevoPaciente.edad" name="edad" required placeholder="Edad del paciente" />
+    </div>
+
+    <div class="form-group">
+      <label for="fecha-nacimiento">Fecha de Nacimiento</label>
+      <input type="date" id="fecha-nacimiento" [(ngModel)]="nuevoPaciente.fechaNacimiento" name="fechaNacimiento" required />
+    </div>
+
+    <div class="form-group">
+      <label for="sintomas">Síntomas</label>
+      <textarea id="sintomas" [(ngModel)]="nuevoPaciente.sintomas" name="sintomas" required placeholder="Síntomas del paciente"></textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="seguridad-social">Número de Seguridad Social</label>
+      <input type="text" id="seguridad-social" [(ngModel)]="nuevoPaciente.seguridadSocial" name="seguridadSocial" required placeholder="Número de Seguridad Social" />
+    </div>
+
+    <div class="form-group">
+      <label for="direccion">Dirección</label>
+      <input type="text" id="direccion" [(ngModel)]="nuevoPaciente.direccion" name="direccion" required placeholder="Dirección del paciente" />
+    </div>
+
+    <div class="form-group">
+      <label for="telefono">Teléfono</label>
+      <input type="text" id="telefono" [(ngModel)]="nuevoPaciente.telefono" name="telefono" required placeholder="Teléfono de contacto" />
+    </div>
+
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input type="email" id="email" [(ngModel)]="nuevoPaciente.email" name="email" required placeholder="Correo electrónico" />
+    </div>
+
+    <div class="form-group">
+      <label for="historial-medico">Historial Médico</label>
+      <textarea id="historial-medico" [(ngModel)]="nuevoPaciente.historialMedico" name="historialMedico" required placeholder="Historial médico del paciente"></textarea>
+    </div>
+
+    <button type="submit" class="submit-btn">Registrar Paciente</button>
+  </form>
+</div>
