@@ -76,7 +76,7 @@ namespace HospitalApi.Controllers
         /// <summary>
         /// Crea un nuevo usuario en la base de datos.
         /// </summary>
-        /// <param name="usuarioDTO">El objeto <see cref="UsuarioCreateDTO"/> que contiene los datos del usuario a crear.</param>
+        /// <param name="usuarioDTO">El objeto <see cref="UsuarioCreateDTO"/> que contiene los datos de la asignación a crear.</param>
         /// <returns>
         /// Un objeto <see cref="UsuarioDTO"/> que representa el usuario recién creado.
         /// </returns>
@@ -103,6 +103,7 @@ namespace HospitalApi.Controllers
             await _context.SaveChangesAsync();
 
             var usuarioDTOResult = _mapper.Map<UsuarioDTO>(usuario);
+            
             return CreatedAtAction(nameof(GetUsuario), new { id = usuarioDTOResult.IdUsuario }, usuarioDTOResult);
         }
 

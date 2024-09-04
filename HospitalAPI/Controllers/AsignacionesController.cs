@@ -38,11 +38,11 @@ namespace HospitalApi.Controllers
         public async Task<ActionResult<IEnumerable<AsignacionDTO>>> GetAsignaciones([FromQuery] int? id_paciente, [FromQuery] string? ubicacion, [FromQuery] DateTime? fecha_asignacion, [FromQuery] DateTime? fecha_liberacion, [FromQuery] int? asignado_por)
         {
             IQueryable<Asignacion> query = _context.Asignaciones;
-            if (!(id_paciente == null)) query = query.Where(u => u.IdPaciente == id_paciente);
-            if (!String.IsNullOrEmpty(ubicacion)) query = query.Where(u => u.Ubicacion.Contains(ubicacion!.ToLower()));
-            if (!(fecha_asignacion == null)) query = query.Where(u => u.FechaAsignacion == fecha_asignacion);
-            if (!(fecha_liberacion == null)) query = query.Where(u => u.FechaLiberacion == fecha_liberacion);
-            if (!(asignado_por == null)) query = query.Where(u => u.AsignadoPor == asignado_por);
+            if (!(id_paciente == null)) query = query.Where(a => a.IdPaciente == id_paciente);
+            if (!String.IsNullOrEmpty(ubicacion)) query = query.Where(a => a.Ubicacion.Contains(ubicacion!.ToLower()));
+            if (!(fecha_asignacion == null)) query = query.Where(a => a.FechaAsignacion == fecha_asignacion);
+            if (!(fecha_liberacion == null)) query = query.Where(a => a.FechaLiberacion == fecha_liberacion);
+            if (!(asignado_por == null)) query = query.Where(a => a.AsignadoPor == asignado_por);
             var asignaciones = await query.ToListAsync();
 
             if (!asignaciones.Any())
@@ -106,8 +106,12 @@ namespace HospitalApi.Controllers
          /// <summary>
         /// Actualiza una asignación existente en la base de datos.
         /// </summary>
-        /// <param name="id">El ID de la asignación que se va a actualizar.</param>
-        /// <param name="asignacionDTO">El objeto <see cref="UsuarioDTO"/> que contiene los datos actualizados de la asignación.</param>
+        /// <param name="id_paciente">Elidentificador del paciente a actualizar. Este parámetro es opcional.</param>
+        /// <param name="ubicacion">La ubicación de la asignación a actualizar. Este parámetro es opcional.</param>
+         /// <param name="fecha_asignacion">La fecha de asignación a actualizar. Este parámetro es opcional.</param>
+        /// <param name="fecha_liberacion">La fecha de liberación a actualizar. Este parámetro es opcional.</param>
+         /// <param name="asignado_por">El identificador del usuario de la asignación a actualizar. Este parámetro es opcional.</param>
+        /// <param name="AsignacionDTO">El objeto <see cref="AsignacionUpdateDTO"/> que contiene los datos actualizados de la asignación.</param>
         /// <returns>
         /// Un código de estado HTTP que indica el resultado de la operación de actualización.
         /// </returns>
@@ -131,7 +135,7 @@ namespace HospitalApi.Controllers
 
             if (!await _context.Usuarios.AnyAsync(u => u.IdUsuario == asignacionDTO.AsignadoPor))
             {
-                return Conflict("El usuario proporcionado no existe. Por favor, selecciona un usuario válido para la asignación.");
+                return Conflict("El usuario proporcionado para esta asignación no existe. Por favor, selecciona un usuario válido para la asignación.");
             }
 
             _mapper.Map(asignacionDTO, asignacionExiste);
