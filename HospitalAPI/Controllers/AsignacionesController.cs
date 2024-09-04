@@ -43,6 +43,7 @@ namespace HospitalApi.Controllers
             if (!(fecha_asignacion == null)) query = query.Where(a => a.FechaAsignacion == fecha_asignacion);
             if (!(fecha_liberacion == null)) query = query.Where(a => a.FechaLiberacion == fecha_liberacion);
             if (!(asignado_por == null)) query = query.Where(a => a.AsignadoPor == asignado_por);
+            
             var asignaciones = await query.ToListAsync();
 
             if (!asignaciones.Any())
