@@ -38,12 +38,11 @@ namespace HospitalApi.Controllers
         public async Task<ActionResult<IEnumerable<AsignacionDTO>>> GetAsignaciones([FromQuery] int? id_paciente, [FromQuery] string? ubicacion, [FromQuery] DateTime? fecha_asignacion, [FromQuery] DateTime? fecha_liberacion, [FromQuery] int? asignado_por)
         {
             IQueryable<Asignacion> query = _context.Asignaciones;
-            //if (!id_paciente.IsNullOrEmpty()) query = query.Where(u => u.IdPaciente.Contains(id_paciente!.ToLower()));
-            //if (!ubicacion.IsNullOrEmpty()) query = query.Where(u => u.Ubicacion.Contains(ubicacion!.ToLower()));
-            //if (!fecha_asignacion.IsNullOrEmpty()) query = query.Where(u => u.FechaAsignacion.Contains(fecha_asignacion!.ToLower()));
-            //if (!fecha_liberacion.IsNullOrEmpty()) query = query.Where(u => u.FechaLiberacion.Contains(fecha_liberacion!.ToLower()));
-            //if (!asignado_por.IsNullOrEmpty()) query = query.Where(u => u.AsignadorPor.Contains(asignado_por!.ToLower()));
-            
+            if (!(id_paciente == null)) query = query.Where(u => u.IdPaciente == id_paciente);
+            if (!String.IsNullOrEmpty(ubicacion)) query = query.Where(u => u.Ubicacion.Contains(ubicacion!.ToLower()));
+            if (!(fecha_asignacion == null)) query = query.Where(u => u.FechaAsignacion == fecha_asignacion);
+            if (!(fecha_liberacion == null)) query = query.Where(u => u.FechaLiberacion == fecha_liberacion);
+            if (!(asignado_por == null)) query = query.Where(u => u.AsignadoPor == asignado_por);
             var asignaciones = await query.ToListAsync();
 
             if (!asignaciones.Any())
