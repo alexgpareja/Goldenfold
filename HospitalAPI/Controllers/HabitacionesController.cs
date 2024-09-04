@@ -31,14 +31,15 @@ namespace HospitalApi.Controllers
         /// <response code="500">Si se produce un error en el servidor al procesar la solicitud.</response>
         // GET: api/Habitaciones
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<HabitacionDTO>>> GetHabitaciones([FromQuery] string? edifcio, [FromQuery] string? planta,  [FromQuery] string? numero_habitacion)
+        public async Task<ActionResult<IEnumerable<HabitacionDTO>>> GetHabitaciones([FromQuery] string? edificio, [FromQuery] string? planta,  [FromQuery] string? numero_habitacion)
         {
             IQueryable<Habitacion> query = _context.Habitaciones;
-            if (!edificio.IsNullOrEmpty()) query = query.Where(h => h.Edificio.Contains(edificio!.ToLower()));
-            if (!planta.IsNullOrEmpty()) query = query.Where(h => h.Planta.Contains(planta!.ToLower()));
-            if (!numero_habitacion.IsNullOrEmpty()) query = query.Where(h => h.NumeroHabitacion.Contains(numero_habitacion!.ToLower()));
+            if (!String.IsNullOrEmpty(edificio)) query = query.Where(h => h.Edificio.Contains(edificio!.ToLower()));
+            if (!String.IsNullOrEmpty(planta)) query = query.Where(h => h.Planta.Contains(planta!.ToLower()));
+            if (!String.IsNullOrEmpty(numero_habitacion)) query = query.Where(h => h.NumeroHabitacion.Contains(numero_habitacion!.ToLower()));
             
-            var usuarios = await query.ToListAsync();
+            var habitaciones = await query.ToListAsync();
+
             if (!habitaciones.Any())
             {
                 return NotFound("No se han encontrado habitaciones.");
@@ -96,7 +97,7 @@ namespace HospitalApi.Controllers
             _context.Habitaciones.Add(habitacion);
             await _context.SaveChangesAsync();
 
-            var habitacionDTOResult = _mapper.Map<habitacionDTO>(usuario);
+            var habitacionDTOResult = _mapper.Map<HabitacionDTO>(habitacion);
 
             return CreatedAtAction(nameof(GetHabitacion), new { id = habitacionDTOResult.IdHabitacion }, habitacionDTOResult);
         }
@@ -119,12 +120,6 @@ namespace HospitalApi.Controllers
         public async Task<IActionResult> UpdateHabitacion(int id, HabitacionUpdateDTO habitacionDTO)
         {
             var habitacionExiste = await _context.Habitaciones.FindAsync(id);
-
-            if (id != habitacionDTO.IdHabitacion)
-            {
-                return BadRequest("El ID de la habitación proporcionada no coincide con el ID en la solicitud.");
-            }
-
    
             if (habitacionExiste == null)
             {
