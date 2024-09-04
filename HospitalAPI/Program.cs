@@ -1,7 +1,9 @@
 using HospitalApi.Mapping;
 using HospitalApi.Models;
+using HospitalApi.SwaggerExamples;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.Filters;
 using System.Reflection;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -61,6 +63,7 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen(c =>
 {
+    c.ExampleFilters();
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "HospitalApi", Version = "v1" });
 
     
@@ -99,6 +102,11 @@ builder.Services.AddSwaggerGen(c =>
     c.IncludeXmlComments(xmlPath);
 });
 
+<<<<<<< HEAD
+// Registrar los ejemplos
+builder.Services.AddSwaggerExamplesFromAssemblyOf<RolDTOListExample>();
+=======
+>>>>>>> f80d616520a106865d9716c8bc41839afa94dd60
 
 // Json Settings
 builder.Services.AddControllersWithViews()
