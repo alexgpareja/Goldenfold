@@ -42,7 +42,9 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+
 builder.Services.AddAuthorization();
+
 
 // DbContext MariaDb
 builder.Services.AddDbContext<ApplicationDbContext>(options =>  
@@ -56,6 +58,7 @@ builder.Services.AddAutoMapper(typeof(AutoMapperProfile).Assembly);
 builder.Services.AddEndpointsApiExplorer();
 
 // Swagger con soporte para JWT
+
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "HospitalApi", Version = "v1" });
@@ -128,6 +131,7 @@ app.UseCors("AllowSpecificOrigin");
 app.UseAuthentication();
 
 app.UseAuthorization();
+
 
 app.MapControllers();
 
