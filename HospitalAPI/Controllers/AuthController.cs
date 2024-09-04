@@ -7,6 +7,7 @@ using HospitalApi;
 using BCrypt.Net;
 using Microsoft.EntityFrameworkCore; 
 using HospitalApi.Models;
+
 namespace HospitalApi.Controllers
 {
     [Route("api/[controller]")]
