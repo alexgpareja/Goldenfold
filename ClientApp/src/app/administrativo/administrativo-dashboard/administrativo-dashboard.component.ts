@@ -1,28 +1,39 @@
-import { Component, AfterViewInit } from '@angular/core';
-import { Chart, registerables } from 'chart.js';
+import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-
-
+import { ApiService, Paciente } from '../../services/api.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-administrativo-dashboard',
   templateUrl: './administrativo-dashboard.component.html',
   styleUrls: ['./administrativo-dashboard.component.css']
 })
-export class AdministrativoDashboardComponent implements AfterViewInit {
+export class AdministrativoDashboardComponent {
+  nuevoPaciente: Paciente = {
+    idPaciente: 0,
+    nombre: '',
+    edad: 0,
+    fechaNacimiento: new Date(),
+    sintomas: '',
+    estado: 'Pendiente de cama',
+    seguridadSocial: '',
+    direccion: '',
+    telefono: '',
+    email: '',
+    historialMedico: '',
+    fechaRegistro: new Date()
+  };
 
-  constructor(private router: Router) {
-    // Registrar todos los componentes necesarios de Chart.js
-    Chart.register(...registerables);
-  }
+  searchName: string = '';
+  pacientesEncontrados: Paciente[] = [];
+  errorMensaje: string | null = null;
+  mostrarResultados: boolean = false;
 
-  ngAfterViewInit(): void {
-    this.initializeCharts();
-  }
+  constructor(private router: Router, private apiService: ApiService) {}
 
   logout() {
     alert('Sesión cerrada');
-    this.router.navigate(["/inicio"])
+    this.router.navigate(["/inicio"]);
   }
 
   toggleSection(sectionId: string) {
@@ -34,73 +45,73 @@ export class AdministrativoDashboardComponent implements AfterViewInit {
 
   registerPatient(event: Event) {
     event.preventDefault();
-    alert('Paciente registrado');
+
+    this.apiService.addPaciente(this.nuevoPaciente).subscribe({
+      next: () => {
+        alert('Paciente registrado exitosamente');
+        this.resetForm();
+      },
+      error: (error: HttpErrorResponse) => {
+        if (error.status === 409) {
+          alert('Error: El paciente ya existe. Por favor, verifica los datos e intenta nuevamente.');
+        } else {
+          alert('Error al registrar el paciente. Por favor, inténtalo de nuevo.');
+        }
+        console.error('Error al registrar el paciente', error);
+      }
+    });
   }
 
-
-  initializeCharts() {
-    // Gráfico de Distribución de Pacientes por Estado de Salud
-    const ctx1 = document.getElementById('patientHealthStatusChart') as HTMLCanvasElement;
-    if (ctx1) {
-      new Chart(ctx1, {
-        type: 'pie',
-        data: {
-          labels: ['Crítico', 'Estable', 'En Recuperación', 'Dados de Alta'],
-          datasets: [{
-            data: [5, 20, 10, 15], // Datos de ejemplo
-            backgroundColor: [
-              'rgba(255, 99, 132, 0.2)',
-              'rgba(54, 162, 235, 0.2)',
-              'rgba(255, 206, 86, 0.2)',
-              'rgba(75, 192, 192, 0.2)'
-            ],
-            borderColor: [
-              'rgba(255, 99, 132, 1)',
-              'rgba(54, 162, 235, 1)',
-              'rgba(255, 206, 86, 1)',
-              'rgba(75, 192, 192, 1)'
-            ],
-            borderWidth: 1
-          }]
-        },
-        options: {
-          responsive: true
-        }
-      });
+  toggleSearchResults(event: Event) {
+    // Evita que el botón provoque un comportamiento predeterminado como el scroll
+    event.preventDefault();
+    
+    // Toggle la visibilidad de los resultados
+    this.mostrarResultados = !this.mostrarResultados;
+  
+    // Si se activan los resultados, realiza la búsqueda
+    if (this.mostrarResultados) {
+      this.searchPatient();
     }
+  }
 
-    // Gráfico de Admisiones y Altas Diarias
-    const ctx2 = document.getElementById('dailyAdmissionsDischargesChart') as HTMLCanvasElement;
-    if (ctx2) {
-      new Chart(ctx2, {
-        type: 'line',
-        data: {
-          labels: ['01 Jul', '02 Jul', '03 Jul', '04 Jul', '05 Jul', '06 Jul', '07 Jul'], // Fechas de ejemplo
-          datasets: [{
-            label: 'Admisiones Diarias',
-            data: [5, 10, 3, 7, 2, 8, 5], // Datos de ejemplo
-            backgroundColor: 'rgba(75, 192, 192, 0.2)',
-            borderColor: 'rgba(75, 192, 192, 1)',
-            borderWidth: 1,
-            fill: true
-          }, {
-            label: 'Altas Diarias',
-            data: [3, 5, 2, 4, 6, 1, 7], // Datos de ejemplo
-            backgroundColor: 'rgba(255, 99, 132, 0.2)',
-            borderColor: 'rgba(255, 99, 132, 1)',
-            borderWidth: 1,
-            fill: true
-          }]
-        },
-        options: {
-          responsive: true,
-          scales: {
-            y: {
-              beginAtZero: true
-            }
+  searchPatient() {
+    this.errorMensaje = null;
+    this.pacientesEncontrados = [];
+
+    if (this.searchName.trim() !== '') {
+      this.apiService.getPacienteByName(this.searchName).subscribe({
+        next: (pacientes: Paciente[]) => {
+          if (pacientes.length > 0) {
+            this.pacientesEncontrados = pacientes;
+          } else {
+            this.errorMensaje = 'No se encontraron pacientes con ese nombre.';
           }
+        },
+        error: (error: HttpErrorResponse) => {
+          this.errorMensaje = 'Error al buscar el paciente. Por favor, inténtalo de nuevo.';
+          console.error('Error al buscar el paciente', error);
         }
       });
+    } else {
+      this.errorMensaje = 'Por favor, ingresa un nombre para buscar.';
     }
+  }
+
+  resetForm() {
+    this.nuevoPaciente = {
+      idPaciente: 0,
+      nombre: '',
+      edad: 0,
+      fechaNacimiento: new Date(),
+      sintomas: '',
+      estado: 'Pendiente de cama',
+      seguridadSocial: '',
+      direccion: '',
+      telefono: '',
+      email: '',
+      historialMedico: '',
+      fechaRegistro: new Date()
+    };
   }
 }

@@ -13,17 +13,11 @@ import { ApiService, HistorialAlta } from '../../services/api.service';
 export class HistorialAltasComponent implements OnInit {
   historialAltas: HistorialAlta[] = [];
   historialAltasPaginadas: HistorialAlta[] = [];
-  nuevoHistorialAlta: HistorialAlta = {
-    idHistorial: 0,
-    idPaciente: 0,
-    fechaAlta: new Date(),
-    diagnostico: '',
-    tratamiento: ''
-  };
+  nuevoHistorialAlta: HistorialAlta = this.inicializarHistorialAlta();
   historialAltaParaActualizar: HistorialAlta | null = null;
 
   paginaActual: number = 1;
-  historialAltasPorPagina: number = 5;
+  historialAltasPorPagina: number = 8;
   totalPaginas: number = 0;
   columnaOrdenada: keyof HistorialAlta | null = null;
   orden: 'asc' | 'desc' = 'asc';
@@ -35,17 +29,31 @@ export class HistorialAltasComponent implements OnInit {
     this.obtenerHistorialAltas();
   }
 
+  inicializarHistorialAlta(): HistorialAlta {
+    return {
+      idHistorial: 0,
+      idPaciente: 0,
+      fechaAlta: new Date(),
+      diagnostico: '',
+      tratamiento: ''
+    };
+  }
+
   obtenerHistorialAltas(): void {
     this.apiService.getHistorialAltas().subscribe({
       next: (data: HistorialAlta[]) => {
         this.historialAltas = data;
-        this.totalPaginas = Math.ceil(this.historialAltas.length / this.historialAltasPorPagina);
-        this.actualizarHistorialAltasPaginados();
+        this.calcularTotalPaginasYActualizar();
       },
       error: (error: any) => {
         console.error('Error al obtener el historial de altas', error);
       }
     });
+  }
+
+  calcularTotalPaginasYActualizar(): void {
+    this.totalPaginas = Math.ceil(this.historialAltas.length / this.historialAltasPorPagina);
+    this.actualizarHistorialAltasPaginados();
   }
 
   actualizarHistorialAltasPaginados(): void {
@@ -55,52 +63,39 @@ export class HistorialAltasComponent implements OnInit {
     );
 
     if (this.columnaOrdenada) {
-      historialAltasFiltrados = historialAltasFiltrados.sort((a, b) => {
+      historialAltasFiltrados.sort((a, b) => {
         const valorA = a[this.columnaOrdenada!];
         const valorB = b[this.columnaOrdenada!];
-
-        if (valorA < valorB) {
-          return this.orden === 'asc' ? -1 : 1;
-        }
-        if (valorA > valorB) {
-          return this.orden === 'asc' ? 1 : -1;
-        }
-        return 0;
+        return (valorA < valorB ? -1 : valorA > valorB ? 1 : 0) * (this.orden === 'asc' ? 1 : -1);
       });
     }
 
     const inicio = (this.paginaActual - 1) * this.historialAltasPorPagina;
-    const fin = inicio + this.historialAltasPorPagina;
-    this.historialAltasPaginadas = historialAltasFiltrados.slice(inicio, fin);
+    this.historialAltasPaginadas = historialAltasFiltrados.slice(inicio, inicio + this.historialAltasPorPagina);
+  }
+
+  cambiarPagina(incremento: number): void {
+    const nuevaPagina = this.paginaActual + incremento;
+    if (nuevaPagina > 0 && nuevaPagina <= this.totalPaginas) {
+      this.paginaActual = nuevaPagina;
+      this.actualizarHistorialAltasPaginados();
+    }
   }
 
   paginaAnterior(): void {
-    if (this.paginaActual > 1) {
-      this.paginaActual--;
-      this.actualizarHistorialAltasPaginados();
-    }
+    this.cambiarPagina(-1);
   }
 
   paginaSiguiente(): void {
-    if (this.paginaActual < this.totalPaginas) {
-      this.paginaActual++;
-      this.actualizarHistorialAltasPaginados();
-    }
+    this.cambiarPagina(1);
   }
 
   agregarHistorialAlta(): void {
     this.apiService.addHistorialAlta(this.nuevoHistorialAlta).subscribe({
       next: (nuevoHistorialAlta: HistorialAlta) => {
         this.historialAltas.push(nuevoHistorialAlta);
-        this.totalPaginas = Math.ceil(this.historialAltas.length / this.historialAltasPorPagina);
-        this.actualizarHistorialAltasPaginados();
-        this.nuevoHistorialAlta = {
-          idHistorial: 0,
-          idPaciente: 0,
-          fechaAlta: new Date(),
-          diagnostico: '',
-          tratamiento: ''
-        };
+        this.calcularTotalPaginasYActualizar();
+        this.nuevoHistorialAlta = this.inicializarHistorialAlta();
       },
       error: (error: any) => {
         console.error('Error al agregar el historial de alta', error);
@@ -109,11 +104,9 @@ export class HistorialAltasComponent implements OnInit {
   }
 
   toggleActualizarHistorialAlta(historialAlta: HistorialAlta): void {
-    if (this.historialAltaParaActualizar && this.historialAltaParaActualizar.idHistorial === historialAlta.idHistorial) {
-      this.historialAltaParaActualizar = null;
-    } else {
-      this.historialAltaParaActualizar = { ...historialAlta };
-    }
+    this.historialAltaParaActualizar = this.historialAltaParaActualizar?.idHistorial === historialAlta.idHistorial
+      ? null
+      : { ...historialAlta };
   }
 
   actualizarHistorialAlta(): void {
@@ -123,8 +116,7 @@ export class HistorialAltasComponent implements OnInit {
           const index = this.historialAltas.findIndex(ha => ha.idHistorial === historialAltaActualizado.idHistorial);
           if (index !== -1) {
             this.historialAltas[index] = historialAltaActualizado;
-            this.totalPaginas = Math.ceil(this.historialAltas.length / this.historialAltasPorPagina);
-            this.actualizarHistorialAltasPaginados();
+            this.calcularTotalPaginasYActualizar();
           }
           this.historialAltaParaActualizar = null;
         },
@@ -139,8 +131,7 @@ export class HistorialAltasComponent implements OnInit {
     this.apiService.deleteHistorialAlta(id).subscribe({
       next: () => {
         this.historialAltas = this.historialAltas.filter(historialAlta => historialAlta.idHistorial !== id);
-        this.totalPaginas = Math.ceil(this.historialAltas.length / this.historialAltasPorPagina);
-        this.actualizarHistorialAltasPaginados();
+        this.calcularTotalPaginasYActualizar();
       },
       error: (error: any) => {
         console.error('Error al borrar el historial de alta', error);
@@ -149,12 +140,8 @@ export class HistorialAltasComponent implements OnInit {
   }
 
   ordenar(columna: keyof HistorialAlta): void {
-    if (this.columnaOrdenada === columna) {
-      this.orden = this.orden === 'asc' ? 'desc' : 'asc';
-    } else {
-      this.columnaOrdenada = columna;
-      this.orden = 'asc';
-    }
+    this.columnaOrdenada = this.columnaOrdenada === columna ? columna : columna;
+    this.orden = this.columnaOrdenada === columna && this.orden === 'asc' ? 'desc' : 'asc';
     this.actualizarHistorialAltasPaginados();
   }
 

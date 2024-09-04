@@ -85,6 +85,10 @@ export class ApiService {
     return this.http.get<Paciente>(`${this.apiUrl}/Pacientes/${id}`);
   }
 
+  getPacienteByName(name: string): Observable<Paciente[]> {
+    return this.http.get<Paciente[]>(`${this.apiUrl}/Pacientes/byname/${name}`);
+  }  
+
   addPaciente(paciente: Paciente): Observable<Paciente> {
     return this.http.post<Paciente>(`${this.apiUrl}/Pacientes`, paciente);
   }

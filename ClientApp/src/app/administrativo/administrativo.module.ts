@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { AdministrativoDashboardComponent } from './administrativo-dashboard/administrativo-dashboard.component';
 import { AdministrativoRoutingModule } from './administrativo-routing.module';
 
@@ -10,7 +11,8 @@ import { HistorialAltasComponent } from '../shared/historial-altas/historial-alt
   imports: [
     CommonModule,
     AdministrativoRoutingModule,
-    HistorialAltasComponent
+    HistorialAltasComponent,
+    FormsModule
   ],
   declarations: [
     AdministrativoDashboardComponent

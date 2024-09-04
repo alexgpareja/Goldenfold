@@ -16,8 +16,8 @@
         <tr *ngFor="let asignacion of asignaciones">
           <td>{{ asignacion.idPaciente }}</td>
           <td>{{ asignacion.ubicacion }}</td>
-          <td>{{ asignacion.fechaAsignacion | date: 'short' }}</td>
-          <td>{{ asignacion.fechaLiberacion ? (asignacion.fechaLiberacion | date: 'short') : 'N/A' }}</td>
+          <td>{{ asignacion.fechaAsignacion | date:'dd/MM/yyyy HH:mm\'h\'' }}</td>
+          <td>{{ asignacion.fechaLiberacion ? (asignacion.fechaLiberacion | date:'dd/MM/yyyy HH:mm') : 'N/A' }}</td>
           <td>{{ asignacion.asignadoPor }}</td>
           <td>
             <button (click)="toggleActualizarAsignacion(asignacion)">Actualizar</button>
@@ -30,7 +30,7 @@
               <h3>Actualizar Asignación</h3>
               <form (ngSubmit)="actualizarAsignacion()">
                 <label for="idPaciente">ID Paciente:</label>
-                <input type="number" id="idPaciente" [(ngModel)]="asignacionParaActualizar.idPaciente" name="idPaciente"
+                <input type="number" id="idPaciente" [(ngModel)]="asignacionParaActualizar.idPaciente" name="idPaciente"disabled
                   required>
                 <label for="ubicacion">Ubicación:</label>
                 <input type="text" id="ubicacion" [(ngModel)]="asignacionParaActualizar.ubicacion" name="ubicacion"
