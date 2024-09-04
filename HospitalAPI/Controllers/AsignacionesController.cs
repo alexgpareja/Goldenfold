@@ -38,11 +38,11 @@ namespace HospitalApi.Controllers
         public async Task<ActionResult<IEnumerable<AsignacionDTO>>> GetAsignaciones([FromQuery] int? id_paciente, [FromQuery] string? ubicacion, [FromQuery] DateTime? fecha_asignacion, [FromQuery] DateTime? fecha_liberacion, [FromQuery] int? asignado_por)
         {
             IQueryable<Asignacion> query = _context.Asignaciones;
-            if (!id_paciente.IsNullOrEmpty()) query = query.Where(u => u.IdPaciente.Contains(id_paciente!.ToLower()));
-            if (!ubicacion.IsNullOrEmpty()) query = query.Where(u => u.Ubicacion.Contains(ubicacion!.ToLower()));
-            if (!fecha_asignacion.IsNullOrEmpty()) query = query.Where(u => u.FechaAsignacion.Contains(fecha_asignacion!.ToLower()));
-            if (!fecha_liberacion.IsNullOrEmpty()) query = query.Where(u => u.FechaLiberacion.Contains(fecha_liberacion!.ToLower()));
-            if (!asignado_por.IsNullOrEmpty()) query = query.Where(u => u.AsignadorPor.Contains(asignado_por!.ToLower()));
+            //if (!id_paciente.IsNullOrEmpty()) query = query.Where(u => u.IdPaciente.Contains(id_paciente!.ToLower()));
+            //if (!ubicacion.IsNullOrEmpty()) query = query.Where(u => u.Ubicacion.Contains(ubicacion!.ToLower()));
+            //if (!fecha_asignacion.IsNullOrEmpty()) query = query.Where(u => u.FechaAsignacion.Contains(fecha_asignacion!.ToLower()));
+            //if (!fecha_liberacion.IsNullOrEmpty()) query = query.Where(u => u.FechaLiberacion.Contains(fecha_liberacion!.ToLower()));
+            //if (!asignado_por.IsNullOrEmpty()) query = query.Where(u => u.AsignadorPor.Contains(asignado_por!.ToLower()));
             
             var asignaciones = await query.ToListAsync();
 
@@ -90,7 +90,7 @@ namespace HospitalApi.Controllers
         [HttpPost]
         public async Task<ActionResult<AsignacionDTO>> CreateAsignacion(AsignacionCreateDTO asignacionDTO)
         {
-            if (!await _context.Usuarios.AnyAsync(u => u.IdUsuario == asignacionDTO.AsignadorPor))
+            if (!await _context.Usuarios.AnyAsync(u => u.IdUsuario == asignacionDTO.AsignadoPor))
             {
                 return Conflict("El usuario proporcionado no existe. Por favor, selecciona un usuario válido para la asignación.");
             }
@@ -100,7 +100,7 @@ namespace HospitalApi.Controllers
             _context.Asignaciones.Add(asignacion);
             await _context.SaveChangesAsync();
             
-            var asignacionDTOResult = _mapper.Map<asignacionDTO>(asignacion);
+            var asignacionDTOResult = _mapper.Map<AsignacionDTO>(asignacion);
             return CreatedAtAction(nameof(GetAsignacion), new { id = asignacionDTOResult.IdAsignacion }, asignacionDTOResult);
         }
 
@@ -129,12 +129,8 @@ namespace HospitalApi.Controllers
                 return NotFound("No se ha encontrado ninguna asignación con el ID proporcionado.");
             }
 
-            if (id != asignacionDTO.IdAsignacion)
-            {
-                return BadRequest("El ID de la asignación proporcionada no coincide con el ID en la solicitud.");
-            }
 
-            if (!await _context.Usuarios.AnyAsync(u => u.IdUsuario == asignacionDTO.AsignadorPor))
+            if (!await _context.Usuarios.AnyAsync(u => u.IdUsuario == asignacionDTO.AsignadoPor))
             {
                 return Conflict("El usuario proporcionado no existe. Por favor, selecciona un usuario válido para la asignación.");
             }
