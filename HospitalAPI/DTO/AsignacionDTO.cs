@@ -9,4 +9,23 @@
         public DateTime? FechaLiberacion { get; set; }
         public int AsignadoPor { get; set; }
     }
+
+    
+    public class AsignacionCreateDTO
+    {
+        public int IdPaciente { get; set; }
+        public string Ubicacion { get; set; }
+        public DateTime FechaAsignacion { get; set; }
+        public DateTime? FechaLiberacion { get; set; }
+        public int AsignadoPor { get; set; }
+    }
+
+    public class AsignacionUpdateDTO
+    {
+         public int IdPaciente { get; set; }
+        public string Ubicacion { get; set; }
+        public DateTime FechaAsignacion { get; set; }
+        public DateTime? FechaLiberacion { get; set; }
+        public int AsignadoPor { get; set; }
+    }
 }

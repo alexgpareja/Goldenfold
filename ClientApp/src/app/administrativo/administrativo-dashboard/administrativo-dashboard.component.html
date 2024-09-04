@@ -9,143 +9,91 @@
     </div>
   </header>
 
- <!-- <nav class="navbar">
-    <ul>
-      <li><a routerLink="pacientes" class="nav-link">Pacientes</a></li>
-      <li><a routerLink="altas" class="nav-link">Altas</a></li>
-      <li>
-        <a routerLink="asignaciones" class="nav-link"
-          >Asignaciones</a
-        >
-      </li>
-    </ul>
-  </nav> -->
-
   <div class="content">
+    <!-- Sección de registro de nuevo paciente -->
     <div class="register-section">
-      <h2>Registrar Nuevo Paciente</h2>
+      <h2>Registro Paciente</h2>
       <button class="toggle-btn" (click)="toggleSection('register-form')">
         Mostrar/Ocultar Formulario
       </button>
-      <form
-        id="register-form"
-        (submit)="registerPatient($event)"
-        style="display: none"
-      >
+      <form id="register-form" (submit)="registerPatient($event)" style="display: none">
+        <!-- Campos del formulario de registro -->
         <div class="form-group">
           <label for="nombre">Nombre</label>
-          <input
-            type="text"
-            id="nombre"
-            name="nombre"
-            required
-            placeholder="Nombre del paciente"
-          />
+          <input type="text" id="nombre" [(ngModel)]="nuevoPaciente.nombre" name="nombre" required placeholder="Nombre del paciente" />
         </div>
         <div class="form-group">
           <label for="edad">Edad</label>
-          <input
-            type="number"
-            id="edad"
-            name="edad"
-            required
-            placeholder="Edad del paciente"
-          />
+          <input type="number" id="edad" [(ngModel)]="nuevoPaciente.edad" name="edad" required placeholder="Edad del paciente" />
         </div>
         <div class="form-group">
           <label for="fecha-nacimiento">Fecha de Nacimiento</label>
-          <input
-            type="date"
-            id="fecha-nacimiento"
-            name="fecha-nacimiento"
-            required
-          />
+          <input type="date" id="fecha-nacimiento" [(ngModel)]="nuevoPaciente.fechaNacimiento" name="fechaNacimiento" required />
         </div>
         <div class="form-group">
           <label for="sintomas">Síntomas</label>
-          <textarea
-            id="sintomas"
-            name="sintomas"
-            required
-            placeholder="Síntomas del paciente"
-          ></textarea>
-        </div>
-        <div class="form-group">
-          <label for="estado">Estado</label>
-          <input
-            type="text"
-            id="estado"
-            name="estado"
-            value="Pendiente de cama"
-            required
-          />
+          <textarea id="sintomas" [(ngModel)]="nuevoPaciente.sintomas" name="sintomas" required placeholder="Síntomas del paciente"></textarea>
         </div>
         <div class="form-group">
           <label for="seguridad-social">Número de Seguridad Social</label>
-          <input
-            type="text"
-            id="seguridad-social"
-            name="seguridad-social"
-            required
-            placeholder="Número de Seguridad Social"
-          />
+          <input type="text" id="seguridad-social" [(ngModel)]="nuevoPaciente.seguridadSocial" name="seguridadSocial" required placeholder="Número de Seguridad Social" />
         </div>
         <div class="form-group">
           <label for="direccion">Dirección</label>
-          <input
-            type="text"
-            id="direccion"
-            name="direccion"
-            required
-            placeholder="Dirección del paciente"
-          />
+          <input type="text" id="direccion" [(ngModel)]="nuevoPaciente.direccion" name="direccion" required placeholder="Dirección del paciente" />
         </div>
         <div class="form-group">
           <label for="telefono">Teléfono</label>
-          <input
-            type="text"
-            id="telefono"
-            name="telefono"
-            required
-            placeholder="Teléfono de contacto"
-          />
+          <input type="text" id="telefono" [(ngModel)]="nuevoPaciente.telefono" name="telefono" required placeholder="Teléfono de contacto" />
         </div>
         <div class="form-group">
           <label for="email">Email</label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            required
-            placeholder="Correo electrónico"
-          />
+          <input type="email" id="email" [(ngModel)]="nuevoPaciente.email" name="email" required placeholder="Correo electrónico" />
         </div>
         <div class="form-group">
           <label for="historial-medico">Historial Médico</label>
-          <textarea
-            id="historial-medico"
-            name="historial-medico"
-            required
-            placeholder="Historial médico del paciente"
-          ></textarea>
+          <textarea id="historial-medico" [(ngModel)]="nuevoPaciente.historialMedico" name="historialMedico" required placeholder="Historial médico del paciente"></textarea>
         </div>
         <button type="submit" class="submit-btn">Registrar Paciente</button>
       </form>
     </div>
-    <div class="overview-section">
-      <div class="content">
-        <div class="statistics-section">
-          <h2>Estadísticas</h2>
-          <div class="charts">
-            <div class="chart-container">
-              <canvas id="patientHealthStatusChart"></canvas>
-            </div>
-            <div class="chart-container">
-              <canvas id="dailyAdmissionsDischargesChart"></canvas>
-            </div>
-          </div>
+
+    <!-- Sección de búsqueda de paciente -->
+    <div class="search-section">
+      <h2>Buscar Paciente</h2>
+      <button class="toggle-btn" (click)="toggleSection('search-form')">
+        Mostrar/Ocultar Búsqueda
+      </button>
+      <div id="search-form" style="display: none">
+        <div class="form-group">
+          <label for="search-name">Nombre</label>
+          <input type="text" id="search-name" [(ngModel)]="searchName" name="searchName" placeholder="Nombre del paciente" required />
+        </div>
+        <button type="button" class="submit-btn" (click)="toggleSearchResults($event)">Buscar Paciente</button>
+      </div>
+    
+      <!-- Mostrar mensaje de error si no se encuentran pacientes -->
+      <div *ngIf="errorMensaje" class="error-message">
+        {{ errorMensaje }}
+      </div>
+    
+      <!-- Mostrar los resultados de la búsqueda -->
+      <div *ngIf="mostrarResultados && pacientesEncontrados.length > 0">
+        <h3>Información Paciente</h3>
+        <div *ngFor="let paciente of pacientesEncontrados">
+          <p><strong>Nombre:</strong> {{ paciente.nombre }}</p>
+          <p><strong>Edad:</strong> {{ paciente.edad }}</p>
+          <p><strong>Fecha de Nacimiento:</strong> {{ paciente.fechaNacimiento | date: 'dd/MM/yyyy' }}</p>
+          <p><strong>Síntomas:</strong> {{ paciente.sintomas }}</p>
+          <p><strong>Estado:</strong> {{ paciente.estado }}</p>
+          <p><strong>Seguridad Social:</strong> {{ paciente.seguridadSocial }}</p>
+          <p><strong>Dirección:</strong> {{ paciente.direccion }}</p>
+          <p><strong>Teléfono:</strong> {{ paciente.telefono }}</p>
+          <p><strong>Email:</strong> {{ paciente.email }}</p>
+          <p><strong>Historial Médico:</strong> {{ paciente.historialMedico }}</p>
+          <hr />
         </div>
       </div>
-    </div>
+    </div>    
   </div>
 </div>

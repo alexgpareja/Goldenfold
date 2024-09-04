@@ -6,14 +6,50 @@ using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
 using System.Reflection;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
+using System.Text;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+.AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.PropertyNamingPolicy = null;
+});
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+        ValidAudience = builder.Configuration["Jwt:Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
+        RoleClaimType = ClaimTypes.Role 
+    };
+});
+
+
+builder.Services.AddAuthorization();
+
 
 // DbContext MariaDb
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
+builder.Services.AddDbContext<ApplicationDbContext>(options =>  
     options.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"),
                      new MySqlServerVersion(new Version(11, 4, 2))));
 
@@ -22,17 +58,55 @@ builder.Services.AddAutoMapper(typeof(AutoMapperProfile).Assembly);
 
 // Add Swagger
 builder.Services.AddEndpointsApiExplorer();
+
+// Swagger con soporte para JWT
+
 builder.Services.AddSwaggerGen(c =>
 {
     c.ExampleFilters();
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "HospitalApi", Version = "v1" });
+
+    
+    // Añadir configuración de seguridad JWT en Swagger
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "Ingrese el token JWT en este formato: Bearer {token}"
+    });
+    
+
+    
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
+    });
+    
+
+    // Incluir comentarios XML para la documentación de Swagger
     var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
     c.IncludeXmlComments(xmlPath);
 });
 
+<<<<<<< HEAD
 // Registrar los ejemplos
 builder.Services.AddSwaggerExamplesFromAssemblyOf<RolDTOListExample>();
+=======
+>>>>>>> f80d616520a106865d9716c8bc41839afa94dd60
 
 // Json Settings
 builder.Services.AddControllersWithViews()
@@ -44,8 +118,9 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecificOrigin",
         builder => builder.WithOrigins("http://localhost:4200")
-                          .AllowAnyMethod()
-                          .AllowAnyHeader());
+                            .AllowAnyMethod()
+                            .AllowAnyHeader()
+                            .AllowCredentials());
 });
 
 var app = builder.Build();
@@ -57,14 +132,17 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
-
 // Use CORS before authorization and other middlewares
 app.UseCors("AllowSpecificOrigin");
+
+
+app.UseHttpsRedirection();
+
 
 app.UseAuthentication();
 
 app.UseAuthorization();
+
 
 app.MapControllers();
 

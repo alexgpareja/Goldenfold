@@ -111,13 +111,13 @@ h3 {
 }
 
 .service.habitaciones .service-image {
-  background-image: url("../../assets/images/habitaciones.png");
+  background-image: url("../../assets/images/habitaciones.jpg");
 }
 
 .service.camas .service-image {
-  background-image: url("../../assets/images/camas.png");
+  background-image: url("../../assets/images/camas.jpg");
 }
 
 .service.pacientes .service-image {
-  background-image: url("../../assets/images/pacientes.png");
+  background-image: url("../../assets/images/pacientes.jpg");
 }
