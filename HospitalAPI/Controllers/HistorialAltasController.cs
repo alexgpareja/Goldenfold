@@ -35,9 +35,9 @@ namespace HospitalApi.Controllers
 
          // GET: api/HistorialAltas
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<HistorialAltaDTO>>> GetHistorialAltas([FromQuery] string? id_paciente, [FromQuery] string? diagnostico, [FromQuery] string? tratamiento)
+        public async Task<ActionResult<IEnumerable<HistorialAltaDTO>>> GetHistorialAltas([FromQuery] int? id_paciente, [FromQuery] DateTime? fecha_alta, [FromQuery] string? diagnostico, [FromQuery] string? tratamiento)
         {
-            IQueryable<HistorialAlta> query = _context.HistorialAltas;
+            IQueryable<HistorialAlta> query = _context.HistorialesAltas;
             if (!(id_paciente == null)) query = query.Where(h => h.IdPaciente == id_paciente);
             if (!(fecha_alta == null)) query = query.Where(h => h.FechaAlta == fecha_alta);
             if (!String.IsNullOrEmpty(diagnostico)) query = query.Where(h => h.Diagnostico.Contains(diagnostico!.ToLower()));
@@ -45,11 +45,11 @@ namespace HospitalApi.Controllers
            
             var historialAlta = await query.ToListAsync();
 
-            if (!historialAltas.Any())
+            if (!historialAlta.Any())
             {
                 return NotFound("No se han encontrado altas.");
             }
-            var historialAltasDTO = _mapper.Map<IEnumerable<HistorialAltaDTO>>(historialAltas);
+            var historialAltasDTO = _mapper.Map<IEnumerable<HistorialAltaDTO>>(historialAlta);
             return Ok(historialAltasDTO);
         }
 
@@ -95,7 +95,7 @@ namespace HospitalApi.Controllers
 
             await _context.SaveChangesAsync();
 
-            var historialAltaDTOResult = _mapper.Map<HistorialAltaDTO>(historial);
+            var historialAltaDTOResult = _mapper.Map<HistorialAltaDTO>(historialAlta);
 
             return CreatedAtAction(nameof(GetHistorialAltas), new { id = historialAltaDTOResult.IdHistorial }, historialAltaDTOResult);
         }
@@ -121,11 +121,6 @@ namespace HospitalApi.Controllers
         {
             
             var historialAltaExiste = await _context.HistorialesAltas.FindAsync(id);
-
-            if (id != historialAltaDTO.IdHistorial)
-            {
-                return BadRequest("El ID del historial proporcionado no coincide con el ID en la solicitud.");
-            }
 
             if (historialAltaExiste == null)
             {
