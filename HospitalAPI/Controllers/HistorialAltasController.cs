@@ -54,7 +54,7 @@ namespace HospitalApi.Controllers
         }
 
         /// <summary>
-        /// Obtiene un Historial de altas específico de un paciente por su número de seguridad social.
+        /// Obtiene un historial de altas específico de un paciente por su número de seguridad social.
         /// </summary>
         /// <param name="id_historial">El identificador del historial de alta que se desea obtener.</param>
         /// <returns>Una respuesta HTTP que contiene el historial de alta en formato <see cref="HistorialAltaDTO"/> si se encuentra en la base de datos.</returns>

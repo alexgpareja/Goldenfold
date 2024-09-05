@@ -1,0 +1,36 @@
+.dashboard-layout {
+  display: flex;
+  height: 100vh; /* Asegura que el layout ocupe toda la altura de la pantalla */
+}
+
+.sidebar {
+  width: 200px;
+  background-color: #f4f4f4;
+  padding: 20px;
+  padding-top: 70px;
+  height: 100%; /* Ocupa toda la altura de la pantalla */
+}
+
+.content {
+  flex-grow: 1;
+  padding: 20px;
+}
+
+.sidebar ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.sidebar ul li {
+  margin-bottom: 10px;
+}
+
+.sidebar ul li a {
+  text-decoration: none;
+  color: #333;
+}
+
+.sidebar ul li a.active {
+  font-weight: bold;
+  color: #007bff;
+}
