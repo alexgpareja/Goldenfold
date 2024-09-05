@@ -4,6 +4,8 @@ using HospitalApi.Models;
 using HospitalApi.DTO;
 using AutoMapper;
 using Microsoft.IdentityModel.Tokens;
+using Swashbuckle.AspNetCore.Filters;
+using HospitalApi.SwaggerExamples;
 
 namespace HospitalApi.Controllers
 {
@@ -79,6 +81,11 @@ namespace HospitalApi.Controllers
         /// <response code="409">Indica que ya existe un rol con el mismo nombre.</response>
         /// <response code="500">Si se produce un error en el servidor al procesar la solicitud.</response>
         [HttpPost]
+        [ProducesResponseType(typeof(RolDTO), 201)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(409)]
+        [ProducesResponseType(500)]
+        [SwaggerResponseExample(201, typeof(RolDTOExample))]
         public async Task<ActionResult<RolDTO>> CreateRol(RolCreateDTO rolDTO)
         {
             if (await _context.Roles.AnyAsync(r => r.NombreRol == rolDTO.NombreRol))

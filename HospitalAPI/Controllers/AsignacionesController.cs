@@ -19,14 +19,14 @@ namespace HospitalApi.Controllers
             _mapper = mapper;
         }
 
-                /// <summary>
+        /// <summary>
         /// Obtiene una lista de asignaciones basada en los parámetros de búsqueda opcionales.
         /// </summary>
-        /// <param name="id_paciente">Elidentificador del paciente a buscar. Este parámetro es opcional.</param>
+        /// <param name="id_paciente">El identificador del paciente a buscar. Este parámetro es opcional.</param>
         /// <param name="ubicacion">La ubicación de la asignación a buscar. Este parámetro es opcional.</param>
-         /// <param name="fecha_asignacion">La fecha de asignación a buscar. Este parámetro es opcional.</param>
+        /// <param name="fecha_asignacion">La fecha de asignación a buscar. Este parámetro es opcional.</param>
         /// <param name="fecha_liberacion">La fecha de liberación a buscar. Este parámetro es opcional.</param>
-         /// <param name="asignado_por">El identificador del usuario de la asignación a buscar. Este parámetro es opcional.</param>
+        /// <param name="asignado_por">El identificador del usuario de la asignación a buscar. Este parámetro es opcional.</param>
         /// <returns>
         /// Una lista de objetos <see cref="AsignacionDTO"/> que representan las asignaciones encontradas.
         /// </returns>
