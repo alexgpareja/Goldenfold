@@ -2,11 +2,11 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-medico-dashboard',
-  templateUrl: './medico-dashboard.component.html',
-  styleUrls: ['./medico-dashboard.component.css']
+  selector: 'app-controlador-camas-dashboard',
+  templateUrl: './controlador-camas-dashboard.component.html',
+  styleUrls: ['./controlador-camas-dashboard.component.css']
 })
-export class MedicoDashboardComponent {
+export class ControladorCamasDashboardComponent {
   constructor(private router: Router) {}
 
   logout() {
