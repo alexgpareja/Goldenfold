@@ -8,7 +8,6 @@ import { GestionUsuariosComponent } from './pages/gestion-usuarios/gestion-usuar
 import { GestionRolesComponent } from './pages/gestion-roles/gestion-roles.component';
 import { AuditoriaActividadesComponent } from './pages/auditoria-actividades/auditoria-actividades.component';
 import { GestionPermisosComponent } from './pages/gestion-permisos/gestion-permisos.component';
-import { BackupRestauracionComponent } from './pages/backup-restauracion/backup-restauracion.component';
 import { MonitorizacionSistemaComponent } from './pages/monitorizacion-sistema/monitorizacion-sistema.component';
 import { GestionCuentasPacientesComponent } from './pages/gestion-cuentas-pacientes/gestion-cuentas-pacientes.component';
 import { ConfiguracionSistemaComponent } from './pages/configuracion-sistema/configuracion-sistema.component';
@@ -27,7 +26,6 @@ import { ConfiguracionSeguridadComponent } from './pages/configuracion-seguridad
     GestionRolesComponent,
     AuditoriaActividadesComponent,
     GestionPermisosComponent,
-    BackupRestauracionComponent,
     MonitorizacionSistemaComponent,
     GestionCuentasPacientesComponent,
     ConfiguracionSistemaComponent,

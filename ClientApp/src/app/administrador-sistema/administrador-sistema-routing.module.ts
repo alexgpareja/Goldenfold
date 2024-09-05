@@ -6,7 +6,6 @@ import { GestionUsuariosComponent } from './pages/gestion-usuarios/gestion-usuar
 import { GestionRolesComponent } from './pages/gestion-roles/gestion-roles.component';
 import { AuditoriaActividadesComponent } from './pages/auditoria-actividades/auditoria-actividades.component';
 import { GestionPermisosComponent } from './pages/gestion-permisos/gestion-permisos.component';
-import { BackupRestauracionComponent } from './pages/backup-restauracion/backup-restauracion.component';
 import { MonitorizacionSistemaComponent } from './pages/monitorizacion-sistema/monitorizacion-sistema.component';
 import { GestionCuentasPacientesComponent } from './pages/gestion-cuentas-pacientes/gestion-cuentas-pacientes.component';
 import { ConfiguracionSistemaComponent } from './pages/configuracion-sistema/configuracion-sistema.component';
@@ -27,7 +26,6 @@ const routes: Routes = [
       { path: 'gestion-roles', component: GestionRolesComponent },
       { path: 'auditoria-actividades', component: AuditoriaActividadesComponent },
       { path: 'gestion-permisos', component: GestionPermisosComponent },
-      { path: 'backup-restauracion', component: BackupRestauracionComponent },
       { path: 'monitorizacion-sistema', component: MonitorizacionSistemaComponent },
       { path: 'gestion-cuentas-pacientes', component: GestionCuentasPacientesComponent },
       { path: 'configuracion-sistema', component: ConfiguracionSistemaComponent },
