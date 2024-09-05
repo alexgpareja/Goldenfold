@@ -34,3 +34,9 @@
   font-weight: bold;
   color: #007bff;
 }
+
+.sidebar ul li a {
+  position: relative;
+  display: inline-block;
+}
+

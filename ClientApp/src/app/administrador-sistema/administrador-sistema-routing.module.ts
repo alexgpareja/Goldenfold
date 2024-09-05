@@ -1,29 +1,43 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AdministradorSistemaDashboardComponent } from './pages/administrador-sistema-dashboard/administrador-sistema-dashboard.component';
-import { PacientesComponent } from '../shared/pacientes/pacientes.component';
-import { HistorialAltasComponent } from '../shared/historial-altas/historial-altas.component';
-import { AsignacionesComponent } from '../shared/asignaciones/asignaciones.component';
-import { RolesComponent } from '../shared/roles/roles.component';
-import { UsuariosComponent } from '../shared/usuarios/usuarios.component';
-import { HabitacionesComponent } from '../shared/habitaciones/habitaciones.component';
-import { CamasComponent } from '../shared/camas/camas.component';
-import { AdministradorSistemaInicioComponent } from './pages/administrador-sistema-inicio/administrador-sistema-inicio.component'; // Componente de inicio para administrador
+import { AdministradorSistemaInicioComponent } from './pages/administrador-sistema-inicio/administrador-sistema-inicio.component';
+import { GestionUsuariosComponent } from './pages/gestion-usuarios/gestion-usuarios.component';
+import { GestionRolesComponent } from './pages/gestion-roles/gestion-roles.component';
+import { AuditoriaActividadesComponent } from './pages/auditoria-actividades/auditoria-actividades.component';
+import { GestionPermisosComponent } from './pages/gestion-permisos/gestion-permisos.component';
+import { BackupRestauracionComponent } from './pages/backup-restauracion/backup-restauracion.component';
+import { MonitorizacionSistemaComponent } from './pages/monitorizacion-sistema/monitorizacion-sistema.component';
+import { GestionCuentasPacientesComponent } from './pages/gestion-cuentas-pacientes/gestion-cuentas-pacientes.component';
+import { ConfiguracionSistemaComponent } from './pages/configuracion-sistema/configuracion-sistema.component';
+import { NotificacionesAlertasSistemaComponent } from './pages/notificaciones-alertas-sistema/notificaciones-alertas-sistema.component';
+import { LogsAccesoErroresComponent } from './pages/logs-acceso-errores/logs-acceso-errores.component';
+import { EstadisticasUsoComponent } from './pages/estadisticas-uso/estadisticas-uso.component';
+import { GestionMantenimientoComponent } from './pages/gestion-mantenimiento/gestion-mantenimiento.component';
+import { GestionNotificacionesGlobalesComponent } from './pages/gestion-notificaciones-globales/gestion-notificaciones-globales.component';
+import { ConfiguracionSeguridadComponent } from './pages/configuracion-seguridad/configuracion-seguridad.component';
 
 const routes: Routes = [
   {
     path: '',
-    component: AdministradorSistemaDashboardComponent, // Dashboard principal con sidebar
+    component: AdministradorSistemaDashboardComponent,  // Dashboard principal con sidebar
     children: [
-      { path: 'administrador-inicio', component: AdministradorSistemaInicioComponent }, // Página de inicio del administrador
-      { path: 'pacientes', component: PacientesComponent },
-      { path: 'altas', component: HistorialAltasComponent },
-      { path: 'asignaciones', component: AsignacionesComponent },
-      { path: 'roles', component: RolesComponent },
-      { path: 'usuarios', component: UsuariosComponent },
-      { path: 'habitaciones', component: HabitacionesComponent },
-      { path: 'camas', component: CamasComponent },
-      { path: '', redirectTo: 'administrador-inicio', pathMatch: 'full' }, // Redirigir a la página de inicio del administrador
+      { path: 'gestion-usuarios', component: GestionUsuariosComponent },
+      {path: 'administrador-sistema-inicio', component: AdministradorSistemaInicioComponent },
+      { path: 'gestion-roles', component: GestionRolesComponent },
+      { path: 'auditoria-actividades', component: AuditoriaActividadesComponent },
+      { path: 'gestion-permisos', component: GestionPermisosComponent },
+      { path: 'backup-restauracion', component: BackupRestauracionComponent },
+      { path: 'monitorizacion-sistema', component: MonitorizacionSistemaComponent },
+      { path: 'gestion-cuentas-pacientes', component: GestionCuentasPacientesComponent },
+      { path: 'configuracion-sistema', component: ConfiguracionSistemaComponent },
+      { path: 'notificaciones-alertas-sistema', component: NotificacionesAlertasSistemaComponent },
+      { path: 'logs-acceso-errores', component: LogsAccesoErroresComponent },
+      { path: 'estadisticas-uso', component: EstadisticasUsoComponent },
+      { path: 'gestion-mantenimiento', component: GestionMantenimientoComponent },
+      { path: 'gestion-notificaciones-globales', component: GestionNotificacionesGlobalesComponent },
+      { path: 'configuracion-seguridad', component: ConfiguracionSeguridadComponent },
+      { path: '', redirectTo: 'administrador-sistema-inicio', pathMatch: 'full' }
     ]
   }
 ];
