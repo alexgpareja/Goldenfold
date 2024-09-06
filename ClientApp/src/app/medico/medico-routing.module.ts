@@ -29,7 +29,7 @@ const routes: Routes = [
       { path: 'ver-resultados-pruebas', component: VerResultadosPruebasComponent },
       { path: 'seguimiento-pacientes', component: SeguimientoPacientesComponent },
       { path: 'revisar-ingresos-pendientes', component: RevisarIngresosPendientesComponent },
-      { path: '', redirectTo: 'evaluar-paciente', pathMatch: 'full' }, // Página por defecto
+      { path: '', redirectTo: 'medico-inicio', pathMatch: 'full' }, // Página por defecto
     ]
   }
 ];

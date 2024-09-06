@@ -1,6 +1,6 @@
 // src/app/services/api.service.ts
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 // Definición de la interfaz Paciente
@@ -77,9 +77,17 @@ export class ApiService {
   constructor(private http: HttpClient) { }
 
   // CRUD para Pacientes
-  getPacientes(): Observable<Paciente[]> {
-    return this.http.get<Paciente[]>(`${this.apiUrl}/Pacientes`);
+  getPacientes(nombre?: string, numSS?: string): Observable<Paciente[]> {
+    let params = new HttpParams();
+    if (nombre) {
+      params = params.set('nombre', nombre);
+    }
+    if (numSS) {
+      params = params.set('numSS', numSS);
+    }
+    return this.http.get<Paciente[]>(`${this.apiUrl}/Pacientes`, { params });
   }
+
 
   getPacienteById(id: number): Observable<Paciente> {
     return this.http.get<Paciente>(`${this.apiUrl}/Pacientes/${id}`);

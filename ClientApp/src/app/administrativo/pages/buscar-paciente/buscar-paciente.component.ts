@@ -9,6 +9,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 })
 export class BuscarPacienteComponent {
   searchName: string = '';
+  searchSS: string = ''; // Nueva variable para buscar por seguridad social
   pacientesEncontrados: Paciente[] = [];
   errorMensaje: string | null = null;
 
@@ -19,13 +20,14 @@ export class BuscarPacienteComponent {
     this.errorMensaje = null;
     this.pacientesEncontrados = [];
 
-    if (this.searchName.trim() !== '') {
-      this.apiService.getPacienteByName(this.searchName).subscribe({
+    // Llamar al servicio con los parámetros adecuados
+    if (this.searchName.trim() !== '' || this.searchSS.trim() !== '') {
+      this.apiService.getPacientes(this.searchName, this.searchSS).subscribe({
         next: (pacientes: Paciente[]) => {
           if (pacientes.length > 0) {
             this.pacientesEncontrados = pacientes;
           } else {
-            this.errorMensaje = 'No se encontraron pacientes con ese nombre.';
+            this.errorMensaje = 'No se encontraron pacientes que coincidan con los criterios de búsqueda.';
           }
         },
         error: (error: HttpErrorResponse) => {
@@ -33,7 +35,7 @@ export class BuscarPacienteComponent {
         }
       });
     } else {
-      this.errorMensaje = 'Por favor, ingresa un nombre para buscar.';
+      this.errorMensaje = 'Por favor, ingresa al menos un criterio de búsqueda.';
     }
   }
 }

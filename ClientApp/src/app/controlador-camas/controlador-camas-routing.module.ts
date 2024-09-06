@@ -25,7 +25,7 @@ const routes: Routes = [
       { path: 'historial-movimientos-camas', component: HistorialMovimientosCamasComponent },
       { path: 'camas-mantenimiento', component: CamasMantenimientoComponent },
       { path: 'asignar-prioridades', component: AsignarPrioridadesComponent },
-      { path: '', redirectTo: 'asignar-cama', pathMatch: 'full' },  // Página por defecto
+      { path: '', redirectTo: 'controlador-camas-inicio', pathMatch: 'full' },  // Página por defecto
     ]
   }
 ];
