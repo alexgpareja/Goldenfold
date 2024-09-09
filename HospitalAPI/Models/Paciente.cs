@@ -54,11 +54,13 @@ namespace HospitalApi
         public string HistorialMedico { get; set; }
 
         [Column("fecha_nacimiento")]
-        public DateTime FechaNacimiento { get; set; } 
+        public DateTime FechaNacimiento { get; set; }
 
         // Propiedades de navegación
         public ICollection<HistorialAlta> HistorialAltas { get; set; }
         public ICollection<Asignacion> Asignaciones { get; set; }
+        public ICollection<Consulta> Consultas { get; set; } = new List<Consulta>();
+        public ICollection<Ingreso> Ingresos { get; set; } = new List<Ingreso>();
 
         // Constructor
         public Paciente()
@@ -66,6 +68,8 @@ namespace HospitalApi
             FechaRegistro = DateTime.Now;
             HistorialAltas = new List<HistorialAlta>();
             Asignaciones = new List<Asignacion>();
+            Consultas = new List<Consulta>();
+            Ingresos = new List<Ingreso>();
         }
     }
 }

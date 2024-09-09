@@ -31,5 +31,12 @@ public class Usuario
     // Propiedades de navegación
     public Rol Rol { get; set; }
     public ICollection<Asignacion> Asignaciones { get; set; }
+    public ICollection<Consulta> Consultas { get; set; } = new List<Consulta>();
+    public ICollection<Ingreso> Ingresos { get; set; } = new List<Ingreso>();
 
+    public Usuario()
+    {
+        Consultas = new List<Consulta>();
+        Ingresos = new List<Ingreso>();
+    }
 }

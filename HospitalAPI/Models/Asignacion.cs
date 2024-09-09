@@ -33,5 +33,10 @@ public class Asignacion
     public Paciente Paciente { get; set; }
     public Cama Cama { get; set; }
     public Usuario Usuario { get; set; }
+    public ICollection<Ingreso> Ingresos { get; set; } = new List<Ingreso>();
 
+    public Asignacion()
+    {
+        Ingresos = new List<Ingreso>();
+    }
 }

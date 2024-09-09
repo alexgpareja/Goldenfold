@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using HospitalApi.Models;
 using HospitalApi.DTO;
-using HospitalApi;
 
 namespace HospitalApi.Mapping
 {
@@ -13,7 +12,6 @@ namespace HospitalApi.Mapping
             CreateMap<Paciente, PacienteDTO>().ReverseMap();
             CreateMap<Paciente, PacienteCreateDTO>().ReverseMap();
             CreateMap<Paciente, PacienteUpdateDTO>().ReverseMap();
-
 
             // Cama mappings
             CreateMap<Cama, CamaDTO>().ReverseMap();
@@ -34,18 +32,26 @@ namespace HospitalApi.Mapping
             CreateMap<HistorialAlta, HistorialAltaDTO>().ReverseMap();
             CreateMap<HistorialAlta, HistorialAltaCreateDTO>().ReverseMap();
             CreateMap<HistorialAlta, HistorialAltaUpdateDTO>().ReverseMap();
+
             // Usuario mappings
             CreateMap<Usuario, UsuarioDTO>().ReverseMap();
             CreateMap<Usuario, UsuarioCreateDTO>().ReverseMap();
             CreateMap<Usuario, UsuarioUpdateDTO>().ReverseMap();
-
 
             // Rol mappings
             CreateMap<Rol, RolDTO>().ReverseMap();
             CreateMap<Rol, RolCreateDTO>().ReverseMap();
             CreateMap<Rol, RolUpdateDTO>().ReverseMap();
 
+            // Consulta mappings
+            CreateMap<Consulta, ConsultaDTO>().ReverseMap();
+            CreateMap<Consulta, ConsultaCreateDTO>().ReverseMap();
+            CreateMap<Consulta, ConsultaUpdateDTO>().ReverseMap();
 
+            // Ingreso mappings
+            CreateMap<Ingreso, IngresoDTO>().ReverseMap();
+            CreateMap<Ingreso, IngresoCreateDTO>().ReverseMap();
+            CreateMap<Ingreso, IngresoUpdateDTO>().ReverseMap();
         }
     }
 }
