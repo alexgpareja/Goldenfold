@@ -19,6 +19,7 @@ export interface Paciente {
   historialMedico: string;
 }
 
+
 // Definición de la interfaz HistorialAlta
 export interface HistorialAlta {
   idHistorial: number;
@@ -79,24 +80,17 @@ export class ApiService {
   // CRUD para Pacientes
   getPacientes(nombre?: string, numSS?: string): Observable<Paciente[]> {
     let params = new HttpParams();
+
     if (nombre) {
       params = params.set('nombre', nombre);
     }
+
     if (numSS) {
       params = params.set('numSS', numSS);
     }
+
     return this.http.get<Paciente[]>(`${this.apiUrl}/Pacientes`, { params });
   }
-
-
-  getPacienteById(id: number): Observable<Paciente> {
-    return this.http.get<Paciente>(`${this.apiUrl}/Pacientes/${id}`);
-  }
-
-  getPacienteByName(name: string): Observable<Paciente[]> {
-    return this.http.get<Paciente[]>(`${this.apiUrl}/Pacientes/byname/${name}`);
-  }  
-
   addPaciente(paciente: Paciente): Observable<Paciente> {
     return this.http.post<Paciente>(`${this.apiUrl}/Pacientes`, paciente);
   }

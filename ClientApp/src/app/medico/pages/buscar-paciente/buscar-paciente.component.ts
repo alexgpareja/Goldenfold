@@ -20,7 +20,7 @@ export class BuscarPacienteComponent {
     this.pacientesEncontrados = [];
 
     if (this.searchName.trim() !== '') {
-      this.apiService.getPacienteByName(this.searchName).subscribe({
+      this.apiService.getPacientes(this.searchName).subscribe({
         next: (pacientes: Paciente[]) => {
           if (pacientes.length > 0) {
             this.pacientesEncontrados = pacientes;

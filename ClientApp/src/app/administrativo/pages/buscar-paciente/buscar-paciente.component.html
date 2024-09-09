@@ -3,12 +3,9 @@
   <form (submit)="searchPatient($event)" class="search-form">
     <div class="form-group">
       <label for="search-name">Nombre</label>
-      <input type="text" id="search-name" [(ngModel)]="searchName" name="searchName" placeholder="Nombre del paciente" />
+      <input type="text" id="search-name" [(ngModel)]="searchName" name="searchName" placeholder="Nombre del paciente" required />
     </div>
-    <div class="form-group">
-      <label for="search-ss">Número de Seguridad Social</label>
-      <input type="text" id="search-ss" [(ngModel)]="searchSS" name="searchSS" placeholder="Número de Seguridad Social" />
-    </div>
+
     <button type="submit" class="submit-btn">Buscar Paciente</button>
   </form>
 
@@ -32,4 +29,3 @@
     </div>
   </div>
 </div>
-
