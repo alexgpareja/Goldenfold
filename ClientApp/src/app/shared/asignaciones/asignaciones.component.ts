@@ -13,12 +13,12 @@ import { ApiService, Asignacion } from '../../services/api.service';
 export class AsignacionesComponent implements OnInit {
   asignaciones: Asignacion[] = [];
   nuevaAsignacion: Asignacion = {
-    idAsignacion: 0,
-    idPaciente: 0,
-    ubicacion: '',
-    fechaAsignacion: new Date(),
-    fechaLiberacion: new Date(),
-    asignadoPor: 0
+    IdAsignacion: 0,
+    IdPaciente: 0,
+    Ubicacion: '',
+    FechaAsignacion: new Date(),
+    FechaLiberacion: new Date(),
+    AsignadoPor: 0
   };
   asignacionParaActualizar: Asignacion | null = null;
 
@@ -44,12 +44,12 @@ export class AsignacionesComponent implements OnInit {
       next: (nuevaAsignacion: Asignacion) => {
         this.asignaciones.push(nuevaAsignacion);
         this.nuevaAsignacion = {
-          idAsignacion: 0,
-          idPaciente: 0,
-          ubicacion: '',
-          fechaAsignacion: new Date(),
-          fechaLiberacion: new Date(),
-          asignadoPor: 0
+          IdAsignacion: 0,
+          IdPaciente: 0,
+          Ubicacion: '',
+          FechaAsignacion: new Date(),
+          FechaLiberacion: new Date(),
+          AsignadoPor: 0
         };
       },
       error: (error: any) => {
@@ -62,7 +62,7 @@ export class AsignacionesComponent implements OnInit {
     if (this.asignacionParaActualizar) {
       this.apiService.updateAsignacion(this.asignacionParaActualizar).subscribe({
         next: (asignacionActualizada: Asignacion) => {
-          const index = this.asignaciones.findIndex(a => a.idAsignacion === asignacionActualizada.idAsignacion);
+          const index = this.asignaciones.findIndex(a => a.IdAsignacion === asignacionActualizada.IdAsignacion);
           if (index !== -1) {
             this.asignaciones[index] = asignacionActualizada;
           }
@@ -78,7 +78,7 @@ export class AsignacionesComponent implements OnInit {
   borrarAsignacion(id: number): void {
     this.apiService.deleteAsignacion(id).subscribe({
       next: () => {
-        this.asignaciones = this.asignaciones.filter(a => a.idAsignacion !== id);
+        this.asignaciones = this.asignaciones.filter(a => a.IdAsignacion !== id);
       },
       error: (error: any) => {
         console.error('Error al borrar la asignación', error);

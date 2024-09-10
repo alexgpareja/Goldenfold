@@ -130,7 +130,7 @@ export class ApiService {
   }
 
   updateConsulta(consulta: Consulta): Observable<Consulta> {
-    return this.http.put<Consulta>(`${this.apiUrl}/Consultas/${consulta.idConsulta}`, consulta);
+    return this.http.put<Consulta>(`${this.apiUrl}/Consultas/${consulta.IdConsulta}`, consulta);
   }
 
   deleteConsulta(id?: number, estado?: string): Observable<void> {
@@ -158,7 +158,7 @@ export class ApiService {
   }
 
   updateIngreso(ingreso: Ingreso): Observable<Ingreso> {
-    return this.http.put<Ingreso>(`${this.apiUrl}/Ingresos/${ingreso.idIngreso}`, ingreso);
+    return this.http.put<Ingreso>(`${this.apiUrl}/Ingresos/${ingreso.IdIngreso}`, ingreso);
   }
 
   deleteIngreso(id?: number, estado?: string): Observable<void> {
@@ -184,7 +184,7 @@ export class ApiService {
   }
 
   updateAsignacion(asignacion: Asignacion): Observable<Asignacion> {
-    return this.http.put<Asignacion>(`${this.apiUrl}/Asignaciones/${asignacion.idAsignacion}`, asignacion);
+    return this.http.put<Asignacion>(`${this.apiUrl}/Asignaciones/${asignacion.IdAsignacion}`, asignacion);
   }
 
   deleteAsignacion(id?: number): Observable<void> {
@@ -209,7 +209,7 @@ export class ApiService {
   }
 
   updateHistorialAlta(historialAlta: HistorialAlta): Observable<HistorialAlta> {
-    return this.http.put<HistorialAlta>(`${this.apiUrl}/HistorialAltas/${historialAlta.idHistorial}`, historialAlta);
+    return this.http.put<HistorialAlta>(`${this.apiUrl}/HistorialAltas/${historialAlta.IdHistorial}`, historialAlta);
   }
 
   deleteHistorialAlta(id?: number): Observable<void> {
@@ -234,7 +234,7 @@ export class ApiService {
   }
 
   updateUsuario(usuario: Usuario): Observable<Usuario> {
-    return this.http.put<Usuario>(`${this.apiUrl}/Usuarios/${usuario.idUsuario}`, usuario);
+    return this.http.put<Usuario>(`${this.apiUrl}/Usuarios/${usuario.IdUsuario}`, usuario);
   }
 
   deleteUsuario(id?: number, nombre?: string): Observable<void> {
@@ -257,7 +257,7 @@ export class ApiService {
   }
 
   updateCama(cama: Cama): Observable<Cama> {
-    return this.http.put<Cama>(`${this.apiUrl}/Camas/${cama.ubicacion}`, cama);
+    return this.http.put<Cama>(`${this.apiUrl}/Camas/${cama.Ubicacion}`, cama);
   }
 
   deleteCama(ubicacion?: string): Observable<void> {
@@ -279,7 +279,7 @@ export class ApiService {
   }
 
   updateHabitacion(habitacion: Habitacion): Observable<Habitacion> {
-    return this.http.put<Habitacion>(`${this.apiUrl}/Habitaciones/${habitacion.idHabitacion}`, habitacion);
+    return this.http.put<Habitacion>(`${this.apiUrl}/Habitaciones/${habitacion.IdHabitacion}`, habitacion);
   }
 
   deleteHabitacion(id?: number): Observable<void> {
@@ -300,7 +300,7 @@ export class ApiService {
   }
 
   updateRol(rol: Rol): Observable<Rol> {
-    return this.http.put<Rol>(`${this.apiUrl}/Roles/${rol.idRol}`, rol);
+    return this.http.put<Rol>(`${this.apiUrl}/Roles/${rol.IdRol}`, rol);
   }
 
   deleteRol(id?: number): Observable<void> {
