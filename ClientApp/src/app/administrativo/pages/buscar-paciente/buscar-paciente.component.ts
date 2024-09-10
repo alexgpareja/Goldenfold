@@ -23,7 +23,6 @@ export class BuscarPacienteComponent {
       this.apiService.getPacientes(this.searchName).subscribe({
         next: (pacientes: Paciente[]) => {
           if (pacientes.length > 0) {
-            // Aquí transformamos los datos a minúsculas
             this.pacientesEncontrados = pacientes.map(paciente => this.transformarPropiedadesAMinusculas(paciente));
             console.log(this.pacientesEncontrados);
           } else {
@@ -39,12 +38,32 @@ export class BuscarPacienteComponent {
     }
   }
 
-  // Función para convertir las claves del objeto a minúsculas
   transformarPropiedadesAMinusculas(paciente: any): any {
     const pacienteConMinusculas: any = {};
     Object.keys(paciente).forEach(key => {
       pacienteConMinusculas[key.toLowerCase()] = paciente[key];
     });
     return pacienteConMinusculas;
+  }
+
+  editPatient(paciente: Paciente) {
+    // Lógica para editar paciente
+    // Por ejemplo, podrías redirigir a un formulario de edición con el paciente seleccionado
+    console.log('Editando paciente:', paciente);
+  }
+
+  deletePatient(pacienteId: number) {
+    if (confirm('¿Estás seguro de que deseas eliminar este paciente?')) {
+      this.apiService.deletePaciente(pacienteId).subscribe({
+        next: () => {
+          // Elimina el paciente de la lista
+          this.pacientesEncontrados = this.pacientesEncontrados.filter(paciente => paciente.idPaciente !== pacienteId);
+          alert('Paciente eliminado con éxito.');
+        },
+        error: (error: HttpErrorResponse) => {
+          this.errorMensaje = 'Error al eliminar el paciente. Por favor, inténtalo de nuevo.';
+        }
+      });
+    }
   }
 }

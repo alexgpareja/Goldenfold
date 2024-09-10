@@ -15,17 +15,23 @@
   <!-- Mostrar los resultados si se encuentran pacientes -->
   <div *ngIf="pacientesEncontrados.length > 0" class="resultados">
     <h3>Información del Paciente</h3>
-    <div *ngFor="let paciente of pacientesEncontrados" class="paciente-info">
-      <p><strong>Nombre:</strong> {{ paciente.nombre }}</p>
-      <p><strong>Edad:</strong> {{ paciente.edad }}</p>
-      <p><strong>Fecha de Nacimiento:</strong> {{ paciente.fechaNacimiento | date: 'dd/MM/yyyy' }}</p>
-      <p><strong>Síntomas:</strong> {{ paciente.sintomas }}</p>
-      <p><strong>Estado:</strong> {{ paciente.estado }}</p>
-      <p><strong>Seguridad Social:</strong> {{ paciente.seguridadSocial }}</p>
-      <p><strong>Dirección:</strong> {{ paciente.direccion }}</p>
-      <p><strong>Teléfono:</strong> {{ paciente.telefono }}</p>
-      <p><strong>Email:</strong> {{ paciente.email }}</p>
-      <p><strong>Historial Médico:</strong> {{ paciente.historialMedico }}</p>
+    <div class="pacientes-container">
+      <div *ngFor="let paciente of pacientesEncontrados" class="paciente-info">
+        <p><strong>Nombre:</strong> {{ paciente.nombre }}</p>
+        <p><strong>Edad:</strong> {{ paciente.edad }}</p>
+        <p><strong>Fecha de Nacimiento:</strong> {{ paciente.fechaNacimiento | date: 'dd/MM/yyyy' }}</p>
+        <p><strong>Síntomas:</strong> {{ paciente.sintomas }}</p>
+        <p><strong>Estado:</strong> {{ paciente.estado }}</p>
+        <p><strong>Seguridad Social:</strong> {{ paciente.seguridadSocial }}</p>
+        <p><strong>Dirección:</strong> {{ paciente.direccion }}</p>
+        <p><strong>Teléfono:</strong> {{ paciente.telefono }}</p>
+        <p><strong>Email:</strong> {{ paciente.email }}</p>
+        <p><strong>Historial Médico:</strong> {{ paciente.historialMedico }}</p>
+
+        <!-- Botones de acción -->
+        <button (click)="editPatient(paciente)" class="edit-btn">Editar</button>
+        <button (click)="deletePatient(paciente.idPaciente)" class="delete-btn">Eliminar</button>
+      </div>
     </div>
   </div>
 </div>
