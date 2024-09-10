@@ -4,18 +4,18 @@ import { Observable } from 'rxjs';
 
 // Definición de las interfaces de las tablas
 export interface Paciente {
-  idPaciente: number;
-  nombre: string;
-  edad: number;
-  fechaNacimiento: Date;
-  sintomas: string;
-  estado: string;
-  fechaRegistro: Date;
-  seguridadSocial: string;
-  direccion: string;
-  telefono: string;
-  email: string;
-  historialMedico: string;
+  IdPaciente: number;
+  Nombre: string;
+  Edad: number;
+  FechaNacimiento: Date;
+  Sintomas: string;
+  Estado: string;
+  FechaRegistro: Date;
+  SeguridadSocial: string;
+  Direccion: string;
+  Telefono: string;
+  Email: string;
+  HistorialMedico: string;
 }
 
 export interface Consulta {
@@ -102,7 +102,7 @@ export class ApiService {
   }
 
   updatePaciente(paciente: Paciente): Observable<Paciente> {
-    return this.http.put<Paciente>(`${this.apiUrl}/Pacientes/${paciente.idPaciente}`, paciente);
+    return this.http.put<Paciente>(`${this.apiUrl}/Pacientes/${paciente.IdPaciente}`, paciente);
   }
 
   deletePaciente(id?: number, nombre?: string): Observable<void> {
