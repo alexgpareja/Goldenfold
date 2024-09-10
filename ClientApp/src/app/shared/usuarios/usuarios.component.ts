@@ -13,11 +13,11 @@ import { FormsModule } from '@angular/forms';
 export class UsuariosComponent implements OnInit {
   usuarios: Usuario[] = [];
   nuevoUsuario: Usuario = {
-    idUsuario: 0,
-    nombre: '',
-    nombreUsuario: '',
-    contrasenya: '',
-    idRol: 0
+    IdUsuario: 0,
+    Nombre: '',
+    NombreUsuario: '',
+    Contrasenya: '',
+    IdRol: 0
   };
   usuarioParaActualizar: Usuario | null = null;
   mostrarContrasenas: { [key: number]: boolean } = {};
@@ -44,11 +44,11 @@ export class UsuariosComponent implements OnInit {
       next: (usuario: Usuario) => {
         this.usuarios.push(usuario);
         this.nuevoUsuario = {
-          idUsuario: 0,
-          nombre: '',
-          nombreUsuario: '',
-          contrasenya: '',
-          idRol: 0
+          IdUsuario: 0,
+          Nombre: '',
+          NombreUsuario: '',
+          Contrasenya: '',
+          IdRol: 0
         }; 
       },
       error: (error: any) => {
@@ -58,7 +58,7 @@ export class UsuariosComponent implements OnInit {
   }
 
   toggleActualizarUsuario(usuario: Usuario): void {
-    if (this.usuarioParaActualizar && this.usuarioParaActualizar.idUsuario === usuario.idUsuario) {
+    if (this.usuarioParaActualizar && this.usuarioParaActualizar.IdUsuario === usuario.IdUsuario) {
       this.usuarioParaActualizar = null;
     } else {
       this.usuarioParaActualizar = { ...usuario };
@@ -69,7 +69,7 @@ export class UsuariosComponent implements OnInit {
     if (this.usuarioParaActualizar) {
       this.apiService.updateUsuario(this.usuarioParaActualizar).subscribe({
         next: (usuarioActualizado: Usuario) => {
-          const index = this.usuarios.findIndex(u => u.idUsuario === usuarioActualizado.idUsuario);
+          const index = this.usuarios.findIndex(u => u.IdUsuario === usuarioActualizado.IdUsuario);
           if (index !== -1) {
             this.usuarios[index] = usuarioActualizado;
           }
@@ -86,7 +86,7 @@ export class UsuariosComponent implements OnInit {
   borrarUsuario(id: number): void {
     this.apiService.deleteUsuario(id).subscribe({
       next: () => {
-        this.usuarios = this.usuarios.filter(u => u.idUsuario !== id);
+        this.usuarios = this.usuarios.filter(u => u.IdUsuario !== id);
       },
       error: (error: any) => {
         console.error('Error al borrar el usuario', error);

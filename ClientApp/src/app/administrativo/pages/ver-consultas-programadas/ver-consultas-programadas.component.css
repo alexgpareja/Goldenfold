@@ -1,0 +1,125 @@
+/* Contenedor principal */
+.container {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 20px;
+  padding: 10px;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilos de los filtros */
+.filters {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  padding: 10px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.filters label {
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+}
+
+.filters input, .filters select {
+  margin-top: 5px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.filters input:focus, .filters select:focus {
+  border-color: #0078d4;
+  box-shadow: 0 0 5px rgba(0, 120, 212, 0.3);
+}
+
+/* Estilos de la tabla */
+.consultas {
+  display: table;
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.header-row {
+  display: table-row;
+}
+
+.header {
+  display: table-cell;
+  background-color: #0078d4;
+  color: white;
+  padding: 12px;
+  text-align: center;
+  font-weight: bold;
+  border-bottom: 2px solid #005a9e;
+  transition: background-color 0.3s ease;
+}
+
+.header:hover {
+  background-color: #005a9e;
+}
+
+.consulta {
+  display: table-row;
+  transition: background-color 0.3s ease;
+}
+
+.consulta:hover {
+  background-color: #cce7e8; /* Color de fondo cuando se pasa el ratón sobre una fila */
+}
+
+.consulta:nth-child(even) {
+  background-color: #f9f9f9; /* Color de fondo para filas pares */
+}
+
+.consulta:nth-child(odd) {
+  background-color: #ffffff; /* Color de fondo para filas impares */
+}
+
+.consulta > div {
+  display: table-cell;
+  padding: 12px;
+  text-align: center;
+  border-bottom: 1px solid #ddd;
+}
+
+/* Estilos de paginación */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  padding: 10px;
+}
+
+.pagination button {
+  background-color: #0078d4;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  margin: 0 5px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+}
+
+.pagination button:hover {
+  background-color: #005a9e;
+}
+
+.pagination button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.pagination span {
+  font-size: 14px;
+  margin: 0 10px;
+}

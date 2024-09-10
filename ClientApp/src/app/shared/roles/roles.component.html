@@ -11,11 +11,11 @@
       </thead>
       <tbody>
         <tr *ngFor="let rol of roles">
-          <td>{{ rol.idRol }}</td>
-          <td>{{ rol.nombreRol }}</td>
+          <td>{{ rol.IdRol }}</td>
+          <td>{{ rol.NombreRol }}</td>
           <td>
             <button (click)="toggleActualizarRol(rol)">Actualizar</button>
-            <button (click)="borrarRol(rol.idRol)">Borrar</button>
+            <button (click)="borrarRol(rol.IdRol)">Borrar</button>
           </td>
         </tr>
       </tbody>
@@ -26,9 +26,9 @@
     <h3>Actualizar Rol</h3>
     <form (ngSubmit)="actualizarRol()">
       <label for="idRol">ID Rol:</label>
-      <input type="number" id="idRol" [(ngModel)]="rolParaActualizar.idRol" name="idRol" disabled>
+      <input type="number" id="idRol" [(ngModel)]="rolParaActualizar.IdRol" name="idRol" disabled>
       <label for="nombreRol">Nombre Rol:</label>
-      <input type="text" id="nombreRol" [(ngModel)]="rolParaActualizar.nombreRol" name="nombreRol">
+      <input type="text" id="nombreRol" [(ngModel)]="rolParaActualizar.NombreRol" name="nombreRol">
       <button type="submit">Guardar</button>
     </form>
   </div>
@@ -37,7 +37,7 @@
     <h3>Agregar Rol</h3>
     <form (ngSubmit)="agregarRol()">
       <label for="nombreRol">Nombre Rol:</label>
-      <input type="text" id="nombreRol" [(ngModel)]="nuevoRol.nombreRol" name="nombreRol">
+      <input type="text" id="nombreRol" [(ngModel)]="nuevoRol.NombreRol" name="nombreRol">
       <button type="submit">Agregar</button>
     </form>
   </div>

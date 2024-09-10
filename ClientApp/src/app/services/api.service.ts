@@ -19,66 +19,66 @@ export interface Paciente {
 }
 
 export interface Consulta {
-  idConsulta: number;
-  idPaciente: number;
-  idMedico: number;
-  motivo: string;
-  fechaSolicitud: Date;
-  fechaConsulta: Date;
-  estado: string;
+  IdConsulta: number;
+  IdPaciente: number;
+  IdMedico: number;
+  Motivo: string;
+  FechaSolicitud: Date;
+  FechaConsulta: Date;
+  Estado: string;
 }
 
 export interface Ingreso {
-  idIngreso: number;
-  idPaciente: number;
-  idMedico: number;
-  motivo: string;
-  fechaSolicitud: Date;
-  estado: string;
-  idAsignacion: number;
+  IdIngreso: number;
+  IdPaciente: number;
+  IdMedico: number;
+  Motivo: string;
+  FechaSolicitud: Date;
+  Estado: string;
+  IdAsignacion: number;
 }
 
 export interface HistorialAlta {
-  idHistorial: number;
-  idPaciente: number;
-  fechaAlta: Date;
-  diagnostico: string;
-  tratamiento: string;
+  IdHistorial: number;
+  IdPaciente: number;
+  FechaAlta: Date;
+  Diagnostico: string;
+  Tratamiento: string;
 }
 
 export interface Asignacion {
-  idAsignacion: number;
-  idPaciente: number;
-  ubicacion: string;
-  fechaAsignacion: Date;
-  fechaLiberacion: Date;
-  asignadoPor: number;
+  IdAsignacion: number;
+  IdPaciente: number;
+  Ubicacion: string;
+  FechaAsignacion: Date;
+  FechaLiberacion: Date;
+  AsignadoPor: number;
 }
 
 export interface Usuario {
-  idUsuario: number;
-  nombre: string;
-  nombreUsuario: string;
-  contrasenya: string;
-  idRol: number;
+  IdUsuario: number;
+  Nombre: string;
+  NombreUsuario: string;
+  Contrasenya: string;
+  IdRol: number;
 }
 
 export interface Cama {
-  ubicacion: string;
-  estado: string;
-  tipo: string;
+  Ubicacion: string;
+  Estado: string;
+  Tipo: string;
 }
 
 export interface Habitacion {
-  idHabitacion: number;
-  edificio: string;
-  planta: string;
-  numeroHabitacion: string;
+  IdHabitacion: number;
+  Edificio: string;
+  Planta: string;
+  NumeroHabitacion: string;
 }
 
 export interface Rol {
-  idRol: number;
-  nombreRol: string;
+  IdRol: number;
+  NombreRol: string;
 }
 
 @Injectable({
@@ -131,7 +131,7 @@ export class ApiService {
   }
 
   updateConsulta(consulta: Consulta): Observable<Consulta> {
-    return this.http.put<Consulta>(`${this.apiUrl}/Consultas/${consulta.idConsulta}`, consulta);
+    return this.http.put<Consulta>(`${this.apiUrl}/Consultas/${consulta.IdConsulta}`, consulta);
   }
 
   deleteConsulta(id?: number, estado?: string): Observable<void> {
@@ -155,7 +155,7 @@ export class ApiService {
   }
 
   updateIngreso(ingreso: Ingreso): Observable<Ingreso> {
-    return this.http.put<Ingreso>(`${this.apiUrl}/Ingresos/${ingreso.idIngreso}`, ingreso);
+    return this.http.put<Ingreso>(`${this.apiUrl}/Ingresos/${ingreso.IdIngreso}`, ingreso);
   }
 
   deleteIngreso(id?: number, estado?: string): Observable<void> {
@@ -177,7 +177,7 @@ export class ApiService {
   }
 
   updateAsignacion(asignacion: Asignacion): Observable<Asignacion> {
-    return this.http.put<Asignacion>(`${this.apiUrl}/Asignaciones/${asignacion.idAsignacion}`, asignacion);
+    return this.http.put<Asignacion>(`${this.apiUrl}/Asignaciones/${asignacion.IdAsignacion}`, asignacion);
   }
 
   deleteAsignacion(id?: number): Observable<void> {
@@ -198,7 +198,7 @@ export class ApiService {
   }
 
   updateHistorialAlta(historialAlta: HistorialAlta): Observable<HistorialAlta> {
-    return this.http.put<HistorialAlta>(`${this.apiUrl}/HistorialAltas/${historialAlta.idHistorial}`, historialAlta);
+    return this.http.put<HistorialAlta>(`${this.apiUrl}/HistorialAltas/${historialAlta.IdHistorial}`, historialAlta);
   }
 
   deleteHistorialAlta(id?: number): Observable<void> {
@@ -219,7 +219,7 @@ export class ApiService {
   }
 
   updateUsuario(usuario: Usuario): Observable<Usuario> {
-    return this.http.put<Usuario>(`${this.apiUrl}/Usuarios/${usuario.idUsuario}`, usuario);
+    return this.http.put<Usuario>(`${this.apiUrl}/Usuarios/${usuario.IdUsuario}`, usuario);
   }
 
   deleteUsuario(id?: number, nombre?: string): Observable<void> {
@@ -242,7 +242,7 @@ export class ApiService {
   }
 
   updateCama(cama: Cama): Observable<Cama> {
-    return this.http.put<Cama>(`${this.apiUrl}/Camas/${cama.ubicacion}`, cama);
+    return this.http.put<Cama>(`${this.apiUrl}/Camas/${cama.Ubicacion}`, cama);
   }
 
   deleteCama(ubicacion?: string): Observable<void> {
@@ -264,7 +264,7 @@ export class ApiService {
   }
 
   updateHabitacion(habitacion: Habitacion): Observable<Habitacion> {
-    return this.http.put<Habitacion>(`${this.apiUrl}/Habitaciones/${habitacion.idHabitacion}`, habitacion);
+    return this.http.put<Habitacion>(`${this.apiUrl}/Habitaciones/${habitacion.IdHabitacion}`, habitacion);
   }
 
   deleteHabitacion(id?: number): Observable<void> {
@@ -285,7 +285,7 @@ export class ApiService {
   }
 
   updateRol(rol: Rol): Observable<Rol> {
-    return this.http.put<Rol>(`${this.apiUrl}/Roles/${rol.idRol}`, rol);
+    return this.http.put<Rol>(`${this.apiUrl}/Roles/${rol.IdRol}`, rol);
   }
 
   deleteRol(id?: number): Observable<void> {
