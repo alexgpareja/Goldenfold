@@ -51,6 +51,30 @@ namespace HospitalApi.Controllers
             return Ok(consultasDTO);
         }
 
+
+        /// <summary>
+        /// Obtiene una lista de pacientes cuyas consultas están pendientes de ingreso.
+        /// </summary>
+        /// <returns>Una lista de pacientes con consultas pendientes de ingreso.</returns>
+        [HttpGet("pendientes-ingreso")]
+        public async Task<ActionResult<IEnumerable<PacienteDTO>>> GetPacientesPendientesIngreso()
+        {
+            var consultasPendientes = await _context.Consultas
+                .Where(c => c.Estado == "pendiente de ingreso")
+                .Include(c => c.Paciente) // Relacionar con la tabla Pacientes
+                .ToListAsync();
+
+            if (!consultasPendientes.Any())
+            {
+                return NotFound("No se encontraron pacientes con consultas pendientes de ingreso.");
+            }
+
+            var pacientes = consultasPendientes.Select(c => c.Paciente).Distinct();
+            var pacientesDTO = _mapper.Map<IEnumerable<PacienteDTO>>(pacientes);
+            return Ok(pacientesDTO);
+        }
+        
+
         /// <summary>
         /// Obtiene una consulta específica por su ID.
         /// </summary>

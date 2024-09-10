@@ -24,7 +24,6 @@ export class BuscarPacienteComponent {
         next: (pacientes: Paciente[]) => {
           if (pacientes.length > 0) {
             this.pacientesEncontrados = pacientes;
-            console.log(this.pacientesEncontrados);
           } else {
             this.errorMensaje = 'No se encontraron pacientes con ese nombre.';
           }

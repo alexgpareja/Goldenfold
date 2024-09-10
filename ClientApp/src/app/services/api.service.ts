@@ -121,8 +121,9 @@ export class ApiService {
     return this.http.get<Consulta[]>(`${this.apiUrl}/Consultas`, { params });
   }
 
-  getConsultaById(id: number): Observable<Consulta> {
-    return this.http.get<Consulta>(`${this.apiUrl}/Consultas/${id}`);
+  // Obtener pacientes con consultas pendientes de ingreso
+  getPacientesPendientesIngreso(): Observable<Paciente[]> {
+    return this.http.get<Paciente[]>(`${this.apiUrl}/Consultas/pendientes-ingreso`);
   }
 
   addConsulta(consulta: Consulta): Observable<Consulta> {
@@ -149,10 +150,6 @@ export class ApiService {
     return this.http.get<Ingreso[]>(`${this.apiUrl}/Ingresos`, { params });
   }
 
-  getIngresoById(id: number): Observable<Ingreso> {
-    return this.http.get<Ingreso>(`${this.apiUrl}/Ingresos/${id}`);
-  }
-
   addIngreso(ingreso: Ingreso): Observable<Ingreso> {
     return this.http.post<Ingreso>(`${this.apiUrl}/Ingresos`, ingreso);
   }
@@ -173,10 +170,6 @@ export class ApiService {
     let params = new HttpParams();
     if (idPaciente) params = params.set('idPaciente', idPaciente.toString());
     return this.http.get<Asignacion[]>(`${this.apiUrl}/Asignaciones`, { params });
-  }
-
-  getAsignacionById(id: number): Observable<Asignacion> {
-    return this.http.get<Asignacion>(`${this.apiUrl}/Asignaciones/${id}`);
   }
 
   addAsignacion(asignacion: Asignacion): Observable<Asignacion> {
@@ -200,10 +193,6 @@ export class ApiService {
     return this.http.get<HistorialAlta[]>(`${this.apiUrl}/HistorialAltas`, { params });
   }
 
-  getHistorialAltaById(id: number): Observable<HistorialAlta> {
-    return this.http.get<HistorialAlta>(`${this.apiUrl}/HistorialAltas/${id}`);
-  }
-
   addHistorialAlta(historialAlta: HistorialAlta): Observable<HistorialAlta> {
     return this.http.post<HistorialAlta>(`${this.apiUrl}/HistorialAltas`, historialAlta);
   }
@@ -223,10 +212,6 @@ export class ApiService {
     let params = new HttpParams();
     if (nombre) params = params.set('nombre', nombre);
     return this.http.get<Usuario[]>(`${this.apiUrl}/Usuarios`, { params });
-  }
-
-  getUsuarioById(id: number): Observable<Usuario> {
-    return this.http.get<Usuario>(`${this.apiUrl}/Usuarios/${id}`);
   }
 
   addUsuario(usuario: Usuario): Observable<Usuario> {

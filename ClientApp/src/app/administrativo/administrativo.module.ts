@@ -16,6 +16,7 @@ import { NotificacionesComponent } from './pages/notificaciones/notificaciones.c
 import { DocumentosPacienteComponent } from './pages/documentos-paciente/documentos-paciente.component';
 import { ReportesComponent } from './pages/reportes/reportes.component';
 
+
 @NgModule({
   imports: [
     CommonModule,

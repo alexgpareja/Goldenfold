@@ -4,37 +4,34 @@ import { AdministradorSistemaDashboardComponent } from './pages/administrador-si
 import { AdministradorSistemaInicioComponent } from './pages/administrador-sistema-inicio/administrador-sistema-inicio.component';
 import { GestionUsuariosComponent } from './pages/gestion-usuarios/gestion-usuarios.component';
 import { GestionRolesComponent } from './pages/gestion-roles/gestion-roles.component';
-import { AuditoriaActividadesComponent } from './pages/auditoria-actividades/auditoria-actividades.component';
-import { GestionPermisosComponent } from './pages/gestion-permisos/gestion-permisos.component';
-import { MonitorizacionSistemaComponent } from './pages/monitorizacion-sistema/monitorizacion-sistema.component';
-import { GestionCuentasPacientesComponent } from './pages/gestion-cuentas-pacientes/gestion-cuentas-pacientes.component';
-import { ConfiguracionSistemaComponent } from './pages/configuracion-sistema/configuracion-sistema.component';
-import { NotificacionesAlertasSistemaComponent } from './pages/notificaciones-alertas-sistema/notificaciones-alertas-sistema.component';
-import { LogsAccesoErroresComponent } from './pages/logs-acceso-errores/logs-acceso-errores.component';
-import { EstadisticasUsoComponent } from './pages/estadisticas-uso/estadisticas-uso.component';
-import { GestionMantenimientoComponent } from './pages/gestion-mantenimiento/gestion-mantenimiento.component';
-import { GestionNotificacionesGlobalesComponent } from './pages/gestion-notificaciones-globales/gestion-notificaciones-globales.component';
-import { ConfiguracionSeguridadComponent } from './pages/configuracion-seguridad/configuracion-seguridad.component';
+// Importamos los componentes de las tablas
+import { CamasComponent } from '../shared/camas/camas.component';
+import { AsignacionesComponent } from '../shared/asignaciones/asignaciones.component';
+import { HabitacionesComponent } from '../shared/habitaciones/habitaciones.component';
+import { HistorialAltasComponent } from '../shared/historial-altas/historial-altas.component';
+import { PacientesComponent } from '../shared/pacientes/pacientes.component';
+import { RolesComponent } from '../shared/roles/roles.component';
+import { UsuariosComponent } from '../shared/usuarios/usuarios.component';
 
 const routes: Routes = [
   {
     path: '',
     component: AdministradorSistemaDashboardComponent,  // Dashboard principal con sidebar
     children: [
+      // Tablas añadidas primero
+      { path: 'camas', component: CamasComponent },
+      { path: 'asignaciones', component: AsignacionesComponent },
+      { path: 'habitaciones', component: HabitacionesComponent },
+      { path: 'historial-altas', component: HistorialAltasComponent },
+      { path: 'pacientes', component: PacientesComponent },
+      { path: 'roles', component: RolesComponent },
+      { path: 'usuarios', component: UsuariosComponent },
+
+      // Funciones de gestión
       { path: 'gestion-usuarios', component: GestionUsuariosComponent },
-      {path: 'administrador-sistema-inicio', component: AdministradorSistemaInicioComponent },
+      { path: 'administrador-sistema-inicio', component: AdministradorSistemaInicioComponent },
       { path: 'gestion-roles', component: GestionRolesComponent },
-      { path: 'auditoria-actividades', component: AuditoriaActividadesComponent },
-      { path: 'gestion-permisos', component: GestionPermisosComponent },
-      { path: 'monitorizacion-sistema', component: MonitorizacionSistemaComponent },
-      { path: 'gestion-cuentas-pacientes', component: GestionCuentasPacientesComponent },
-      { path: 'configuracion-sistema', component: ConfiguracionSistemaComponent },
-      { path: 'notificaciones-alertas-sistema', component: NotificacionesAlertasSistemaComponent },
-      { path: 'logs-acceso-errores', component: LogsAccesoErroresComponent },
-      { path: 'estadisticas-uso', component: EstadisticasUsoComponent },
-      { path: 'gestion-mantenimiento', component: GestionMantenimientoComponent },
-      { path: 'gestion-notificaciones-globales', component: GestionNotificacionesGlobalesComponent },
-      { path: 'configuracion-seguridad', component: ConfiguracionSeguridadComponent },
+      // Otras funcionalidades
       { path: '', redirectTo: 'administrador-sistema-inicio', pathMatch: 'full' }
     ]
   }
