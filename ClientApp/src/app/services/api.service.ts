@@ -19,66 +19,66 @@ export interface Paciente {
 }
 
 export interface Consulta {
-  idConsulta: number;
-  idPaciente: number;
-  idMedico: number;
-  motivo: string;
-  fechaSolicitud: Date;
-  fechaConsulta: Date;
-  estado: string;
+  IdConsulta: number;
+  IdPaciente: number;
+  IdMedico: number;
+  Motivo: string;
+  FechaSolicitud: Date;
+  FechaConsulta: Date;
+  Estado: string;
 }
 
 export interface Ingreso {
-  idIngreso: number;
-  idPaciente: number;
-  idMedico: number;
-  motivo: string;
-  fechaSolicitud: Date;
-  estado: string;
-  idAsignacion: number;
+  IdIngreso: number;
+  IdPaciente: number;
+  IdMedico: number;
+  Motivo: string;
+  FechaSolicitud: Date;
+  Estado: string;
+  IdAsignacion: number;
 }
 
 export interface HistorialAlta {
-  idHistorial: number;
-  idPaciente: number;
-  fechaAlta: Date;
-  diagnostico: string;
-  tratamiento: string;
+  IdHistorial: number;
+  IdPaciente: number;
+  FechaAlta: Date;
+  Diagnostico: string;
+  Tratamiento: string;
 }
 
 export interface Asignacion {
-  idAsignacion: number;
-  idPaciente: number;
-  ubicacion: string;
-  fechaAsignacion: Date;
-  fechaLiberacion: Date;
-  asignadoPor: number;
+  IdAsignacion: number;
+  IdPaciente: number;
+  Ubicacion: string;
+  FechaAsignacion: Date;
+  FechaLiberacion: Date;
+  AsignadoPor: number;
 }
 
 export interface Usuario {
-  idUsuario: number;
-  nombre: string;
-  nombreUsuario: string;
-  contrasenya: string;
-  idRol: number;
+  IdUsuario: number;
+  Nombre: string;
+  NombreUsuario: string;
+  Contrasenya: string;
+  IdRol: number;
 }
 
 export interface Cama {
-  ubicacion: string;
-  estado: string;
-  tipo: string;
+  Ubicacion: string;
+  Estado: string;
+  Tipo: string;
 }
 
 export interface Habitacion {
-  idHabitacion: number;
-  edificio: string;
-  planta: string;
-  numeroHabitacion: string;
+  IdHabitacion: number;
+  Edificio: string;
+  Planta: string;
+  NumeroHabitacion: string;
 }
 
 export interface Rol {
-  idRol: number;
-  nombreRol: string;
+  IdRol: number;
+  NombreRol: string;
 }
 
 @Injectable({
