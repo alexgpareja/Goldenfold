@@ -11,6 +11,7 @@ export class BuscarPacienteComponent {
   searchName: string = '';
   pacientesEncontrados: Paciente[] = [];
   errorMensaje: string | null = null;
+  selectedPaciente: Paciente | null = null; // Paciente seleccionado para edición
 
   constructor(private apiService: ApiService) {}
 
@@ -47,17 +48,34 @@ export class BuscarPacienteComponent {
   }
 
   editPatient(paciente: Paciente) {
-    // Lógica para editar paciente
-    // Por ejemplo, podrías redirigir a un formulario de edición con el paciente seleccionado
-    console.log('Editando paciente:', paciente);
+    this.selectedPaciente = { ...paciente }; // Clonar el paciente para editarlo
+  }
+
+  updatePatient() {
+    if (this.selectedPaciente) {
+      this.apiService.updatePaciente(this.selectedPaciente).subscribe({
+        next: () => {
+          // Actualizar la lista de pacientes
+          this.searchPatient(new Event('')); // Rehacer la búsqueda para refrescar los datos
+          this.selectedPaciente = null; // Limpiar el paciente seleccionado
+          alert('Paciente actualizado con éxito.');
+        },
+        error: (error: HttpErrorResponse) => {
+          this.errorMensaje = 'Error al actualizar el paciente. Por favor, inténtalo de nuevo.';
+        }
+      });
+    }
+  }
+
+  cancelEdit() {
+    this.selectedPaciente = null; // Limpiar el paciente seleccionado
   }
 
   deletePatient(pacienteId: number) {
     if (confirm('¿Estás seguro de que deseas eliminar este paciente?')) {
       this.apiService.deletePaciente(pacienteId).subscribe({
         next: () => {
-          // Elimina el paciente de la lista
-          this.pacientesEncontrados = this.pacientesEncontrados.filter(paciente => paciente.idPaciente !== pacienteId);
+          this.pacientesEncontrados = this.pacientesEncontrados.filter(paciente => paciente.IdPaciente !== pacienteId);
           alert('Paciente eliminado con éxito.');
         },
         error: (error: HttpErrorResponse) => {

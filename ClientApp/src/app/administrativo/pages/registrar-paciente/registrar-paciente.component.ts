@@ -9,18 +9,18 @@ import { HttpErrorResponse } from '@angular/common/http';
 })
 export class RegistrarPacienteComponent {
   nuevoPaciente: Paciente = {
-    idPaciente: 0,
-    nombre: '',
-    edad: 0,
-    fechaNacimiento: new Date(),
-    sintomas: '',
-    estado: 'Pendiente de cama',
-    seguridadSocial: '',
-    direccion: '',
-    telefono: '',
-    email: '',
-    historialMedico: '',
-    fechaRegistro: new Date()
+    IdPaciente: 0,
+          Nombre: '',
+          Edad: 0,
+          FechaNacimiento: new Date(),
+          Sintomas: '',
+          Estado: '',
+          FechaRegistro: new Date(),
+          SeguridadSocial: '',
+          Direccion: '',
+          Telefono: '',
+          Email: '',
+          HistorialMedico: ''
   };
 
   constructor(private apiService: ApiService) {}
@@ -45,18 +45,18 @@ export class RegistrarPacienteComponent {
 
   resetForm() {
     this.nuevoPaciente = {
-      idPaciente: 0,
-      nombre: '',
-      edad: 0,
-      fechaNacimiento: new Date(),
-      sintomas: '',
-      estado: 'Pendiente de cama',
-      seguridadSocial: '',
-      direccion: '',
-      telefono: '',
-      email: '',
-      historialMedico: '',
-      fechaRegistro: new Date()
+      IdPaciente: 0,
+          Nombre: '',
+          Edad: 0,
+          FechaNacimiento: new Date(),
+          Sintomas: '',
+          Estado: '',
+          FechaRegistro: new Date(),
+          SeguridadSocial: '',
+          Direccion: '',
+          Telefono: '',
+          Email: '',
+          HistorialMedico: ''
     };
   }
 }

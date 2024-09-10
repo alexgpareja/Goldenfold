@@ -31,11 +31,11 @@ export class HistorialAltasComponent implements OnInit {
 
   inicializarHistorialAlta(): HistorialAlta {
     return {
-      idHistorial: 0,
-      idPaciente: 0,
-      fechaAlta: new Date(),
-      diagnostico: '',
-      tratamiento: ''
+      IdHistorial: 0,
+      IdPaciente: 0,
+      FechaAlta: new Date(),
+      Diagnostico: '',
+      Tratamiento: ''
     };
   }
 
@@ -58,8 +58,8 @@ export class HistorialAltasComponent implements OnInit {
 
   actualizarHistorialAltasPaginados(): void {
     let historialAltasFiltrados = this.historialAltas.filter(ha =>
-      ha.diagnostico.toLowerCase().includes(this.filtro.toLowerCase()) ||
-      ha.tratamiento.toLowerCase().includes(this.filtro.toLowerCase())
+      ha.Diagnostico.toLowerCase().includes(this.filtro.toLowerCase()) ||
+      ha.Tratamiento.toLowerCase().includes(this.filtro.toLowerCase())
     );
 
     if (this.columnaOrdenada) {
@@ -104,7 +104,7 @@ export class HistorialAltasComponent implements OnInit {
   }
 
   toggleActualizarHistorialAlta(historialAlta: HistorialAlta): void {
-    this.historialAltaParaActualizar = this.historialAltaParaActualizar?.idHistorial === historialAlta.idHistorial
+    this.historialAltaParaActualizar = this.historialAltaParaActualizar?.IdHistorial === historialAlta.IdHistorial
       ? null
       : { ...historialAlta };
   }
@@ -113,7 +113,7 @@ export class HistorialAltasComponent implements OnInit {
     if (this.historialAltaParaActualizar) {
       this.apiService.updateHistorialAlta(this.historialAltaParaActualizar).subscribe({
         next: (historialAltaActualizado: HistorialAlta) => {
-          const index = this.historialAltas.findIndex(ha => ha.idHistorial === historialAltaActualizado.idHistorial);
+          const index = this.historialAltas.findIndex(ha => ha.IdHistorial === historialAltaActualizado.IdHistorial);
           if (index !== -1) {
             this.historialAltas[index] = historialAltaActualizado;
             this.calcularTotalPaginasYActualizar();
@@ -130,7 +130,7 @@ export class HistorialAltasComponent implements OnInit {
   borrarHistorialAlta(id: number): void {
     this.apiService.deleteHistorialAlta(id).subscribe({
       next: () => {
-        this.historialAltas = this.historialAltas.filter(historialAlta => historialAlta.idHistorial !== id);
+        this.historialAltas = this.historialAltas.filter(historialAlta => historialAlta.IdHistorial !== id);
         this.calcularTotalPaginasYActualizar();
       },
       error: (error: any) => {

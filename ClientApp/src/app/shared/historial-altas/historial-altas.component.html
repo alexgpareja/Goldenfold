@@ -10,24 +10,24 @@
     <table class="table">
       <thead>
         <tr>
-          <th (click)="ordenar('idHistorial')">ID Historial <span *ngIf="columnaOrdenada === 'idHistorial'">{{ orden === 'asc' ? '▲' : '▼' }}</span></th>
-          <th (click)="ordenar('idPaciente')">ID Paciente <span *ngIf="columnaOrdenada === 'idPaciente'">{{ orden === 'asc' ? '▲' : '▼' }}</span></th>
-          <th (click)="ordenar('fechaAlta')">Fecha de Alta <span *ngIf="columnaOrdenada === 'fechaAlta'">{{ orden === 'asc' ? '▲' : '▼' }}</span></th>
-          <th (click)="ordenar('diagnostico')">Diagnóstico <span *ngIf="columnaOrdenada === 'diagnostico'">{{ orden === 'asc' ? '▲' : '▼' }}</span></th>
-          <th (click)="ordenar('tratamiento')">Tratamiento <span *ngIf="columnaOrdenada === 'tratamiento'">{{ orden === 'asc' ? '▲' : '▼' }}</span></th>
+          <th (click)="ordenar('IdHistorial')">ID Historial <span *ngIf="columnaOrdenada === 'IdHistorial'">{{ orden === 'asc' ? '▲' : '▼' }}</span></th>
+          <th (click)="ordenar('IdPaciente')">ID Paciente <span *ngIf="columnaOrdenada === 'IdPaciente'">{{ orden === 'asc' ? '▲' : '▼' }}</span></th>
+          <th (click)="ordenar('FechaAlta')">Fecha de Alta <span *ngIf="columnaOrdenada === 'FechaAlta'">{{ orden === 'asc' ? '▲' : '▼' }}</span></th>
+          <th (click)="ordenar('Diagnostico')">Diagnóstico <span *ngIf="columnaOrdenada === 'Diagnostico'">{{ orden === 'asc' ? '▲' : '▼' }}</span></th>
+          <th (click)="ordenar('Tratamiento')">Tratamiento <span *ngIf="columnaOrdenada === 'Tratamiento'">{{ orden === 'asc' ? '▲' : '▼' }}</span></th>
           <th>Acciones</th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let historial of historialAltasPaginadas">
-          <td>{{ historial.idHistorial }}</td>
-          <td>{{ historial.idPaciente }}</td>
-          <td>{{ historial.fechaAlta | date }}</td>
-          <td>{{ historial.diagnostico }}</td>
-          <td>{{ historial.tratamiento }}</td>
+          <td>{{ historial.IdHistorial }}</td>
+          <td>{{ historial.IdPaciente }}</td>
+          <td>{{ historial.FechaAlta | date }}</td>
+          <td>{{ historial.Diagnostico }}</td>
+          <td>{{ historial.Tratamiento }}</td>
           <td>
             <button (click)="toggleActualizarHistorialAlta(historial)">Actualizar</button>
-            <button (click)="borrarHistorialAlta(historial.idHistorial)">Borrar</button>
+            <button (click)="borrarHistorialAlta(historial.IdHistorial)">Borrar</button>
           </td>
         </tr>
       </tbody>
@@ -46,15 +46,15 @@
     <h3>Actualizar Historial de Alta</h3>
     <form (ngSubmit)="actualizarHistorialAlta()">
       <label for="idHistorial">ID Historial:</label>
-      <input type="number" id="idHistorial" [(ngModel)]="historialAltaParaActualizar.idHistorial" name="idHistorial" disabled>
+      <input type="number" id="idHistorial" [(ngModel)]="historialAltaParaActualizar.IdHistorial" name="idHistorial" disabled>
       <label for="idPaciente">ID Paciente:</label>
-      <input type="number" id="idPaciente" [(ngModel)]="historialAltaParaActualizar.idPaciente" name="idPaciente">
+      <input type="number" id="idPaciente" [(ngModel)]="historialAltaParaActualizar.IdPaciente" name="idPaciente">
       <label for="fechaAlta">Fecha de Alta:</label>
-      <input type="date" id="fechaAlta" [(ngModel)]="historialAltaParaActualizar.fechaAlta" name="fechaAlta">
+      <input type="date" id="fechaAlta" [(ngModel)]="historialAltaParaActualizar.FechaAlta" name="fechaAlta">
       <label for="diagnostico">Diagnóstico:</label>
-      <input type="text" id="diagnostico" [(ngModel)]="historialAltaParaActualizar.diagnostico" name="diagnostico">
+      <input type="text" id="diagnostico" [(ngModel)]="historialAltaParaActualizar.Diagnostico" name="diagnostico">
       <label for="tratamiento">Tratamiento:</label>
-      <input type="text" id="tratamiento" [(ngModel)]="historialAltaParaActualizar.tratamiento" name="tratamiento">
+      <input type="text" id="tratamiento" [(ngModel)]="historialAltaParaActualizar.Tratamiento" name="tratamiento">
       <button type="submit">Guardar</button>
     </form>
   </div>
@@ -63,13 +63,13 @@
     <h3>Agregar Historial de Alta</h3>
     <form (ngSubmit)="agregarHistorialAlta()">
       <label for="idPaciente">ID Paciente:</label>
-      <input type="number" id="idPaciente" [(ngModel)]="nuevoHistorialAlta.idPaciente" name="idPaciente">
+      <input type="number" id="idPaciente" [(ngModel)]="nuevoHistorialAlta.IdPaciente" name="idPaciente">
       <label for="fechaAlta">Fecha de Alta:</label>
-      <input type="date" id="fechaAlta" [(ngModel)]="nuevoHistorialAlta.fechaAlta" name="fechaAlta">
+      <input type="date" id="fechaAlta" [(ngModel)]="nuevoHistorialAlta.FechaAlta" name="fechaAlta">
       <label for="diagnostico">Diagnóstico:</label>
-      <input type="text" id="diagnostico" [(ngModel)]="nuevoHistorialAlta.diagnostico" name="diagnostico">
+      <input type="text" id="diagnostico" [(ngModel)]="nuevoHistorialAlta.Diagnostico" name="diagnostico">
       <label for="tratamiento">Tratamiento:</label>
-      <input type="text" id="tratamiento" [(ngModel)]="nuevoHistorialAlta.tratamiento" name="tratamiento">
+      <input type="text" id="tratamiento" [(ngModel)]="nuevoHistorialAlta.Tratamiento" name="tratamiento">
       <button type="submit">Agregar</button>
     </form>
   </div>

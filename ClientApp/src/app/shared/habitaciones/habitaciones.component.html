@@ -12,12 +12,12 @@
       </thead>
       <tbody>
         <tr *ngFor="let habitacion of habitaciones">
-          <td>{{ habitacion.edificio }}</td>
-          <td>{{ habitacion.planta }}</td>
-          <td>{{ habitacion.numeroHabitacion }}</td>
+          <td>{{ habitacion.Edificio }}</td>
+          <td>{{ habitacion.Planta }}</td>
+          <td>{{ habitacion.NumeroHabitacion }}</td>
           <td>
             <button (click)="toggleActualizarHabitacion(habitacion)">Actualizar</button>
-            <button (click)="borrarHabitacion(habitacion.idHabitacion)">Borrar</button>
+            <button (click)="borrarHabitacion(habitacion.IdHabitacion)">Borrar</button>
           </td>
         </tr>
         <tr *ngIf="habitacionParaActualizar">
@@ -26,11 +26,11 @@
               <h3>Actualizar Habitación</h3>
               <form (ngSubmit)="actualizarHabitacion()">
                 <label for="edificio">Edificio:</label>
-                <input type="text" id="edificio" [(ngModel)]="habitacionParaActualizar.edificio" name="edificio">
+                <input type="text" id="edificio" [(ngModel)]="habitacionParaActualizar.Edificio" name="edificio">
                 <label for="planta">Planta:</label>
-                <input type="text" id="planta" [(ngModel)]="habitacionParaActualizar.planta" name="planta">
+                <input type="text" id="planta" [(ngModel)]="habitacionParaActualizar.Planta" name="planta">
                 <label for="numeroHabitacion">Número de Habitación:</label>
-                <input type="text" id="numeroHabitacion" [(ngModel)]="habitacionParaActualizar.numeroHabitacion" name="numeroHabitacion">
+                <input type="text" id="numeroHabitacion" [(ngModel)]="habitacionParaActualizar.NumeroHabitacion" name="numeroHabitacion">
                 <button type="submit">Guardar</button>
               </form>
             </div>
@@ -44,11 +44,11 @@
     <h3>Agregar Habitación</h3>
     <form (ngSubmit)="agregarHabitacion()">
       <label for="edificio">Edificio:</label>
-      <input type="text" id="edificio" [(ngModel)]="nuevaHabitacion.edificio" name="edificio">
+      <input type="text" id="edificio" [(ngModel)]="nuevaHabitacion.Edificio" name="edificio">
       <label for="planta">Planta:</label>
-      <input type="text" id="planta" [(ngModel)]="nuevaHabitacion.planta" name="planta">
+      <input type="text" id="planta" [(ngModel)]="nuevaHabitacion.Planta" name="planta">
       <label for="numeroHabitacion">Número de Habitación:</label>
-      <input type="text" id="numeroHabitacion" [(ngModel)]="nuevaHabitacion.numeroHabitacion" name="numeroHabitacion">
+      <input type="text" id="numeroHabitacion" [(ngModel)]="nuevaHabitacion.NumeroHabitacion" name="numeroHabitacion">
       <button type="submit">Agregar</button>
     </form>
   </div>

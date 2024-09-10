@@ -14,18 +14,18 @@ export class PacientesComponent implements OnInit {
   pacientes: Paciente[] = [];
   pacientesPaginados: Paciente[] = [];
   nuevoPaciente: Paciente = {
-    idPaciente: 0,
-    nombre: '',
-    edad: 0,
-    fechaNacimiento: new Date(),
-    sintomas: '',
-    estado: '',
-    fechaRegistro: new Date(),
-    seguridadSocial: '',
-    direccion: '',
-    telefono: '',
-    email: '',
-    historialMedico: ''
+    IdPaciente: 0,
+    Nombre: '',
+    Edad: 0,
+    FechaNacimiento: new Date(),
+    Sintomas: '',
+    Estado: '',
+    FechaRegistro: new Date(),
+    SeguridadSocial: '',
+    Direccion: '',
+    Telefono: '',
+    Email: '',
+    HistorialMedico: ''
   };
   pacienteParaActualizar: Paciente | null = null;
 
@@ -38,7 +38,7 @@ export class PacientesComponent implements OnInit {
   columnaOrdenada: keyof Paciente | '' = '';
   filtro: string = '';
 
-  constructor(private apiService: ApiService) {}
+  constructor(private apiService: ApiService) { }
 
   ngOnInit(): void {
     this.obtenerPacientes();
@@ -58,7 +58,7 @@ export class PacientesComponent implements OnInit {
 
   filtrarPacientes(): void {
     let pacientesFiltrados = this.pacientes.filter(paciente =>
-      paciente.nombre.toLowerCase().includes(this.filtroNombre.toLowerCase())
+      paciente.Nombre.toLowerCase().includes(this.filtroNombre.toLowerCase())
     );
 
     if (this.columnaOrdenada) {
@@ -112,18 +112,18 @@ export class PacientesComponent implements OnInit {
         this.pacientes.push(paciente);
         this.filtrarPacientes();
         this.nuevoPaciente = {
-          idPaciente: 0,
-          nombre: '',
-          edad: 0,
-          fechaNacimiento: new Date(),
-          sintomas: '',
-          estado: '',
-          fechaRegistro: new Date(),
-          seguridadSocial: '',
-          direccion: '',
-          telefono: '',
-          email: '',
-          historialMedico: ''
+          IdPaciente: 0,
+          Nombre: '',
+          Edad: 0,
+          FechaNacimiento: new Date(),
+          Sintomas: '',
+          Estado: '',
+          FechaRegistro: new Date(),
+          SeguridadSocial: '',
+          Direccion: '',
+          Telefono: '',
+          Email: '',
+          HistorialMedico: ''
         };
       },
       error: (error: any) => {
@@ -133,7 +133,7 @@ export class PacientesComponent implements OnInit {
   }
 
   toggleActualizarPaciente(paciente: Paciente): void {
-    if (this.pacienteParaActualizar && this.pacienteParaActualizar.idPaciente === paciente.idPaciente) {
+    if (this.pacienteParaActualizar && this.pacienteParaActualizar.IdPaciente === paciente.IdPaciente) {
       this.pacienteParaActualizar = null;
     } else {
       this.pacienteParaActualizar = { ...paciente };
@@ -144,7 +144,7 @@ export class PacientesComponent implements OnInit {
     if (this.pacienteParaActualizar) {
       this.apiService.updatePaciente(this.pacienteParaActualizar).subscribe({
         next: (pacienteActualizado: Paciente) => {
-          const index = this.pacientes.findIndex(p => p.idPaciente === pacienteActualizado.idPaciente);
+          const index = this.pacientes.findIndex(p => p.IdPaciente === pacienteActualizado.IdPaciente);
           if (index !== -1) {
             this.pacientes[index] = pacienteActualizado;
             this.filtrarPacientes();
@@ -161,7 +161,7 @@ export class PacientesComponent implements OnInit {
   borrarPaciente(id: number): void {
     this.apiService.deletePaciente(id).subscribe({
       next: () => {
-        this.pacientes = this.pacientes.filter(p => p.idPaciente !== id);
+        this.pacientes = this.pacientes.filter(p => p.IdPaciente !== id);
         this.filtrarPacientes();
       },
       error: (error: any) => {

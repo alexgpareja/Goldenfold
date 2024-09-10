@@ -12,7 +12,7 @@ import { ApiService, Habitacion } from '../../services/api.service';
 })
 export class HabitacionesComponent implements OnInit {
   habitaciones: Habitacion[] = [];
-  nuevaHabitacion: Habitacion = { idHabitacion: 0, edificio: '', planta: '', numeroHabitacion: '' };
+  nuevaHabitacion: Habitacion = { IdHabitacion: 0, Edificio: '', Planta: '', NumeroHabitacion: '' };
   habitacionParaActualizar: Habitacion | null = null;
 
   constructor(private apiService: ApiService) {}
@@ -25,10 +25,10 @@ export class HabitacionesComponent implements OnInit {
     this.apiService.getHabitaciones().subscribe({
       next: (data: any[]) => {
         this.habitaciones = data.map(item => ({
-          idHabitacion: item.idHabitacion,
-          edificio: item.edificio,
-          planta: item.planta,
-          numeroHabitacion: item.numeroHabitacion
+          IdHabitacion: item.IdHabitacion,
+          Edificio: item.Edificio,
+          Planta: item.Planta,
+          NumeroHabitacion: item.NumeroHabitacion
         }));
       },
       error: (error: any) => {
@@ -41,7 +41,7 @@ export class HabitacionesComponent implements OnInit {
     this.apiService.addHabitacion(this.nuevaHabitacion).subscribe({
       next: (nuevaHabitacion: Habitacion) => {
         this.habitaciones.push(nuevaHabitacion);
-        this.nuevaHabitacion = { idHabitacion: 0, edificio: '', planta: '', numeroHabitacion: '' };
+        this.nuevaHabitacion = { IdHabitacion: 0, Edificio: '', Planta: '', NumeroHabitacion: '' };
       },
       error: (error: any) => {
         console.error('Error al agregar la habitación', error);
@@ -53,7 +53,7 @@ export class HabitacionesComponent implements OnInit {
     if (this.habitacionParaActualizar) {
       this.apiService.updateHabitacion(this.habitacionParaActualizar).subscribe({
         next: (habitacionActualizada: Habitacion) => {
-          const index = this.habitaciones.findIndex(h => h.idHabitacion === habitacionActualizada.idHabitacion);
+          const index = this.habitaciones.findIndex(h => h.IdHabitacion === habitacionActualizada.IdHabitacion);
           if (index !== -1) {
             this.habitaciones[index] = habitacionActualizada;
           }
@@ -69,7 +69,7 @@ export class HabitacionesComponent implements OnInit {
   borrarHabitacion(id: number): void {
     this.apiService.deleteHabitacion(id).subscribe({
       next: () => {
-        this.habitaciones = this.habitaciones.filter(h => h.idHabitacion !== id);
+        this.habitaciones = this.habitaciones.filter(h => h.IdHabitacion !== id);
       },
       error: (error: any) => {
         console.error('Error al borrar la habitación', error);
