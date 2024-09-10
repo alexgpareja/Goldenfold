@@ -1,21 +1,31 @@
 <div class="search-section">
   <h2>Buscar Paciente</h2>
+  
   <form (submit)="searchPatient($event)" class="search-form">
     <div class="form-group">
       <label for="search-name">Nombre</label>
-      <input type="text" id="search-name" [(ngModel)]="searchName" name="searchName" placeholder="Nombre del paciente" required />
+      <input 
+        type="text" 
+        id="search-name" 
+        [(ngModel)]="searchName" 
+        name="searchName" 
+        placeholder="Nombre del paciente" 
+        required 
+      />
     </div>
 
     <button type="submit" class="submit-btn">Buscar Paciente</button>
   </form>
 
   <!-- Mensaje de error -->
-  <div *ngIf="errorMensaje" class="error-message">{{ errorMensaje }}</div>
+  <div *ngIf="errorMensaje" class="error-message">
+    {{ errorMensaje }}
+  </div>
 
   <!-- Mostrar los resultados si se encuentran pacientes -->
   <div *ngIf="pacientesEncontrados.length > 0" class="resultados">
     <h3>Información del Paciente</h3>
-<<<<<<< HEAD
+
     <div class="pacientes-container">
       <div *ngFor="let paciente of pacientesEncontrados" class="paciente-info">
         <p><strong>Nombre:</strong> {{ paciente.Nombre }}</p>
@@ -29,11 +39,38 @@
         <p><strong>Email:</strong> {{ paciente.Email }}</p>
         <p><strong>Historial Médico:</strong> {{ paciente.HistorialMedico }}</p>
 
-        <!-- Botones de acción -->
+        <!-- Botón para editar -->
         <button (click)="editPatient(paciente)" class="edit-btn">Editar</button>
-        <button (click)="deletePatient(paciente.IdPaciente)" class="delete-btn">Eliminar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Formulario de edición que aparece al seleccionar un paciente -->
+  <div *ngIf="selectedPaciente" class="edit-section">
+    <h3>Editar Paciente</h3>
+    <form (submit)="updatePatient()">
+      <div class="form-group">
+        <label>Nombre:</label>
+        <input type="text" [(ngModel)]="selectedPaciente.Nombre" name="Nombre" required />
       </div>
 
-    </div>
+      <div class="form-group">
+        <label>Edad:</label>
+        <input type="number" [(ngModel)]="selectedPaciente.Edad" name="Edad" required />
+      </div>
+
+      <div class="form-group">
+        <label>Síntomas:</label>
+        <input type="text" [(ngModel)]="selectedPaciente.Sintomas" name="Sintomas" />
+      </div>
+
+      <div class="form-group">
+        <label>Teléfono:</label>
+        <input type="text" [(ngModel)]="selectedPaciente.Telefono" name="Telefono" />
+      </div>
+
+      <button type="submit" class="update-btn">Actualizar Paciente</button>
+      <button type="button" (click)="cancelEdit()" class="cancel-btn">Cancelar</button>
+    </form>
   </div>
 </div>
