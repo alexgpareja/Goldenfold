@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ApiService, Cama } from '../../services/api.service';
-
 @Component({
   selector: 'app-camas',
   standalone: true,
@@ -12,6 +11,7 @@ import { ApiService, Cama } from '../../services/api.service';
 })
 export class CamasComponent implements OnInit {
   camas: Cama[] = [];
+  camasFiltradas: Cama[] = [];
   nuevaCama: Cama = { Ubicacion: '', Estado: '', Tipo: '' };
   camaParaActualizar: Cama | null = null;
 
@@ -25,6 +25,7 @@ export class CamasComponent implements OnInit {
     this.apiService.getCamas().subscribe({
       next: (data: Cama[]) => {
         this.camas = data;
+        this.camasFiltradas = [...this.camas]; // Inicializamos camasFiltradas
       },
       error: (error: any) => {
         console.error('Error al obtener las camas', error);
@@ -37,6 +38,7 @@ export class CamasComponent implements OnInit {
       next: (cama: Cama) => {
         this.camas.push(cama);
         this.nuevaCama = { Ubicacion: '', Estado: '', Tipo: '' };
+        this.camasFiltradas = [...this.camas]; // Refrescamos las camas filtradas
       },
       error: (error: any) => {
         console.error('Error al agregar la cama', error);
@@ -65,16 +67,59 @@ export class CamasComponent implements OnInit {
       });
     }
   }
-  
+
+  confirmarBorrarCama(cama: Cama): void {
+    const confirmar = window.confirm(`¿Está seguro de que desea borrar la cama con ubicación ${cama.Ubicacion}?`);
+    if (confirmar) {
+      this.borrarCama(cama.Ubicacion);
+    }
+  }
 
   borrarCama(ubicacion: string): void {
     this.apiService.deleteCama(ubicacion).subscribe({
       next: () => {
         this.camas = this.camas.filter(c => c.Ubicacion !== ubicacion);
+        this.camasFiltradas = [...this.camas]; // Refrescar la lista filtrada
       },
       error: (error: any) => {
-        console.error('Error al borrar la cama', error);
+         console.error('Error al eliminar la cama', error);
       }
     });
+  }
+
+  filtrarPorUbicacion(event: Event): void {
+    const inputElement = event.target as HTMLInputElement;
+    const value = inputElement.value;
+    if (value !== undefined && value !== null) {
+      this.camasFiltradas = this.camas.filter(cama =>
+        cama.Ubicacion.toLowerCase().includes(value.toLowerCase())
+      );
+    } else {
+      this.camasFiltradas = [...this.camas];
+    }
+  }
+
+  filtrarPorEstado(event: Event): void {
+    const selectElement = event.target as HTMLSelectElement;
+    const value = selectElement.value;
+    if (value === '') {
+      this.camasFiltradas = [...this.camas];
+    } else {
+      this.camasFiltradas = this.camas.filter(cama =>
+        cama.Estado === value
+      );
+    }
+  }
+
+  filtrarPorTipo(event: Event): void {
+    const selectElement = event.target as HTMLSelectElement;
+    const value = selectElement.value;
+    if (value === '') {
+      this.camasFiltradas = [...this.camas];
+    } else {
+      this.camasFiltradas = this.camas.filter(cama =>
+        cama.Tipo === value
+      );
+    }
   }
 }

@@ -1,5 +1,28 @@
 <div class="camas-section">
   <h2>Camas</h2>
+  
+<div class="search-container">
+  <label for="searchUbicacion">Buscar por ubicación:</label>
+  <input type="text" id="searchUbicacion" (input)="filtrarPorUbicacion($event)">
+</div>
+
+<div class="filter-container">
+  <label for="filterEstado">Filtrar por estado:</label>
+  <select id="filterEstado" (change)="filtrarPorEstado($event)">
+    <option value="">Todos</option>
+    <option value="Disponible">Disponible</option>
+    <option value="Ocupada">Ocupada</option>
+  </select>
+
+  <label for="filterTipo">Filtrar por tipo:</label>
+  <select id="filterTipo" (change)="filtrarPorTipo($event)">
+    <option value="">Todos</option>
+    <option value="General">General</option>
+    <option value="UCI">UCI</option>
+    <option value="Postoperatorio">Postoperatorio</option>
+  </select>
+</div>
+
   <div class="table-container">
     <table class="table">
       <thead>
@@ -11,13 +34,13 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let cama of camas">
+        <tr *ngFor="let cama of camasFiltradas">
           <td>{{ cama.Ubicacion }}</td>
           <td>{{ cama.Estado }}</td>
           <td>{{ cama.Tipo }}</td>
           <td>
             <button (click)="toggleActualizarCama(cama)">Actualizar</button>
-            <button (click)="borrarCama(cama.Ubicacion)">Borrar</button>
+            <button (click)="confirmarBorrarCama(cama)">Borrar</button>
           </td>
         </tr>
       </tbody>
@@ -50,3 +73,4 @@
     </form>
   </div>
 </div>
+
