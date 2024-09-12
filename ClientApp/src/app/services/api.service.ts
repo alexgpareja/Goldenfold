@@ -24,7 +24,7 @@ export interface Consulta {
   IdMedico: number;
   Motivo: string;
   FechaSolicitud: Date;
-  FechaConsulta: Date;
+  FechaConsulta: Date | null;
   Estado: string;
 }
 

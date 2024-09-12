@@ -28,7 +28,7 @@ namespace HospitalApi
 
         [StringLength(50)]
         [Column("estado")]
-        public string Estado { get; set; } = "Pendiente de Cama";
+        public string Estado { get; set; } = "Registrado";
 
         [Column("fecha_registro")]
         public DateTime FechaRegistro { get; set; }
