@@ -1,1 +1,56 @@
-<p>consultas-programadas works!</p>
+<div class="consultas-section">
+    <h2>Consultas Programadas</h2>
+  
+    <!-- Mensaje de error -->
+    <div *ngIf="errorMensaje" class="error-message">{{ errorMensaje }}</div>
+  
+    <!-- Mostrar las consultas pendientes -->
+    <div *ngIf="consultasPendientes.length > 0; else noConsultas">
+      <table class="consultas-table">
+        <thead>
+          <tr>
+            <th>Nombre del Paciente</th>
+            <th>Motivo</th>
+            <th>Fecha de Solicitud</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let consulta of consultasPendientes">
+            <td>{{ consulta.IdPaciente }}</td>
+            <td>{{ consulta.Motivo }}</td>
+            <td>{{ consulta.FechaSolicitud | date: 'dd/MM/yyyy' }}</td>
+            <td>
+              <!-- Botón para evaluar la consulta -->
+              <button (click)="evaluar(consulta)" class="action-btn">Evaluar</button>
+  
+              <!-- Mostrar el formulario de evaluación si es la consulta seleccionada -->
+              <div *ngIf="consultaSeleccionada?.IdConsulta === consulta.IdConsulta" class="evaluation-form">
+                <h3>Evaluar Paciente</h3>
+  
+                <!-- Opción de dar de alta sin ingresar -->
+                <button (click)="darAlta(consulta.IdPaciente)" class="action-btn">Dar de Alta</button>
+  
+                <!-- Opción de solicitar ingreso -->
+                <div class="form-group">
+                  <label for="tipo-cama">Tipo de Cama:</label>
+                  <select id="tipo-cama" [(ngModel)]="tipoCamaSeleccionado">
+                    <option value="UCI">UCI</option>
+                    <option value="General">General</option>
+                    <option value="Postoperatorio">Postoperatorio</option>
+                  </select>
+                  <button (click)="solicitarIngreso(consulta.IdPaciente, tipoCamaSeleccionado)" class="action-btn">Solicitar Ingreso</button>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  
+    <!-- Mensaje si no hay consultas -->
+    <ng-template #noConsultas>
+      <p>No hay consultas pendientes para este médico.</p>
+    </ng-template>
+  </div>
+  

@@ -129,10 +129,6 @@ namespace HospitalApi.Controllers
 
             var pacienteDTOResult = _mapper.Map<PacienteDTO>(paciente);
             return CreatedAtAction(nameof(GetPaciente), new { id = paciente.IdPaciente }, pacienteDTOResult);
-<<<<<<< HEAD
-=======
-
->>>>>>> caa4bf5221cce5e10bc5cd3c3d62c9139c104bfc
 
         }
 

@@ -35,7 +35,7 @@ export interface Ingreso {
   Motivo: string;
   FechaSolicitud: Date;
   Estado: string;
-  IdAsignacion: number;
+  IdAsignacion: number | null;
 }
 
 export interface HistorialAlta {
@@ -96,6 +96,12 @@ export class ApiService {
     if (numSS) params = params.set('numSS', numSS);
     return this.http.get<Paciente[]>(`${this.apiUrl}/Pacientes`, { params });
   }
+
+  updatePacienteEstado(idPaciente: number, nuevoEstado: string): Observable<Paciente> {
+    const body = { Estado: nuevoEstado };
+    return this.http.put<Paciente>(`${this.apiUrl}/Pacientes/${idPaciente}`, body);
+  }
+  
 
   addPaciente(paciente: Paciente): Observable<Paciente> {
     return this.http.post<Paciente>(`${this.apiUrl}/Pacientes`, paciente);
