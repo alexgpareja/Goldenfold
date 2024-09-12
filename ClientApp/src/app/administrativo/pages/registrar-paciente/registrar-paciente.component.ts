@@ -10,23 +10,29 @@ import { HttpErrorResponse } from '@angular/common/http';
 export class RegistrarPacienteComponent {
   nuevoPaciente: Paciente = {
     IdPaciente: 0,
-          Nombre: '',
-          Edad: 0,
-          FechaNacimiento: new Date(),
-          Sintomas: '',
-          Estado: '',
-          FechaRegistro: new Date(),
-          SeguridadSocial: '',
-          Direccion: '',
-          Telefono: '',
-          Email: '',
-          HistorialMedico: ''
+    Nombre: '',
+    Edad: 0,
+    FechaNacimiento: new Date(),
+    Sintomas: '',
+    Estado: '',
+    FechaRegistro: new Date(),
+    SeguridadSocial: '',
+    Direccion: '',
+    Telefono: '',
+    Email: '',
+    HistorialMedico: ''
   };
 
   constructor(private apiService: ApiService) {}
 
   registerPatient(event: Event) {
     event.preventDefault();
+
+    // Verificar que el número de seguridad social tiene 12 dígitos
+    if (this.nuevoPaciente.SeguridadSocial.length !== 12) {
+      alert('El número de seguridad social debe tener 12 dígitos.');
+      return;
+    }
 
     this.apiService.addPaciente(this.nuevoPaciente).subscribe({
       next: () => {
@@ -46,17 +52,17 @@ export class RegistrarPacienteComponent {
   resetForm() {
     this.nuevoPaciente = {
       IdPaciente: 0,
-          Nombre: '',
-          Edad: 0,
-          FechaNacimiento: new Date(),
-          Sintomas: '',
-          Estado: '',
-          FechaRegistro: new Date(),
-          SeguridadSocial: '',
-          Direccion: '',
-          Telefono: '',
-          Email: '',
-          HistorialMedico: ''
+      Nombre: '',
+      Edad: 0,
+      FechaNacimiento: new Date(),
+      Sintomas: '',
+      Estado: '',
+      FechaRegistro: new Date(),
+      SeguridadSocial: '',
+      Direccion: '',
+      Telefono: '',
+      Email: '',
+      HistorialMedico: ''
     };
   }
 }

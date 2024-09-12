@@ -283,11 +283,11 @@ export class ApiService {
     return this.http.put<Cama>(`${this.apiUrl}/Camas/${cama.Ubicacion}`, cama);
   }
 
-  deleteCama(ubicacion?: string): Observable<void> {
-    let params = new HttpParams();
-    if (ubicacion) params = params.set('ubicacion', ubicacion);
-    return this.http.delete<void>(`${this.apiUrl}/Camas`, { params });
+  deleteCama(ubicacion: string): Observable<void> {
+    // Realiza la solicitud DELETE
+    return this.http.delete<void>(`${this.apiUrl}/Camas/${ubicacion}`);
   }
+  
 
   // CRUD para Habitaciones
   getHabitaciones(id?: number, edificio?: string): Observable<Habitacion[]> {

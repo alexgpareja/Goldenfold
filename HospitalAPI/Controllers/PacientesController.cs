@@ -93,6 +93,11 @@ namespace HospitalApi.Controllers
                 return Conflict("Ya existe un paciente con el número de seguridad social proporcionado.");
             }
 
+            if (string.IsNullOrEmpty(pacienteDTO.Estado))
+            {
+                pacienteDTO.Estado = "Registrado";
+            }
+
             // Validar el formato del número de seguridad social
             if (pacienteDTO.SeguridadSocial.Length != 12 || !pacienteDTO.SeguridadSocial.All(char.IsDigit))
             {
@@ -124,6 +129,10 @@ namespace HospitalApi.Controllers
 
             var pacienteDTOResult = _mapper.Map<PacienteDTO>(paciente);
             return CreatedAtAction(nameof(GetPaciente), new { id = paciente.IdPaciente }, pacienteDTOResult);
+<<<<<<< HEAD
+=======
+
+>>>>>>> caa4bf5221cce5e10bc5cd3c3d62c9139c104bfc
 
         }
 
