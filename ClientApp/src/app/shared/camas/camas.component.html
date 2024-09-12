@@ -1,52 +1,80 @@
 <div class="camas-section">
   <h2>Camas</h2>
-  <div class="table-container">
-    <table class="table">
-      <thead>
-        <tr>
-          <th>Ubicación</th>
-          <th>Estado</th>
-          <th>Tipo</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let cama of camas">
-          <td>{{ cama.Ubicacion }}</td>
-          <td>{{ cama.Estado }}</td>
-          <td>{{ cama.Tipo }}</td>
-          <td>
-            <button (click)="toggleActualizarCama(cama)">Actualizar</button>
-            <button (click)="borrarCama(cama.Ubicacion)">Borrar</button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+  <main>
+    <div class="filters-container">
+      <div class="search-container">
+        <label for="searchUbicacion"></label>
+        <input placeholder="Buscar por ubicación" type="text" id="searchUbicacion" (input)="filtrarPorUbicacion($event)">
+      </div>
+      
+      <div class="filter-container">
+        <label for="filterEstado">Filtrar por estado:</label>
+        <select id="filterEstado" (change)="filtrarPorEstado($event)">
+          <option value="">Todos</option>
+          <option value="Disponible">Disponible</option>
+          <option value="Ocupada">Ocupada</option>
+        </select>
+      
+        <label for="filterTipo">Filtrar por tipo:</label>
+        <select id="filterTipo" (change)="filtrarPorTipo($event)">
+          <option value="">Todos</option>
+          <option value="General">General</option>
+          <option value="UCI">UCI</option>
+          <option value="Postoperatorio">Postoperatorio</option>
+        </select>
+      </div>
+    </div>
 
-  <div class="form-container" *ngIf="camaParaActualizar">
-    <h3>Actualizar Cama</h3>
-    <form (ngSubmit)="actualizarCama()">
-      <label for="ubicacion">Ubicación:</label>
-      <input type="text" id="ubicacion" [(ngModel)]="camaParaActualizar.Ubicacion" name="ubicacion" disabled>
-      <label for="estado">Estado:</label>
-      <input type="text" id="estado" [(ngModel)]="camaParaActualizar.Estado" name="estado">
-      <label for="tipo">Tipo:</label>
-      <input type="text" id="tipo" [(ngModel)]="camaParaActualizar.Tipo" name="tipo">
-      <button type="submit">Guardar</button>
-    </form>
-  </div>
+    <button (click)="abrirFormularioCama()">Agregar Cama</button>
 
-  <div class="form-container">
-    <h3>Agregar Cama</h3>
-    <form (ngSubmit)="agregarCama()">
-      <label for="ubicacion">Ubicación:</label>
-      <input type="text" id="ubicacion" [(ngModel)]="nuevaCama.Ubicacion" name="ubicacion">
-      <label for="estado">Estado:</label>
-      <input type="text" id="estado" [(ngModel)]="nuevaCama.Estado" name="estado">
-      <label for="tipo">Tipo:</label>
-      <input type="text" id="tipo" [(ngModel)]="nuevaCama.Tipo" name="tipo">
-      <button type="submit">Agregar</button>
-    </form>
-  </div>
+    <div class="table-container">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Ubicación</th>
+            <th>Estado</th>
+            <th>Tipo</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let cama of camasFiltradas">
+            <td>{{ cama.Ubicacion }}</td>
+            <td>{{ cama.Estado }}</td>
+            <td>{{ cama.Tipo }}</td>
+            <td>
+              <button (click)="toggleActualizarCama(cama)">Actualizar</button>
+              <button (click)="confirmarBorrarCama(cama)">Borrar</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Modal -->
+    <div *ngIf="mostrarFormularioCama" class="modal" (click)="manejarClicFuera($event)">
+      <div class="modal-content">
+        <span class="close" (click)="cerrarFormularioCama()">&times;</span>
+        <h3>Agregar Cama</h3>
+        <form (ngSubmit)="agregarCama()">
+          <label for="ubicacion">Ubicación:</label>
+          <input type="text" id="ubicacion" [(ngModel)]="nuevaCama.Ubicacion" name="ubicacion" required>
+          <label for="estado">Estado:</label>
+          <select id="estado" [(ngModel)]="nuevaCama.Estado" name="estado" required>
+            <option value="Disponible">Disponible</option>
+            <option value="Ocupada">Ocupada</option>
+          </select>
+          <label for="tipo">Tipo:</label>
+          <select id="tipo" [(ngModel)]="nuevaCama.Tipo" name="tipo" required>
+            <option value="General">General</option>
+            <option value="UCI">UCI</option>
+            <option value="Postoperatorio">Postoperatorio</option>
+          </select>
+          <button type="submit">Agregar</button>
+        </form>
+        <!-- Mensaje de éxito -->
+        <div *ngIf="mensajeExito" class="mensaje-exito">{{ mensajeExito }}</div>
+      </div>
+    </div>
+  </main>
 </div>

@@ -177,6 +177,13 @@ namespace HospitalApi.Controllers
             {
                 return NotFound("No se encontró la cama especificada.");
             }
+
+             // Verificar si la cama está ocupada
+            var asignacion = await _context.Asignaciones.FirstOrDefaultAsync(a => a.Ubicacion == ubicacion);
+            if (asignacion != null)
+            {
+                return Conflict("La cama no puede ser eliminada porque está ocupada.");
+            }
             _context.Camas.Remove(cama);
             await _context.SaveChangesAsync();
             return NoContent();
