@@ -99,6 +99,7 @@ namespace HospitalApi.Controllers
             
             _context.Asignaciones.Add(asignacion);
              // Cambiar el estado de la cama
+            var cama = await _context.Camas.FindAsync(asignacion.Ubicacion);
             cama.Estado = "Ocupada";
             _context.Camas.Update(cama);
             await _context.SaveChangesAsync();
@@ -183,7 +184,7 @@ namespace HospitalApi.Controllers
                 return NotFound("No se encontró la asignación especificada.");
             }
 
-             var cama = await _context.Camas.FindAsync(asignacion.Ubicacion);
+            var cama = await _context.Camas.FindAsync(asignacion.Ubicacion);
             if (cama != null)
             {
                 cama.Estado = "Disponible";

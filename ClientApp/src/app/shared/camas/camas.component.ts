@@ -34,11 +34,21 @@ export class CamasComponent implements OnInit {
   }
 
   agregarCama(): void {
+    if (!this.nuevaCama.Ubicacion || !this.nuevaCama.Estado || !this.nuevaCama.Tipo) {
+      alert('Por favor, rellene todos los campos.');
+      return;
+    }
+    const ubicacionExiste = this.camas.some(cama => cama.Ubicacion === this.nuevaCama.Ubicacion);
+    if (ubicacionExiste) {
+      alert('La ubicación ya existe. Elija otra.');
+      return;
+    }
+    
     this.apiService.addCama(this.nuevaCama).subscribe({
       next: (cama: Cama) => {
         this.camas.push(cama);
         this.nuevaCama = { Ubicacion: '', Estado: '', Tipo: '' };
-        this.camasFiltradas = [...this.camas]; // Refrescamos las camas filtradas
+        this.camasFiltradas = [...this.camas]; // Refrescar las camas filtradas
       },
       error: (error: any) => {
         console.error('Error al agregar la cama', error);

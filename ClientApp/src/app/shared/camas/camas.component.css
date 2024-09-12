@@ -6,7 +6,6 @@
   .table-container, .form-container {
     background-color: rgb(228, 224, 224);
     padding: 20px;
-    margin: 20px;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(8, 8, 8, 0.1);
     margin-bottom: 20px;
@@ -79,3 +78,45 @@
     background-color: #0056a3;
   }
   
+  .filter-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 500px;
+    height: 50px;
+    font-size: 0.8rem;
+    padding-left: 12px;
+
+  }
+
+  .filters-container {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-items: space-evenly;
+    padding: 5px;
+
+  }
+
+  select {
+    width: 100px;
+    height: 30px;
+  }
+
+  select label {
+    width: 300px;
+  }
+  .search-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 200px;
+    height: 30px;
+    font-size: 0.9rem;
+  }
+
+  main {
+    display: flex column;
+    align-items: center;
+    justify-content: space-between;
+  }
