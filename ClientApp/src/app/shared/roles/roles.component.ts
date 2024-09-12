@@ -53,13 +53,13 @@ export class RolesComponent implements OnInit {
       next: (rol: Rol) => {
         this.roles.push(rol);
         this.nuevoRol = { IdRol: 0, NombreRol: '' };
-        alert('Rol agregado con éxito'); // Este lo puedes reemplazar por una notificación si prefieres
+        alert('Rol agregado con éxito');
       },
       error: (error: any) => {
         // Mostrar directamente el mensaje de error del backend
         const mensajeError =
           error.error || 'Error inesperado. Inténtalo de nuevo.';
-        alert(mensajeError); // Aquí podrías usar un toast o notificación más amigable
+        alert(mensajeError);
       },
     });
   }
