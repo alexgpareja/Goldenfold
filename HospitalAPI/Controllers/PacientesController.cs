@@ -123,7 +123,7 @@ namespace HospitalApi.Controllers
             await _context.SaveChangesAsync();
 
             var pacienteDTOResult = _mapper.Map<PacienteDTO>(paciente);
-            return CreatedAtAction(nameof(GetPaciente), new { numeroSeguridadSocial = pacienteDTO.SeguridadSocial }, pacienteDTOResult);
+            return CreatedAtAction(nameof(GetPaciente), new { id = paciente.IdPaciente }, pacienteDTOResult);
 
         }
 
@@ -147,7 +147,7 @@ namespace HospitalApi.Controllers
         {
 
             var pacienteExiste = await _context.Pacientes.FindAsync(id);
-            
+
             if (pacienteExiste == null)
             {
                 return NotFound("No se encontró el paciente especificado.");
