@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ApiService, Paciente } from '../../../services/api.service';
+import { ApiService, Paciente, Consulta } from '../../../services/api.service';
 import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
@@ -8,15 +8,29 @@ import { HttpErrorResponse } from '@angular/common/http';
   styleUrls: ['./buscar-paciente.component.css']
 })
 export class BuscarPacienteComponent {
-  searchName: string = '';
-  pacientesEncontrados: Paciente[] = [];
-  errorMensaje: string | null = null;
-  selectedPaciente: Paciente | null = null; // Paciente seleccionado para edición
+  searchName: string = ''; // Nombre del paciente a buscar
+  pacientesEncontrados: Paciente[] = []; // Resultados de la búsqueda
+  errorMensaje: string | null = null; // Mensaje de error
+  pacienteSeleccionado: Paciente | null = null; // Paciente seleccionado para consulta o edición
+  mostrarFormularioConsulta: boolean = false; // Mostrar u ocultar el formulario de consulta
+  mostrarFormularioEdicion: boolean = false; // Mostrar u ocultar el formulario de edición
+
+  // Inicializar un objeto vacío para la nueva consulta
+  consulta: Consulta = {
+    IdConsulta: 0,
+    IdPaciente: 0,
+    IdMedico: 0,
+    Motivo: '',
+    FechaSolicitud: new Date(),
+    FechaConsulta: null,
+    Estado: 'pendiente de consultar'
+  };
 
   constructor(private apiService: ApiService) {}
 
-  searchPatient(event: Event) {
-    event.preventDefault();
+  // Método para buscar pacientes
+  buscarPaciente(event: Event) {
+    event.preventDefault(); // Evita la recarga de la página
     this.errorMensaje = null;
     this.pacientesEncontrados = [];
 
@@ -24,8 +38,7 @@ export class BuscarPacienteComponent {
       this.apiService.getPacientes(this.searchName).subscribe({
         next: (pacientes: Paciente[]) => {
           if (pacientes.length > 0) {
-            this.pacientesEncontrados = pacientes;
-
+            this.pacientesEncontrados = pacientes; // Mostrar pacientes encontrados
           } else {
             this.errorMensaje = 'No se encontraron pacientes con ese nombre.';
           }
@@ -39,25 +52,21 @@ export class BuscarPacienteComponent {
     }
   }
 
-  transformarPropiedadesAMinusculas(paciente: any): any {
-    const pacienteConMinusculas: any = {};
-    Object.keys(paciente).forEach(key => {
-      pacienteConMinusculas[key.toLowerCase()] = paciente[key];
-    });
-    return pacienteConMinusculas;
+  // Seleccionar un paciente para editar
+  editarPaciente(paciente: Paciente) {
+    this.pacienteSeleccionado = { ...paciente }; // Clona el paciente seleccionado
+    this.mostrarFormularioEdicion = true; // Mostrar el formulario de edición
+    this.mostrarFormularioConsulta = false; // Ocultar el formulario de consulta
   }
 
-  editPatient(paciente: Paciente) {
-    this.selectedPaciente = { ...paciente }; // Clonar el paciente para editarlo
-  }
-
-  updatePatient() {
-    if (this.selectedPaciente) {
-      this.apiService.updatePaciente(this.selectedPaciente).subscribe({
+  // Actualizar los datos del paciente
+  actualizarPaciente() {
+    if (this.pacienteSeleccionado) {
+      this.apiService.updatePaciente(this.pacienteSeleccionado).subscribe({
         next: () => {
-          // Actualizar la lista de pacientes
-          this.searchPatient(new Event('')); // Rehacer la búsqueda para refrescar los datos
-          this.selectedPaciente = null; // Limpiar el paciente seleccionado
+          this.buscarPaciente(new Event('')); // Rehacer la búsqueda para actualizar los datos
+          this.pacienteSeleccionado = null; // Limpiar el paciente seleccionado
+          this.mostrarFormularioEdicion = false; // Ocultar el formulario de edición
           alert('Paciente actualizado con éxito.');
         },
         error: (error: HttpErrorResponse) => {
@@ -67,21 +76,59 @@ export class BuscarPacienteComponent {
     }
   }
 
-  cancelEdit() {
-    this.selectedPaciente = null; // Limpiar el paciente seleccionado
+  abrirFormularioConsulta(paciente: Paciente) {
+    this.pacienteSeleccionado = paciente;
+    this.mostrarFormularioConsulta = true; // Mostrar el formulario de consulta
+    this.mostrarFormularioEdicion = false; // Ocultar el formulario de edición
+  
+    // Rellenar los campos de la consulta con los valores predeterminados
+    this.consulta.IdPaciente = paciente.IdPaciente;
+    this.consulta.FechaSolicitud = new Date(); // Fecha actual
+    this.consulta.Estado = 'pendiente de consultar';
   }
+  
 
-  deletePatient(pacienteId: number) {
-    if (confirm('¿Estás seguro de que deseas eliminar este paciente?')) {
-      this.apiService.deletePaciente(pacienteId).subscribe({
+  // Método para registrar la consulta
+  registrarConsulta() {
+    if (this.consulta.IdMedico && this.consulta.Motivo) {
+      this.apiService.addConsulta(this.consulta).subscribe({
         next: () => {
-          this.pacientesEncontrados = this.pacientesEncontrados.filter(paciente => paciente.IdPaciente !== pacienteId);
-          alert('Paciente eliminado con éxito.');
+          alert('Consulta registrada con éxito.');
+          this.mostrarFormularioConsulta = false;
+          this.pacienteSeleccionado = null; // Limpiar el paciente seleccionado después de registrar la consulta
+          this.resetConsulta(); // Reiniciar el formulario de consulta
         },
         error: (error: HttpErrorResponse) => {
-          this.errorMensaje = 'Error al eliminar el paciente. Por favor, inténtalo de nuevo.';
+          this.errorMensaje = 'Error al registrar la consulta. Por favor, inténtalo de nuevo.';
         }
       });
+    } else {
+      alert('Por favor, ingrese todos los datos requeridos.');
     }
+  }
+
+  // Método para cancelar la edición del paciente
+  cancelarEdicion() {
+    this.pacienteSeleccionado = null; // Limpiar el paciente seleccionado
+    this.mostrarFormularioEdicion = false; // Ocultar el formulario de edición
+  }
+
+  // Método para cancelar el registro de la consulta
+  cancelarConsulta() {
+    this.mostrarFormularioConsulta = false;
+    this.resetConsulta(); // Reiniciar el formulario de consulta
+  }
+
+  // Método para reiniciar el formulario de consulta
+  resetConsulta() {
+    this.consulta = {
+      IdConsulta: 0,
+      IdPaciente: 0,
+      IdMedico: 0,
+      Motivo: '',
+      FechaSolicitud: new Date(),
+      FechaConsulta: null,
+      Estado: 'pendiente de consultar'
+    };
   }
 }

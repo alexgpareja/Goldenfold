@@ -1,50 +1,59 @@
 <div class="register-section">
   <h2>Registro de Paciente</h2>
-  <form (submit)="registerPatient($event)" class="register-form">
+  <form (submit)="registerPatient($event)" class="register-form" #pacienteForm="ngForm">
     <!-- Campos del formulario -->
     <div class="form-group">
       <label for="nombre">Nombre</label>
       <input type="text" id="nombre" [(ngModel)]="nuevoPaciente.Nombre" name="Nombre" required placeholder="Nombre del paciente" />
+      <div *ngIf="pacienteForm.submitted && pacienteForm.controls['Nombre']?.invalid" class="error-message">El nombre es requerido.</div>
     </div>
 
     <div class="form-group">
       <label for="edad">Edad</label>
-      <input type="number" id="edad" [(ngModel)]="nuevoPaciente.Edad" name="Edad" required placeholder="Edad del paciente" />
+      <input type="number" id="edad" [(ngModel)]="nuevoPaciente.Edad" name="Edad" required placeholder="Edad del paciente" min="0" />
+      <div *ngIf="pacienteForm.submitted && pacienteForm.controls['Edad']?.invalid" class="error-message">Por favor, ingresa una edad válida.</div>
     </div>
 
     <div class="form-group">
       <label for="fecha-nacimiento">Fecha de Nacimiento</label>
       <input type="date" id="fecha-nacimiento" [(ngModel)]="nuevoPaciente.FechaNacimiento" name="FechaNacimiento" required />
+      <div *ngIf="pacienteForm.submitted && pacienteForm.controls['FechaNacimiento']?.invalid" class="error-message">La fecha de nacimiento es requerida.</div>
     </div>
 
     <div class="form-group">
       <label for="sintomas">Síntomas</label>
-      <textarea id="sintomas" [(ngModel)]="nuevoPaciente.Sintomas" name="sintomas" required placeholder="Síntomas del paciente"></textarea>
+      <textarea id="sintomas" [(ngModel)]="nuevoPaciente.Sintomas" name="Sintomas" required placeholder="Síntomas del paciente"></textarea>
+      <div *ngIf="pacienteForm.submitted && pacienteForm.controls['Sintomas']?.invalid" class="error-message">Los síntomas son requeridos.</div>
     </div>
 
     <div class="form-group">
       <label for="seguridad-social">Número de Seguridad Social</label>
-      <input type="text" id="seguridad-social" [(ngModel)]="nuevoPaciente.SeguridadSocial" name="SeguridadSocial" required placeholder="Número de Seguridad Social" />
+      <input type="text" id="seguridad-social" [(ngModel)]="nuevoPaciente.SeguridadSocial" name="SeguridadSocial" required minlength="12" maxlength="12" placeholder="Número de Seguridad Social" />
+      <div *ngIf="pacienteForm.submitted && pacienteForm.controls['SeguridadSocial']?.invalid" class="error-message">El número de seguridad social debe tener 12 dígitos.</div>
     </div>
 
     <div class="form-group">
       <label for="direccion">Dirección</label>
       <input type="text" id="direccion" [(ngModel)]="nuevoPaciente.Direccion" name="Direccion" required placeholder="Dirección del paciente" />
+      <div *ngIf="pacienteForm.submitted && pacienteForm.controls['Direccion']?.invalid" class="error-message">La dirección es requerida.</div>
     </div>
 
     <div class="form-group">
       <label for="telefono">Teléfono</label>
       <input type="text" id="telefono" [(ngModel)]="nuevoPaciente.Telefono" name="Telefono" required placeholder="Teléfono de contacto" />
+      <div *ngIf="pacienteForm.submitted && pacienteForm.controls['Telefono']?.invalid" class="error-message">El teléfono es requerido.</div>
     </div>
 
     <div class="form-group">
       <label for="email">Email</label>
       <input type="email" id="email" [(ngModel)]="nuevoPaciente.Email" name="Email" required placeholder="Correo electrónico" />
+      <div *ngIf="pacienteForm.submitted && pacienteForm.controls['Email']?.invalid" class="error-message">El correo electrónico es inválido.</div>
     </div>
 
     <div class="form-group">
       <label for="historial-medico">Historial Médico</label>
       <textarea id="historial-medico" [(ngModel)]="nuevoPaciente.HistorialMedico" name="HistorialMedico" required placeholder="Historial médico del paciente"></textarea>
+      <div *ngIf="pacienteForm.submitted && pacienteForm.controls['HistorialMedico']?.invalid" class="error-message">El historial médico es requerido.</div>
     </div>
 
     <button type="submit" class="submit-btn">Registrar Paciente</button>
