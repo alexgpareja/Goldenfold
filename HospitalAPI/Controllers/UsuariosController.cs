@@ -8,7 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 namespace HospitalApi.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")] 
+    [Route("api/[controller]")]
     public class UsuariosController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
@@ -76,7 +76,7 @@ namespace HospitalApi.Controllers
         /// <summary>
         /// Crea un nuevo usuario en la base de datos.
         /// </summary>
-        /// <param name="usuarioDTO">El objeto <see cref="UsuarioCreateDTO"/> que contiene los datos de la asignación a crear.</param>
+        /// <param name="usuarioDTO">El objeto <see cref="UsuarioCreateDTO"/> que contiene los datos del usuario a crear.</param>
         /// <returns>
         /// Un objeto <see cref="UsuarioDTO"/> que representa el usuario recién creado.
         /// </returns>
@@ -87,25 +87,46 @@ namespace HospitalApi.Controllers
         [HttpPost]
         public async Task<ActionResult<UsuarioDTO>> CreateUser(UsuarioCreateDTO usuarioDTO)
         {
+            // Validar que el nombre no esté en blanco y tenga al menos dos palabras
+            if (string.IsNullOrWhiteSpace(usuarioDTO.Nombre) || usuarioDTO.Nombre.Split(' ').Length < 2)
+            {
+                return BadRequest("Mínimo nombre y un apellido.");
+            }
+
+            // Validar que el nombre de usuario no esté en blanco
+            if (string.IsNullOrWhiteSpace(usuarioDTO.NombreUsuario))
+            {
+                return BadRequest("El nombre de usuario no puede estar en blanco.");
+            }
+
+            // Validar que la contraseña no esté en blanco
+            if (string.IsNullOrWhiteSpace(usuarioDTO.Contrasenya))
+            {
+                return BadRequest("La contraseña no puede estar en blanco.");
+            }
+
+            // Verificar si el nombre de usuario ya está en uso
             if (await _context.Usuarios.AnyAsync(u => u.NombreUsuario == usuarioDTO.NombreUsuario))
             {
                 return Conflict("El nombre de usuario ya está en uso. Por favor, elige un nombre de usuario diferente.");
             }
 
+            // Verificar si el rol existe
             if (!await _context.Roles.AnyAsync(r => r.IdRol == usuarioDTO.IdRol))
             {
                 return Conflict("El rol proporcionado no existe. Por favor, selecciona un rol válido.");
             }
 
+            // Crear el usuario si todas las validaciones pasaron
             var usuario = _mapper.Map<Usuario>(usuarioDTO);
-
             _context.Usuarios.Add(usuario);
             await _context.SaveChangesAsync();
 
             var usuarioDTOResult = _mapper.Map<UsuarioDTO>(usuario);
-            
+
             return CreatedAtAction(nameof(GetUsuario), new { id = usuarioDTOResult.IdUsuario }, usuarioDTOResult);
         }
+
 
 
         /// <summary>
@@ -125,12 +146,30 @@ namespace HospitalApi.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateUsuario(int id, UsuarioUpdateDTO usuarioDTO)
         {
-            
+
             var usuarioExiste = await _context.Usuarios.FindAsync(id);
 
             if (usuarioExiste == null)
             {
                 return NotFound("No se encontró ningun usuario con el ID proporcionado.");
+            }
+
+            // Validar que el nombre no esté en blanco y tenga al menos dos palabras
+            if (string.IsNullOrWhiteSpace(usuarioDTO.Nombre) || usuarioDTO.Nombre.Split(' ').Length < 2)
+            {
+                return BadRequest("Mínimo nombre y un apellido.");
+            }
+
+            // Validar que el nombre de usuario no esté en blanco
+            if (string.IsNullOrWhiteSpace(usuarioDTO.NombreUsuario))
+            {
+                return BadRequest("El nombre de usuario no puede estar en blanco.");
+            }
+
+            // Validar que la contraseña no esté en blanco
+            if (string.IsNullOrWhiteSpace(usuarioDTO.Contrasenya))
+            {
+                return BadRequest("La contraseña no puede estar en blanco.");
             }
 
             if (await _context.Usuarios.AnyAsync(u => u.IdUsuario != id && u.NombreUsuario == usuarioDTO.NombreUsuario))
