@@ -114,6 +114,7 @@ export class PacientesComponent implements OnInit {
       next: (paciente: Paciente) => {
         this.pacientes.push(paciente);
         this.filtrarPacientes();
+       
         this.nuevoPaciente = {
           IdPaciente: 0,
           Nombre: '',
@@ -128,7 +129,7 @@ export class PacientesComponent implements OnInit {
           Email: '',
           HistorialMedico: '',
         };
-        this.toggleFormularioAgregar(); // Cierra el modal después de agregar el paciente
+
       },
       error: (error: any) => {
         console.error('Error al agregar el paciente', error);
@@ -153,38 +154,42 @@ export class PacientesComponent implements OnInit {
     if (this.pacienteParaActualizar) {
       this.apiService.updatePaciente(this.pacienteParaActualizar).subscribe({
         next: (pacienteActualizado: Paciente) => {
-          const index = this.pacientes.findIndex(
-            (p) => p.IdPaciente === pacienteActualizado.IdPaciente
-          );
-          if (index !== -1) {
-            this.pacientes[index] = pacienteActualizado;
-            this.filtrarPacientes();
-          }
+          this.obtenerPacientes();
+
           this.pacienteParaActualizar = null;
+          this.mostrarFormularioActualizar = false;
+          this.notificacion = 'Paciente actualizado con éxito';
         },
         error: (error: any) => {
           console.error('Error al actualizar el paciente', error);
         },
       });
     }
-    this.notificacion = 'Paciente actualizado con éxito';
 
-    // Ocultar la notificación después de 3 segundos
+    // Ocultar la notificación después de 2 segundos
     setTimeout(() => {
       this.notificacion = null;
-    }, 3000);
+    }, 2000);
   }
-
+  cerrar() {
+    window.close();
+  }
   borrarPaciente(id: number): void {
-    this.apiService.deletePaciente(id).subscribe({
-      next: () => {
-        this.pacientes = this.pacientes.filter((p) => p.IdPaciente !== id);
-        this.filtrarPacientes();
-      },
-      error: (error: any) => {
-        console.error('Error al borrar el paciente', error);
-      },
-    });
+    const confirmacion = confirm(
+      '¿Estás seguro de que quieres eliminar este paciente?'
+    );
+    if (confirmacion) {
+      this.apiService.deletePaciente(id).subscribe({
+        next: () => {
+          this.pacientes = this.pacientes.filter((p) => p.IdPaciente !== id);
+          this.filtrarPacientes();
+          alert('Paciente eliminado con éxito');        },
+        error: (error: any) => {
+          console.error('Error al borrar el paciente', error);
+          alert('Error al borrar el paciente. Por favor, inténtelo de nuevo.');
+        },
+      });
+    }
   }
 
   aplicarFiltroNombre(filtro: string): void {
