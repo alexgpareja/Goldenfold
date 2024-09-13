@@ -260,11 +260,8 @@ export class ApiService {
     );
   }
 
-  deleteUsuario(id?: number, nombre?: string): Observable<void> {
-    let params = new HttpParams();
-    if (id) params = params.set('id', id.toString());
-    if (nombre) params = params.set('nombre', nombre);
-    return this.http.delete<void>(`${this.apiUrl}/Usuarios`, { params });
+  deleteUsuario(idUsuario: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/Usuarios/${idUsuario}`);
   }
 
   // CRUD para Camas
@@ -287,7 +284,6 @@ export class ApiService {
     // Realiza la solicitud DELETE
     return this.http.delete<void>(`${this.apiUrl}/Camas/${ubicacion}`);
   }
-  
 
   // CRUD para Habitaciones
   getHabitaciones(id?: number, edificio?: string): Observable<Habitacion[]> {
