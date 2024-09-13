@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
+import { catchError, Observable, throwError } from 'rxjs';
 
 // Definición de las interfaces de las tablas
 export interface Paciente {
@@ -279,16 +279,24 @@ export class ApiService {
     return this.http.post<Cama>(`${this.apiUrl}/Camas`, cama);
   }
 
-  updateCama(cama: Cama): Observable<Cama> {
+  updateCama( cama: Cama): Observable<Cama> {
     return this.http.put<Cama>(`${this.apiUrl}/Camas/${cama.Ubicacion}`, cama);
   }
 
   deleteCama(ubicacion: string): Observable<void> {
     // Realiza la solicitud DELETE
-    return this.http.delete<void>(`${this.apiUrl}/Camas/${ubicacion}`);
+    return this.http.delete<void>(`${this.apiUrl}/Camas/${ubicacion}`).pipe(
+      catchError(this.handleError)
+    );
   }
   
-
+  private handleError(error: HttpErrorResponse) {
+    if (error.status == 409) {
+      return throwError(() => new Error (error.error || 'La cama no puede ser eliminada porque está ocupada'));
+    } else {
+      return throwError(() => new Error('Ha ocurrido un error inesperado'));
+    }
+  }
   // CRUD para Habitaciones
   getHabitaciones(id?: number, edificio?: string): Observable<Habitacion[]> {
     let params = new HttpParams();
