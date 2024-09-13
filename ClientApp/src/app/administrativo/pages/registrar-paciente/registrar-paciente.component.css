@@ -1,26 +1,21 @@
-/* Contenedor general del formulario de registro */
+/* Estilo general del formulario */
 .register-section {
+  max-width: 600px;
+  margin: 20px auto;
   padding: 20px;
-  background-color: #f8f9fa;
+  border: 1px solid #ddd;
   border-radius: 10px;
-  max-width: 900px;
-  margin: 0 auto;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-  font-family: 'Roboto', sans-serif;
+  background-color: #f9f9f9;
 }
 
-h2 {
-  color: #343a40;
+.register-section h2 {
   text-align: center;
-  margin-bottom: 20px;
-  font-weight: bold;
+  color: #333;
 }
 
-/* Estilos del formulario */
 .register-form {
   display: flex;
   flex-direction: column;
-  gap: 15px;
 }
 
 .form-group {
@@ -28,53 +23,73 @@ h2 {
 }
 
 .form-group label {
+  font-weight: bold;
+  margin-bottom: 5px;
   display: block;
-  margin-bottom: 6px;
-  font-size: 14px;
-  color: #495057;
 }
 
 .form-group input,
 .form-group textarea {
-  width: 100%;
-  padding: 12px;
-  font-size: 16px;
-  border: 1px solid #ced4da;
+  padding: 10px;
+  border: 1px solid #ccc;
   border-radius: 5px;
-  transition: border-color 0.3s;
+  width: 100%;
+  font-size: 16px;
+  box-sizing: border-box;
 }
 
-.form-group input:focus,
-.form-group textarea:focus {
-  border-color: #007bff;
-  outline: none;
-}
-
-textarea {
-  resize: vertical;
+.form-group textarea {
+  resize: vertical; /* Permite que el textarea sea redimensionable solo verticalmente */
   min-height: 100px;
 }
 
+/* Estilo del botón de envío */
 .submit-btn {
-  background-color: #007bff;
+  padding: 12px 20px;
+  background-color: #28a745;
   color: white;
   border: none;
-  padding: 12px;
-  font-size: 16px;
-  cursor: pointer;
   border-radius: 5px;
-  transition: background-color 0.3s;
-  text-align: center;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+  width: 100%;
 }
 
 .submit-btn:hover {
-  background-color: #0056b3;
+  background-color: #218838;
 }
 
-/* Mensajes de error */
+/* Estilo de los mensajes de error */
 .error-message {
   color: #dc3545;
   font-size: 14px;
   margin-top: 5px;
-  display: block;
+  font-style: italic;
+}
+
+/* Estilo del campo con error */
+input.ng-invalid.ng-touched,
+textarea.ng-invalid.ng-touched {
+  border-color: #dc3545;
+}
+
+/* Efecto en los inputs cuando están en foco */
+input:focus,
+textarea:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+  .register-section {
+    padding: 15px;
+  }
+
+  .submit-btn {
+    font-size: 14px;
+  }
 }
