@@ -8,7 +8,7 @@ import { FormsModule } from '@angular/forms';
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './pacientes.component.html',
-  styleUrls: ['./pacientes.component.css']
+  styleUrls: ['./pacientes.component.css'],
 })
 export class PacientesComponent implements OnInit {
   pacientes: Paciente[] = [];
@@ -25,8 +25,9 @@ export class PacientesComponent implements OnInit {
     Direccion: '',
     Telefono: '',
     Email: '',
-    HistorialMedico: ''
+    HistorialMedico: '',
   };
+
   pacienteParaActualizar: Paciente | null = null;
 
   paginaActual: number = 1;
@@ -38,7 +39,7 @@ export class PacientesComponent implements OnInit {
   columnaOrdenada: keyof Paciente | '' = '';
   filtro: string = '';
 
-  constructor(private apiService: ApiService) { }
+  constructor(private apiService: ApiService) {}
 
   ngOnInit(): void {
     this.obtenerPacientes();
@@ -52,12 +53,12 @@ export class PacientesComponent implements OnInit {
       },
       error: (error: any) => {
         console.error('Error al obtener los pacientes', error);
-      }
+      },
     });
   }
 
   filtrarPacientes(): void {
-    let pacientesFiltrados = this.pacientes.filter(paciente =>
+    let pacientesFiltrados = this.pacientes.filter((paciente) =>
       paciente.Nombre.toLowerCase().includes(this.filtroNombre.toLowerCase())
     );
 
@@ -79,7 +80,9 @@ export class PacientesComponent implements OnInit {
     const inicio = (this.paginaActual - 1) * this.pacientesPorPagina;
     const fin = inicio + this.pacientesPorPagina;
     this.pacientesPaginados = pacientesFiltrados.slice(inicio, fin);
-    this.totalPaginas = Math.ceil(pacientesFiltrados.length / this.pacientesPorPagina);
+    this.totalPaginas = Math.ceil(
+      pacientesFiltrados.length / this.pacientesPorPagina
+    );
   }
 
   ordenar(columna: keyof Paciente): void {
@@ -123,20 +126,26 @@ export class PacientesComponent implements OnInit {
           Direccion: '',
           Telefono: '',
           Email: '',
-          HistorialMedico: ''
+          HistorialMedico: '',
         };
+        this.toggleFormularioAgregar(); // Cierra el modal después de agregar el paciente
       },
       error: (error: any) => {
         console.error('Error al agregar el paciente', error);
-      }
+      },
     });
   }
-
+  mostrarFormularioActualizar: boolean = false;
   toggleActualizarPaciente(paciente: Paciente): void {
-    if (this.pacienteParaActualizar && this.pacienteParaActualizar.IdPaciente === paciente.IdPaciente) {
+    if (
+      this.pacienteParaActualizar &&
+      this.pacienteParaActualizar.IdPaciente === paciente.IdPaciente
+    ) {
       this.pacienteParaActualizar = null;
+      this.mostrarFormularioActualizar = false; // Cerrar el formulario
     } else {
       this.pacienteParaActualizar = { ...paciente };
+      this.mostrarFormularioActualizar = true; // Abrir el formulario
     }
   }
 
@@ -144,7 +153,9 @@ export class PacientesComponent implements OnInit {
     if (this.pacienteParaActualizar) {
       this.apiService.updatePaciente(this.pacienteParaActualizar).subscribe({
         next: (pacienteActualizado: Paciente) => {
-          const index = this.pacientes.findIndex(p => p.IdPaciente === pacienteActualizado.IdPaciente);
+          const index = this.pacientes.findIndex(
+            (p) => p.IdPaciente === pacienteActualizado.IdPaciente
+          );
           if (index !== -1) {
             this.pacientes[index] = pacienteActualizado;
             this.filtrarPacientes();
@@ -153,20 +164,26 @@ export class PacientesComponent implements OnInit {
         },
         error: (error: any) => {
           console.error('Error al actualizar el paciente', error);
-        }
+        },
       });
     }
+    this.notificacion = 'Paciente actualizado con éxito';
+
+    // Ocultar la notificación después de 3 segundos
+    setTimeout(() => {
+      this.notificacion = null;
+    }, 3000);
   }
 
   borrarPaciente(id: number): void {
     this.apiService.deletePaciente(id).subscribe({
       next: () => {
-        this.pacientes = this.pacientes.filter(p => p.IdPaciente !== id);
+        this.pacientes = this.pacientes.filter((p) => p.IdPaciente !== id);
         this.filtrarPacientes();
       },
       error: (error: any) => {
         console.error('Error al borrar el paciente', error);
-      }
+      },
     });
   }
 
@@ -174,4 +191,17 @@ export class PacientesComponent implements OnInit {
     this.filtroNombre = filtro;
     this.filtrarPacientes();
   }
+  mostrarFormularioAgregar: boolean = false;
+
+  // Método para alternar la visibilidad del formulario de agregar paciente
+  toggleFormularioAgregar(): void {
+    this.mostrarFormularioAgregar = !this.mostrarFormularioAgregar;
+  }
+  mostrarMas: boolean = false;
+
+  // Método para alternar la visibilidad de la información adicional
+  toggleMostrarMas(): void {
+    this.mostrarMas = !this.mostrarMas;
+  }
+  notificacion: string | null = null;
 }

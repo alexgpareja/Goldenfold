@@ -18,16 +18,27 @@
           <td>{{ usuario.Nombre }}</td>
           <td>{{ usuario.NombreUsuario }}</td>
           <td>
-            <span [ngClass]="{ 'hidden-text': !mostrarContrasenas[usuario.IdUsuario] }">
+            <span
+              [ngClass]="{
+                'hidden-text': !mostrarContrasenas[usuario.IdUsuario]
+              }"
+            >
               {{ usuario.Contrasenya }}
             </span>
-            <button class="password" (mousedown)="mostrarContrasena(usuario.IdUsuario)" (mouseup)="ocultarContrasena(usuario.IdUsuario)" (mouseleave)="ocultarContrasena(usuario.IdUsuario)">
+            <button
+              class="password"
+              (mousedown)="mostrarContrasena(usuario.IdUsuario)"
+              (mouseup)="ocultarContrasena(usuario.IdUsuario)"
+              (mouseleave)="ocultarContrasena(usuario.IdUsuario)"
+            >
               👁️
             </button>
           </td>
           <td>{{ usuario.IdRol }}</td>
           <td>
-            <button (click)="toggleActualizarUsuario(usuario)">Actualizar</button>
+            <button (click)="toggleActualizarUsuario(usuario)">
+              Actualizar
+            </button>
             <button (click)="borrarUsuario(usuario.IdUsuario)">Borrar</button>
           </td>
         </tr>
@@ -39,15 +50,41 @@
     <h3>Actualizar Usuario</h3>
     <form (ngSubmit)="actualizarUsuario()">
       <label for="idUsuario">ID Usuario:</label>
-      <input type="number" id="idUsuario" [(ngModel)]="usuarioParaActualizar.IdUsuario" name="idUsuario" disabled>
+      <input
+        type="number"
+        id="idUsuario"
+        [(ngModel)]="usuarioParaActualizar.IdUsuario"
+        name="idUsuario"
+        disabled
+      />
       <label for="nombre">Nombre:</label>
-      <input type="text" id="nombre" [(ngModel)]="usuarioParaActualizar.Nombre" name="nombre">
+      <input
+        type="text"
+        id="nombre"
+        [(ngModel)]="usuarioParaActualizar.Nombre"
+        name="nombre"
+      />
       <label for="nombreUsuario">Nombre Usuario:</label>
-      <input type="text" id="nombreUsuario" [(ngModel)]="usuarioParaActualizar.NombreUsuario" name="nombreUsuario">
+      <input
+        type="text"
+        id="nombreUsuario"
+        [(ngModel)]="usuarioParaActualizar.NombreUsuario"
+        name="nombreUsuario"
+      />
       <label for="contrasenya">Contraseña:</label>
-      <input type="password" id="contrasenya" [(ngModel)]="usuarioParaActualizar.Contrasenya" name="contrasenya">
+      <input
+        type="password"
+        id="contrasenya"
+        [(ngModel)]="usuarioParaActualizar.Contrasenya"
+        name="contrasenya"
+      />
       <label for="idRol">ID Rol:</label>
-      <input type="number" id="idRol" [(ngModel)]="usuarioParaActualizar.IdRol" name="idRol">
+      <input
+        type="number"
+        id="idRol"
+        [(ngModel)]="usuarioParaActualizar.IdRol"
+        name="idRol"
+      />
       <button type="submit">Guardar</button>
     </form>
   </div>
@@ -55,14 +92,38 @@
   <div class="form-container">
     <h3>Agregar Usuario</h3>
     <form (ngSubmit)="agregarUsuario()">
-      <label for="nombre">Nombre:</label>
-      <input type="text" id="nombre" [(ngModel)]="nuevoUsuario.Nombre" name="nombre">
-      <label for="nombreUsuario">Nombre Usuario:</label>
-      <input type="text" id="nombreUsuario" [(ngModel)]="nuevoUsuario.NombreUsuario" name="nombreUsuario">
+      <label for="nombre">Nombre completo:</label>
+      <input
+        type="text"
+        id="nombre"
+        [(ngModel)]="nuevoUsuario.Nombre"
+        name="nombre"
+        required
+      />
+      <label for="nombreUsuario">Nombre de usuario:</label>
+      <input
+        type="text"
+        id="nombreUsuario"
+        [(ngModel)]="nuevoUsuario.NombreUsuario"
+        name="nombreUsuario"
+        required
+      />
       <label for="contrasenya">Contraseña:</label>
-      <input type="password" id="contrasenya" [(ngModel)]="nuevoUsuario.Contrasenya" name="contrasenya">
+      <input
+        type="password"
+        id="contrasenya"
+        [(ngModel)]="nuevoUsuario.Contrasenya"
+        name="contrasenya"
+        required
+      />
       <label for="idRol">ID Rol:</label>
-      <input type="number" id="idRol" [(ngModel)]="nuevoUsuario.IdRol" name="idRol">
+      <input
+        type="number"
+        id="idRol"
+        [(ngModel)]="nuevoUsuario.IdRol"
+        name="idRol"
+        required
+      />
       <button type="submit">Agregar</button>
     </form>
   </div>

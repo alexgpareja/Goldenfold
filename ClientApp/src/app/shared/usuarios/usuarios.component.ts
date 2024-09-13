@@ -8,7 +8,7 @@ import { FormsModule } from '@angular/forms';
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './usuarios.component.html',
-  styleUrls: ['./usuarios.component.css']
+  styleUrls: ['./usuarios.component.css'],
 })
 export class UsuariosComponent implements OnInit {
   usuarios: Usuario[] = [];
@@ -17,12 +17,12 @@ export class UsuariosComponent implements OnInit {
     Nombre: '',
     NombreUsuario: '',
     Contrasenya: '',
-    IdRol: 0
+    IdRol: 0,
   };
   usuarioParaActualizar: Usuario | null = null;
   mostrarContrasenas: { [key: number]: boolean } = {};
 
-  constructor(private apiService: ApiService) { }
+  constructor(private apiService: ApiService) {}
 
   ngOnInit(): void {
     this.obtenerUsuarios();
@@ -35,7 +35,7 @@ export class UsuariosComponent implements OnInit {
       },
       error: (error: any) => {
         console.error('Error al obtener los usuarios', error);
-      }
+      },
     });
   }
 
@@ -48,17 +48,24 @@ export class UsuariosComponent implements OnInit {
           Nombre: '',
           NombreUsuario: '',
           Contrasenya: '',
-          IdRol: 0
-        }; 
+          IdRol: 0,
+        };
+        alert('Usuario creado con éxito');
       },
       error: (error: any) => {
-        console.error('Error al agregar el usuario', error);
-      }
+        // Mostrar directamente el mensaje de error del backend
+        const mensajeError =
+          error.error || 'Error inesperado. Inténtalo de nuevo.';
+        alert(mensajeError);
+      },
     });
   }
 
   toggleActualizarUsuario(usuario: Usuario): void {
-    if (this.usuarioParaActualizar && this.usuarioParaActualizar.IdUsuario === usuario.IdUsuario) {
+    if (
+      this.usuarioParaActualizar &&
+      this.usuarioParaActualizar.IdUsuario === usuario.IdUsuario
+    ) {
       this.usuarioParaActualizar = null;
     } else {
       this.usuarioParaActualizar = { ...usuario };
@@ -69,16 +76,18 @@ export class UsuariosComponent implements OnInit {
     if (this.usuarioParaActualizar) {
       this.apiService.updateUsuario(this.usuarioParaActualizar).subscribe({
         next: (usuarioActualizado: Usuario) => {
-          const index = this.usuarios.findIndex(u => u.IdUsuario === usuarioActualizado.IdUsuario);
+          const index = this.usuarios.findIndex(
+            (u) => u.IdUsuario === usuarioActualizado.IdUsuario
+          );
           if (index !== -1) {
             this.usuarios[index] = usuarioActualizado;
           }
-          this.obtenerUsuarios(); 
-          this.usuarioParaActualizar = null; 
+          this.obtenerUsuarios();
+          this.usuarioParaActualizar = null;
         },
         error: (error: any) => {
           console.error('Error al actualizar el usuario', error);
-        }
+        },
       });
     }
   }
@@ -86,11 +95,11 @@ export class UsuariosComponent implements OnInit {
   borrarUsuario(id: number): void {
     this.apiService.deleteUsuario(id).subscribe({
       next: () => {
-        this.usuarios = this.usuarios.filter(u => u.IdUsuario !== id);
+        this.usuarios = this.usuarios.filter((u) => u.IdUsuario !== id);
       },
       error: (error: any) => {
         console.error('Error al borrar el usuario', error);
-      }
+      },
     });
   }
 
