@@ -288,9 +288,7 @@ export class ApiService {
 
   deleteCama(ubicacion: string): Observable<void> {
     // Realiza la solicitud DELETE
-    return this.http.delete<void>(`${this.apiUrl}/Camas/${ubicacion}`).pipe(
-      catchError(this.handleError)
-    );
+    return this.http.delete<void>(`${this.apiUrl}/Camas/${ubicacion}`);
   }
   // CRUD para Habitaciones
   getHabitaciones(id?: number, edificio?: string): Observable<Habitacion[]> {
