@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ApiService, Paciente } from '../../../services/api.service';
+import { ApiService, Paciente, Consulta } from '../../../services/api.service';
 import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
@@ -8,26 +8,39 @@ import { HttpErrorResponse } from '@angular/common/http';
   styleUrls: ['./buscar-paciente.component.css']
 })
 export class BuscarPacienteComponent {
-  searchName: string = '';
-  pacientesEncontrados: Paciente[] = [];
-  errorMensaje: string | null = null;
+  searchName: string = ''; // Nombre del paciente a buscar
+  searchSS: string = '';
+  pacientesEncontrados: Paciente[] = []; // Resultados de la búsqueda
+  errorMensaje: string | null = null; // Mensaje de error
+  pacienteSeleccionado: Paciente | null = null; // Paciente seleccionado para consulta o edición
+  mostrarFormularioConsulta: boolean = false; // Mostrar u ocultar el formulario de consulta
+  mostrarFormularioEdicion: boolean = false; // Mostrar u ocultar el formulario de edición
+
+  // Inicializar un objeto vacío para la nueva consulta
+  consulta: Consulta = {
+    IdConsulta: 0,
+    IdPaciente: 0,
+    IdMedico: 0, 
+    Motivo: '',
+    FechaSolicitud: new Date(),
+    FechaConsulta: null,
+    Estado: 'pendiente de consultar'
+  };
 
   constructor(private apiService: ApiService) {}
 
-  searchPatient(event: Event) {
+  buscarPaciente(event: Event) {
     event.preventDefault();
     this.errorMensaje = null;
     this.pacientesEncontrados = [];
-
-    if (this.searchName.trim() !== '') {
-      this.apiService.getPacientes(this.searchName).subscribe({
+  
+    if (this.searchName.trim() !== '' || this.searchSS.trim() !== '') {
+      this.apiService.getPacientes(this.searchName, this.searchSS).subscribe({
         next: (pacientes: Paciente[]) => {
           if (pacientes.length > 0) {
-            // Aquí transformamos los datos a minúsculas
-            this.pacientesEncontrados = pacientes.map(paciente => this.transformarPropiedadesAMinusculas(paciente));
-            console.log(this.pacientesEncontrados);
+            this.pacientesEncontrados = pacientes;
           } else {
-            this.errorMensaje = 'No se encontraron pacientes con ese nombre.';
+            this.errorMensaje = 'No se encontraron pacientes con ese nombre o número de seguridad social.';
           }
         },
         error: (error: HttpErrorResponse) => {
@@ -35,16 +48,88 @@ export class BuscarPacienteComponent {
         }
       });
     } else {
-      this.errorMensaje = 'Por favor, ingresa un nombre para buscar.';
+      this.errorMensaje = 'Por favor, ingresa un nombre o un número de seguridad social para buscar.';
+    }
+  }
+  
+
+  // Seleccionar un paciente para editar
+  editarPaciente(paciente: Paciente) {
+    this.pacienteSeleccionado = { ...paciente }; // Clona el paciente seleccionado
+    this.mostrarFormularioEdicion = true; // Mostrar el formulario de edición
+    this.mostrarFormularioConsulta = false; // Ocultar el formulario de consulta
+  }
+
+  // Actualizar los datos del paciente
+  actualizarPaciente() {
+    if (this.pacienteSeleccionado) {
+      this.apiService.updatePaciente(this.pacienteSeleccionado).subscribe({
+        next: () => {
+          this.buscarPaciente(new Event('')); // Rehacer la búsqueda para actualizar los datos
+          this.pacienteSeleccionado = null; // Limpiar el paciente seleccionado
+          this.mostrarFormularioEdicion = false; // Ocultar el formulario de edición
+          alert('Paciente actualizado con éxito.');
+        },
+        error: (error: HttpErrorResponse) => {
+          this.errorMensaje = 'Error al actualizar el paciente. Por favor, inténtalo de nuevo.';
+        }
+      });
     }
   }
 
-  // Función para convertir las claves del objeto a minúsculas
-  transformarPropiedadesAMinusculas(paciente: any): any {
-    const pacienteConMinusculas: any = {};
-    Object.keys(paciente).forEach(key => {
-      pacienteConMinusculas[key.toLowerCase()] = paciente[key];
-    });
-    return pacienteConMinusculas;
+  abrirFormularioConsulta(paciente: Paciente) {
+    this.pacienteSeleccionado = paciente;
+    this.mostrarFormularioConsulta = true; // Mostrar el formulario de consulta
+    this.mostrarFormularioEdicion = false; // Ocultar el formulario de edición
+  
+    // Rellenar los campos de la consulta con los valores predeterminados
+    this.consulta.IdPaciente = paciente.IdPaciente;
+    this.consulta.FechaSolicitud = new Date(); // Fecha actual
+    this.consulta.Estado = 'pendiente de consultar';
+  }
+  
+
+  // Método para registrar la consulta
+  registrarConsulta() {
+    if (this.consulta.IdMedico && this.consulta.Motivo) {
+      this.apiService.addConsulta(this.consulta).subscribe({
+        next: () => {
+          alert('Consulta registrada con éxito.');
+          this.mostrarFormularioConsulta = false;
+          this.pacienteSeleccionado = null; // Limpiar el paciente seleccionado después de registrar la consulta
+          this.resetConsulta(); // Reiniciar el formulario de consulta
+        },
+        error: (error: HttpErrorResponse) => {
+          this.errorMensaje = 'Error al registrar la consulta. Por favor, inténtalo de nuevo.';
+        }
+      });
+    } else {
+      alert('Por favor, ingrese todos los datos requeridos.');
+    }
+  }
+
+  // Método para cancelar la edición del paciente
+  cancelarEdicion() {
+    this.pacienteSeleccionado = null; // Limpiar el paciente seleccionado
+    this.mostrarFormularioEdicion = false; // Ocultar el formulario de edición
+  }
+
+  // Método para cancelar el registro de la consulta
+  cancelarConsulta() {
+    this.mostrarFormularioConsulta = false;
+    this.resetConsulta(); // Reiniciar el formulario de consulta
+  }
+
+  // Método para reiniciar el formulario de consulta
+  resetConsulta() {
+    this.consulta = {
+      IdConsulta: 0,
+      IdPaciente: 0,
+      IdMedico: 0,
+      Motivo: '',
+      FechaSolicitud: new Date(),
+      FechaConsulta: null,
+      Estado: 'pendiente de consultar'
+    };
   }
 }

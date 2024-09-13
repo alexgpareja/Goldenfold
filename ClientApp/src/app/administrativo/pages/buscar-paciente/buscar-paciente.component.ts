@@ -9,6 +9,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 })
 export class BuscarPacienteComponent {
   searchName: string = ''; // Nombre del paciente a buscar
+  searchSS: string = '';
   pacientesEncontrados: Paciente[] = []; // Resultados de la búsqueda
   errorMensaje: string | null = null; // Mensaje de error
   pacienteSeleccionado: Paciente | null = null; // Paciente seleccionado para consulta o edición
@@ -19,7 +20,7 @@ export class BuscarPacienteComponent {
   consulta: Consulta = {
     IdConsulta: 0,
     IdPaciente: 0,
-    IdMedico: 0,
+    IdMedico: 0, 
     Motivo: '',
     FechaSolicitud: new Date(),
     FechaConsulta: null,
@@ -28,19 +29,18 @@ export class BuscarPacienteComponent {
 
   constructor(private apiService: ApiService) {}
 
-  // Método para buscar pacientes
   buscarPaciente(event: Event) {
-    event.preventDefault(); // Evita la recarga de la página
+    event.preventDefault();
     this.errorMensaje = null;
     this.pacientesEncontrados = [];
-
-    if (this.searchName.trim() !== '') {
-      this.apiService.getPacientes(this.searchName).subscribe({
+  
+    if (this.searchName.trim() !== '' || this.searchSS.trim() !== '') {
+      this.apiService.getPacientes(this.searchName, this.searchSS).subscribe({
         next: (pacientes: Paciente[]) => {
           if (pacientes.length > 0) {
-            this.pacientesEncontrados = pacientes; // Mostrar pacientes encontrados
+            this.pacientesEncontrados = pacientes;
           } else {
-            this.errorMensaje = 'No se encontraron pacientes con ese nombre.';
+            this.errorMensaje = 'No se encontraron pacientes con ese nombre o número de seguridad social.';
           }
         },
         error: (error: HttpErrorResponse) => {
@@ -48,9 +48,10 @@ export class BuscarPacienteComponent {
         }
       });
     } else {
-      this.errorMensaje = 'Por favor, ingresa un nombre para buscar.';
+      this.errorMensaje = 'Por favor, ingresa un nombre o un número de seguridad social para buscar.';
     }
   }
+  
 
   // Seleccionar un paciente para editar
   editarPaciente(paciente: Paciente) {

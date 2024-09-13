@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ApiService, Usuario } from '../../services/api.service';
+import { ApiService, Rol, Usuario } from '../../services/api.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -12,6 +12,7 @@ import { FormsModule } from '@angular/forms';
 })
 export class UsuariosComponent implements OnInit {
   usuarios: Usuario[] = [];
+  roles: Rol[] = [];
   nuevoUsuario: Usuario = {
     IdUsuario: 0,
     Nombre: '',
@@ -22,10 +23,14 @@ export class UsuariosComponent implements OnInit {
   usuarioParaActualizar: Usuario | null = null;
   mostrarContrasenas: { [key: number]: boolean } = {};
 
+  searchTerm: string = ''; // Para la caja de búsqueda
+  noResultsFound: boolean = false; // Indicador de resultados no encontrados
+
   constructor(private apiService: ApiService) {}
 
   ngOnInit(): void {
     this.obtenerUsuarios();
+    this.obtenerRoles();
   }
 
   obtenerUsuarios(): void {
@@ -37,6 +42,33 @@ export class UsuariosComponent implements OnInit {
         console.error('Error al obtener los usuarios', error);
       },
     });
+  }
+
+  obtenerRoles(): void {
+    // Este método simplemente llama al servicio
+    this.apiService.getRoles().subscribe({
+      next: (data: Rol[]) => {
+        this.roles = data; // Asignar los roles a la variable roles
+      },
+      error: (error: any) => {
+        console.error('Error al cargar los roles', error);
+      },
+    });
+  }
+
+  filtrarUsuarios(): void {
+    if (!this.searchTerm.trim()) {
+      this.obtenerUsuarios(); // Si no hay término de búsqueda, obtener todos los users
+    } else {
+      this.apiService.getUsuarios(this.searchTerm).subscribe({
+        next: (data: Usuario[]) => {
+          this.usuarios = data; // Actualizar los users filtrados
+        },
+        error: (error: any) => {
+          console.error('Error al filtrar los usuarios', error);
+        },
+      });
+    }
   }
 
   agregarUsuario(): void {
@@ -76,14 +108,11 @@ export class UsuariosComponent implements OnInit {
     if (this.usuarioParaActualizar) {
       this.apiService.updateUsuario(this.usuarioParaActualizar).subscribe({
         next: (usuarioActualizado: Usuario) => {
-          const index = this.usuarios.findIndex(
-            (u) => u.IdUsuario === usuarioActualizado.IdUsuario
-          );
-          if (index !== -1) {
-            this.usuarios[index] = usuarioActualizado;
-          }
           this.obtenerUsuarios();
+
           this.usuarioParaActualizar = null;
+
+          alert('Usuario actualizado con éxito.');
         },
         error: (error: any) => {
           console.error('Error al actualizar el usuario', error);
@@ -92,15 +121,22 @@ export class UsuariosComponent implements OnInit {
     }
   }
 
-  borrarUsuario(id: number): void {
-    this.apiService.deleteUsuario(id).subscribe({
-      next: () => {
-        this.usuarios = this.usuarios.filter((u) => u.IdUsuario !== id);
-      },
-      error: (error: any) => {
-        console.error('Error al borrar el usuario', error);
-      },
-    });
+  borrarUsuario(idUsuario: number): void {
+    const confirmacion = confirm(
+      '¿Estás seguro de que deseas eliminar este usuario?'
+    );
+    if (confirmacion) {
+      this.apiService.deleteUsuario(idUsuario).subscribe({
+        next: () => {
+          this.obtenerUsuarios(); // Refrescar la lista de usuarios
+          alert('Usuario eliminado con éxito.');
+        },
+        error: (error: any) => {
+          console.error('Error al eliminar el usuario', error);
+          alert('Error al eliminar el usuario. Por favor, inténtelo de nuevo.');
+        },
+      });
+    }
   }
 
   mostrarContrasena(id: number): void {
@@ -109,5 +145,23 @@ export class UsuariosComponent implements OnInit {
 
   ocultarContrasena(id: number): void {
     this.mostrarContrasenas[id] = false;
+  }
+
+  resetUsuario(): Usuario {
+    return {
+      IdUsuario: 0,
+      Nombre: '',
+      NombreUsuario: '',
+      Contrasenya: '',
+      IdRol: 0,
+    };
+  }
+
+  cancelarNuevoUsuario(): void {
+    this.nuevoUsuario = this.resetUsuario(); // Resetea los campos
+  }
+
+  cancelarActualizarUsuario(): void {
+    this.usuarioParaActualizar = null; // Oculta el formulario y resetea los datos
   }
 }

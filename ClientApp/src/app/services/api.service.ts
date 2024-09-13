@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
+import { catchError, Observable, throwError } from 'rxjs';
 
 // Definición de las interfaces de las tablas
 export interface Paciente {
@@ -35,7 +35,7 @@ export interface Ingreso {
   Motivo: string;
   FechaSolicitud: Date;
   Estado: string;
-  IdAsignacion: number;
+  IdAsignacion: number | null;
 }
 
 export interface HistorialAlta {
@@ -96,6 +96,12 @@ export class ApiService {
     if (numSS) params = params.set('numSS', numSS);
     return this.http.get<Paciente[]>(`${this.apiUrl}/Pacientes`, { params });
   }
+
+  updatePacienteEstado(idPaciente: number, nuevoEstado: string): Observable<Paciente> {
+    const body = { Estado: nuevoEstado };
+    return this.http.put<Paciente>(`${this.apiUrl}/Pacientes/${idPaciente}`, body);
+  }
+  
 
   addPaciente(paciente: Paciente): Observable<Paciente> {
     return this.http.post<Paciente>(`${this.apiUrl}/Pacientes`, paciente);
@@ -260,11 +266,8 @@ export class ApiService {
     );
   }
 
-  deleteUsuario(id?: number, nombre?: string): Observable<void> {
-    let params = new HttpParams();
-    if (id) params = params.set('id', id.toString());
-    if (nombre) params = params.set('nombre', nombre);
-    return this.http.delete<void>(`${this.apiUrl}/Usuarios`, { params });
+  deleteUsuario(idUsuario: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/Usuarios/${idUsuario}`);
   }
 
   // CRUD para Camas
@@ -279,16 +282,16 @@ export class ApiService {
     return this.http.post<Cama>(`${this.apiUrl}/Camas`, cama);
   }
 
-  updateCama(cama: Cama): Observable<Cama> {
+  updateCama( cama: Cama): Observable<Cama> {
     return this.http.put<Cama>(`${this.apiUrl}/Camas/${cama.Ubicacion}`, cama);
   }
 
   deleteCama(ubicacion: string): Observable<void> {
     // Realiza la solicitud DELETE
-    return this.http.delete<void>(`${this.apiUrl}/Camas/${ubicacion}`);
+    return this.http.delete<void>(`${this.apiUrl}/Camas/${ubicacion}`).pipe(
+      catchError(this.handleError)
+    );
   }
-  
-
   // CRUD para Habitaciones
   getHabitaciones(id?: number, edificio?: string): Observable<Habitacion[]> {
     let params = new HttpParams();
