@@ -51,7 +51,7 @@ export interface Asignacion {
   IdPaciente: number;
   Ubicacion: string;
   FechaAsignacion: Date;
-  FechaLiberacion: Date;
+  FechaLiberacion: Date | null;
   AsignadoPor: number;
 }
 

@@ -8,6 +8,7 @@ import { AdministrativoRoutingModule } from './administrativo-routing.module';
 import { RegistrarPacienteComponent } from './pages/registrar-paciente/registrar-paciente.component';
 import { BuscarPacienteComponent } from './pages/buscar-paciente/buscar-paciente.component';
 import { AdministrativoInicioComponent } from './pages/administrativo-inicio/administrativo-inicio.component';
+import { PacientesComponent } from './pages/pacientes/pacientes.component';
 
 @NgModule({
   imports: [
