@@ -1,32 +1,43 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace HospitalApi;
-
-public class HistorialAlta
+namespace HospitalApi
 {
-    [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    [Column("id_historial")]
-    public int IdHistorial { get; set; }
+    public class HistorialAlta
+    {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Column("id_historial")]
+        public int IdHistorial { get; set; }
 
-    [ForeignKey("Paciente")]
-    [Column("id_paciente")]
-    public int IdPaciente { get; set; }
+        [Required(ErrorMessage = "El ID del paciente es obligatorio.")]
+        [ForeignKey("Paciente")]
+        [Column("id_paciente")]
+        public int IdPaciente { get; set; }
 
-    [Required]
-    [Column("fecha_alta")]
-    public DateTime FechaAlta { get; set; } = DateTime.Now;
+        [Required(ErrorMessage = "La fecha de alta es obligatoria.")]
+        [Column("fecha_alta")]
+        public DateTime FechaAlta { get; set; } = DateTime.Now;
 
-    [StringLength(255)]
-    [Column("diagnostico")]
-    public string Diagnostico { get; set; }
+        [Required(ErrorMessage = "El diagnóstico es obligatorio.")]
+        [StringLength(255, ErrorMessage = "El diagnóstico no puede tener más de 255 caracteres.")]
+        [Column("diagnostico")]
+        public string Diagnostico { get; set; }
 
-    [StringLength(255)]
-    [Column("tratamiento")]
-    public string Tratamiento { get; set; }
+        [Required(ErrorMessage = "El tratamiento es obligatorio.")]
+        [StringLength(255, ErrorMessage = "El tratamiento no puede tener más de 255 caracteres.")]
+        [Column("tratamiento")]
+        public string Tratamiento { get; set; }
 
-    // Propiedad de navegación
-    public Paciente Paciente { get; set; }
+        // Relación con Medico
+        [ForeignKey("Medico")]
+        [Column("id_medico")]
+        public int IdMedico { get; set; }
 
+        public Usuario Medico { get; set; } // Medico es un Usuario con rol de Medico
+
+        // Propiedad de navegación
+        public virtual Paciente Paciente { get; set; }
+    }
 }

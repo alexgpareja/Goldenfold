@@ -10,7 +10,7 @@
 
     <div class="form-group">
       <label for="edad">Edad</label>
-      <input type="number" id="edad" [(ngModel)]="nuevoPaciente.Edad" name="Edad" required placeholder="Edad del paciente" min="0" />
+      <input type="number" id="edad" [(ngModel)]="nuevoPaciente.Dni" name="Dni" required placeholder="Edad del paciente" min="0" />
       <div *ngIf="pacienteForm.submitted && pacienteForm.controls['Edad']?.invalid" class="error-message">Por favor, ingresa una edad válida.</div>
     </div>
 
@@ -18,12 +18,6 @@
       <label for="fecha-nacimiento">Fecha de Nacimiento</label>
       <input type="date" id="fecha-nacimiento" [(ngModel)]="nuevoPaciente.FechaNacimiento" name="FechaNacimiento" required />
       <div *ngIf="pacienteForm.submitted && pacienteForm.controls['FechaNacimiento']?.invalid" class="error-message">La fecha de nacimiento es requerida.</div>
-    </div>
-
-    <div class="form-group">
-      <label for="sintomas">Síntomas</label>
-      <textarea id="sintomas" [(ngModel)]="nuevoPaciente.Sintomas" name="Sintomas" required placeholder="Síntomas del paciente"></textarea>
-      <div *ngIf="pacienteForm.submitted && pacienteForm.controls['Sintomas']?.invalid" class="error-message">Los síntomas son requeridos.</div>
     </div>
 
     <div class="form-group">

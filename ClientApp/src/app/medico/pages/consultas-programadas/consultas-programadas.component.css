@@ -1,103 +1,57 @@
+/* Sección principal */
 .consultas-section {
-  padding: 20px;
-  background-color: #f9f9f9;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  font-family: 'Arial', sans-serif;
+  padding: 16px;
+  background-color: #f1f1f1;
+  border-radius: 8px;
 }
 
-h2 {
-  font-size: 24px;
-  color: #333;
-  margin-bottom: 20px;
-}
-
-.error-message {
-  color: #d9534f;
-  font-weight: bold;
-  margin-bottom: 15px;
-}
-
+/* Tabla */
 .consultas-table {
   width: 100%;
   border-collapse: collapse;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
 }
 
-.consultas-table th,
+.consultas-table th, 
 .consultas-table td {
-  padding: 12px 15px;
+  padding: 10px;
+  border: 1px solid #ddd;
   text-align: left;
-  border-bottom: 1px solid #ddd;
 }
 
 .consultas-table th {
-  background-color: #f1f1f1;
-  font-weight: bold;
-  color: #555;
+  background-color: #4CAF50;
+  color: white;
 }
 
-.consultas-table td {
-  color: #333;
-}
-
-.consultas-table tr:hover {
-  background-color: #f5f5f5;
-}
-
-.action-btn {
-  background-color: #007bff;
-  color: #fff;
-  padding: 8px 15px;
+/* Botones */
+button {
+  padding: 8px 12px;
+  background-color: #4CAF50;
+  color: white;
   border: none;
-  border-radius: 5px;
+  border-radius: 4px;
   cursor: pointer;
-  font-size: 14px;
-  transition: background-color 0.3s ease;
 }
 
-.action-btn:hover {
-  background-color: #0056b3;
+button:hover {
+  background-color: #45a049;
 }
 
+/* Formulario de evaluación */
 .evaluation-form {
-  background-color: #f7f7f7;
-  padding: 15px;
-  border-radius: 10px;
-  margin-top: 15px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.evaluation-form h3 {
-  font-size: 18px;
-  margin-bottom: 10px;
-  color: #444;
-}
-
-.evaluation-form .form-group {
-  margin-bottom: 10px;
-}
-
-.evaluation-form label {
-  font-size: 14px;
-  font-weight: bold;
-  color: #333;
-  margin-right: 10px;
-}
-
-.evaluation-form select {
-  padding: 8px;
-  font-size: 14px;
+  margin-top: 16px;
+  padding: 16px;
+  background-color: #fafafa;
   border: 1px solid #ddd;
-  border-radius: 5px;
+  border-radius: 8px;
 }
 
-.evaluation-form button {
+.form-group {
   margin-top: 10px;
 }
 
-.no-consultas {
-  font-size: 16px;
-  color: #888;
-  text-align: center;
+select {
+  padding: 6px;
+  margin-right: 10px;
 }

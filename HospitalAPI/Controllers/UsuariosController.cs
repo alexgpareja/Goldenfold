@@ -20,7 +20,6 @@ namespace HospitalApi.Controllers
             _mapper = mapper;
         }
 
-
         /// <summary>
         /// Obtiene una lista de usuarios basada en los parámetros de búsqueda opcionales.
         /// </summary>
@@ -39,15 +38,16 @@ namespace HospitalApi.Controllers
             IQueryable<Usuario> query = _context.Usuarios;
             if (!nombre.IsNullOrEmpty()) query = query.Where(u => u.Nombre.Contains(nombre!.ToLower()));
             if (!usuario.IsNullOrEmpty()) query = query.Where(u => u.NombreUsuario.Contains(usuario!.ToLower()));
+
             var usuarios = await query.ToListAsync();
             if (!usuarios.Any())
             {
                 return NotFound("No se han encontrado usuarios que coincidan con los criterios de búsqueda proporcionados.");
             }
+
             var usuariosDTO = _mapper.Map<IEnumerable<UsuarioDTO>>(usuarios);
             return Ok(usuariosDTO);
         }
-
 
         /// <summary>
         /// Obtiene un usuario específico por su ID.
@@ -71,7 +71,6 @@ namespace HospitalApi.Controllers
             var usuarioDTO = _mapper.Map<UsuarioDTO>(usuario);
             return Ok(usuarioDTO);
         }
-
 
         /// <summary>
         /// Crea un nuevo usuario en la base de datos.
@@ -123,11 +122,8 @@ namespace HospitalApi.Controllers
             await _context.SaveChangesAsync();
 
             var usuarioDTOResult = _mapper.Map<UsuarioDTO>(usuario);
-
             return CreatedAtAction(nameof(GetUsuario), new { id = usuarioDTOResult.IdUsuario }, usuarioDTOResult);
         }
-
-
 
         /// <summary>
         /// Actualiza un usuario existente en la base de datos.
@@ -146,9 +142,7 @@ namespace HospitalApi.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateUsuario(int id, UsuarioUpdateDTO usuarioDTO)
         {
-
             var usuarioExiste = await _context.Usuarios.FindAsync(id);
-
             if (usuarioExiste == null)
             {
                 return NotFound("No se encontró ningun usuario con el ID proporcionado.");
@@ -202,7 +196,6 @@ namespace HospitalApi.Controllers
             return NoContent();
         }
 
-
         /// <summary>
         /// Elimina un usuario específico de la base de datos por su ID.
         /// </summary>
@@ -228,7 +221,6 @@ namespace HospitalApi.Controllers
 
             return NoContent();
         }
-
 
         private bool UsuarioExists(int id)
         {

@@ -18,38 +18,45 @@ namespace HospitalApi.Controllers
             _context = context;
             _mapper = mapper;
         }
-        
+
         /// <summary>
-        /// Crea una nueva habitación en la base de datos.
+        /// Obtiene una lista de habitaciones basada en los parámetros de búsqueda opcionales.
         /// </summary>
-        /// <param name="HabitacionDTO">El objeto <see cref="HabitacionCreateDTO"/> que contiene los datos de la habitación a crear.</param>
+        /// <param name="edificio">El nombre del edificio donde se encuentran las habitaciones. Este parámetro es opcional.</param>
+        /// <param name="planta">El número de la planta donde se encuentran las habitaciones. Este parámetro es opcional.</param>
+        /// <param name="numeroHabitacion">El número de la habitación. Este parámetro es opcional.</param>
         /// <returns>
-        /// Un objeto <see cref="HabitacionDTO"/> que representa la habitación recién creada.
+        /// Una lista de objetos <see cref="HabitacionDTO"/> que representan las habitaciones encontradas.
         /// </returns>
-        /// <response code="201">La habitación ha sido creado exitosamente.</response>
-        /// <response code="400">Si los datos proporcionados no son válidos.</response>
+        /// <response code="200">Devuelve una lista de habitaciones que coinciden con los parámetros de búsqueda.</response>
+        /// <response code="404">Si no se encuentran habitaciones que coincidan con los criterios de búsqueda proporcionados.</response>
         /// <response code="500">Si se produce un error en el servidor al procesar la solicitud.</response>
-        // GET: api/Habitaciones
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<HabitacionDTO>>> GetHabitaciones([FromQuery] string? edificio, [FromQuery] string? planta,  [FromQuery] string? numero_habitacion)
+        public async Task<ActionResult<IEnumerable<HabitacionDTO>>> GetHabitaciones([FromQuery] string? edificio, [FromQuery] string? planta, [FromQuery] string? numeroHabitacion)
         {
             IQueryable<Habitacion> query = _context.Habitaciones;
-            if (!String.IsNullOrEmpty(edificio)) query = query.Where(h => h.Edificio.Contains(edificio!.ToLower()));
-            if (!String.IsNullOrEmpty(planta)) query = query.Where(h => h.Planta.Contains(planta!.ToLower()));
-            if (!String.IsNullOrEmpty(numero_habitacion)) query = query.Where(h => h.NumeroHabitacion.Contains(numero_habitacion!.ToLower()));
-            
+
+            if (!string.IsNullOrEmpty(edificio))
+                query = query.Where(h => h.Edificio.Contains(edificio.ToLower()));
+
+            if (!string.IsNullOrEmpty(planta))
+                query = query.Where(h => h.Planta.Contains(planta.ToLower()));
+
+            if (!string.IsNullOrEmpty(numeroHabitacion))
+                query = query.Where(h => h.NumeroHabitacion.Contains(numeroHabitacion.ToLower()));
+
             var habitaciones = await query.ToListAsync();
 
             if (!habitaciones.Any())
             {
                 return NotFound("No se han encontrado habitaciones.");
             }
+
             var habitacionesDTO = _mapper.Map<IEnumerable<HabitacionDTO>>(habitaciones);
-            
             return Ok(habitacionesDTO);
         }
 
-          /// <summary>
+        /// <summary>
         /// Obtiene una habitación específica por su ID.
         /// </summary>
         /// <param name="id">El ID de la habitación que se desea obtener.</param>
@@ -59,8 +66,6 @@ namespace HospitalApi.Controllers
         /// <response code="200">Devuelve la habitación solicitada.</response>
         /// <response code="404">Si no se encuentra una habitación con el ID proporcionado.</response>
         /// <response code="500">Si se produce un error en el servidor al procesar la solicitud.</response>
-        /// 
-        // GET: api/Habitaciones/{id}
         [HttpGet("{id}")]
         public async Task<ActionResult<HabitacionDTO>> GetHabitacion(int id)
         {
@@ -69,64 +74,79 @@ namespace HospitalApi.Controllers
             {
                 return NotFound("No se ha encontrado ninguna habitación con el ID proporcionado.");
             }
+
             var habitacionDTO = _mapper.Map<HabitacionDTO>(habitacion);
             return Ok(habitacionDTO);
         }
 
-         /// <summary>
-        /// Crea una nueva habitación en la base de datos.
+        /// <summary>
+        /// Crea una nueva habitación y sus camas asociadas automáticamente.
         /// </summary>
-        /// <param name="HabitacionDTO">El objeto <see cref="HabitacionCreateDTO"/> que contiene los datos de la habitación a crear.</param>
+        /// <param name="habitacionDTO">El objeto <see cref="HabitacionCreateDTO"/> que contiene los datos de la habitación a crear.</param>
         /// <returns>
         /// Un objeto <see cref="HabitacionDTO"/> que representa la habitación recién creada.
         /// </returns>
         /// <response code="201">La habitación ha sido creada exitosamente.</response>
         /// <response code="400">Si los datos proporcionados no son válidos.</response>
+        /// <response code="409">Si ya existe una habitación con el mismo número en la planta y edificio especificados.</response>
         /// <response code="500">Si se produce un error en el servidor al procesar la solicitud.</response>
-        // POST: api/Habitaciones
         [HttpPost]
         public async Task<ActionResult<HabitacionDTO>> CreateHabitacion(HabitacionCreateDTO habitacionDTO)
         {
-            if (await _context.Habitaciones.AnyAsync(h => h.NumeroHabitacion == habitacionDTO.NumeroHabitacion))
-            {
-                return Conflict("Ya existe una habitación con el número proporcionado.");
-            }
-
             var habitacion = _mapper.Map<Habitacion>(habitacionDTO);
 
+            // Verificar si ya existe una habitación con el número proporcionado
+            if (await _context.Habitaciones.AnyAsync(h => h.NumeroHabitacion == habitacionDTO.NumeroHabitacion && h.Planta == habitacionDTO.Planta && h.Edificio == habitacionDTO.Edificio))
+            {
+                return Conflict("Ya existe una habitación con el número proporcionado en este edificio y planta.");
+            }
+
+            // Añadir la habitación a la base de datos
             _context.Habitaciones.Add(habitacion);
             await _context.SaveChangesAsync();
 
-            var habitacionDTOResult = _mapper.Map<HabitacionDTO>(habitacion);
+            // Crear automáticamente las camas asociadas a la habitación
+            for (int i = 1; i <= 2; i++) // Se asume que cada habitación tiene 2 camas
+            {
+                var cama = new Cama
+                {
+                    Ubicacion = $"{habitacionDTO.Edificio}{habitacionDTO.Planta}{habitacionDTO.NumeroHabitacion}{i:00}",
+                    Estado = (EstadoCama)Enum.Parse(typeof(EstadoCama), "Ocupada"),
+                    Tipo = (TipoCama)Enum.Parse(typeof(TipoCama), "General"),  // Se podría hacer más dinámico según el tipo de habitación
+                    IdHabitacion = habitacion.IdHabitacion
+                };
+                _context.Camas.Add(cama);
+            }
 
+            await _context.SaveChangesAsync();
+
+            var habitacionDTOResult = _mapper.Map<HabitacionDTO>(habitacion);
             return CreatedAtAction(nameof(GetHabitacion), new { id = habitacionDTOResult.IdHabitacion }, habitacionDTOResult);
         }
 
-
-           /// <summary>
-        /// Actualiza una habitación existente en la base de datos.
+        /// <summary>
+        /// Actualiza una habitación existente.
         /// </summary>
-        /// <param name="id">El ID de la habitaicón que se va a actualizar.</param>
-        /// <param name="HabitacionDTO">El objeto <see cref="HabitacionUpdateDTO"/> que contiene los datos actualizados de la habitación.</param>
+        /// <param name="id">El ID de la habitación que se va a actualizar.</param>
+        /// <param name="habitacionDTO">El objeto <see cref="HabitacionUpdateDTO"/> que contiene los datos actualizados de la habitación.</param>
         /// <returns>
         /// Un código de estado HTTP que indica el resultado de la operación de actualización.
         /// </returns>
         /// <response code="204">Indica que la actualización fue exitosa y no hay contenido que devolver.</response>
-        /// <response code="400">Si el ID proporcionado en la URL no coincide con el ID de la habitación en el cuerpo de la solicitud.</response>
-        /// <response code="404">Si no se encuentra la habitación con el ID proporcionado.</response>
+        /// <response code="400">Si los datos proporcionados no son válidos.</response>
+        /// <response code="404">Si no se encuentra una habitación con el ID proporcionado.</response>
         /// <response code="500">Si ocurre un error en el servidor al procesar la solicitud.</response>
-        // PUT: api/Habitaciones/{id}
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateHabitacion(int id, HabitacionUpdateDTO habitacionDTO)
         {
-            var habitacionExiste = await _context.Habitaciones.FindAsync(id);
-   
-            if (habitacionExiste == null)
+            var habitacionExistente = await _context.Habitaciones.FindAsync(id);
+
+            if (habitacionExistente == null)
             {
                 return NotFound("No se ha encontrado ninguna habitación con el ID proporcionado.");
             }
 
-            _mapper.Map(habitacionDTO, habitacionExiste);
+            _mapper.Map(habitacionDTO, habitacionExistente);
 
             try
             {
@@ -148,16 +168,14 @@ namespace HospitalApi.Controllers
         }
 
         /// <summary>
-        /// Elimina una habitación específico de la base de datos por su ID.
+        /// Elimina una habitación junto con sus camas asociadas.
         /// </summary>
         /// <param name="id">El ID de la habitación que se desea eliminar.</param>
         /// <returns>
-        /// Un código de estado HTTP que indica el resultado de la operación de eliminación.
-        /// </returns>
+        /// Un código de estado HTTP que indica el resultado de la operación de eliminación.</returns>
         /// <response code="204">Indica que la eliminación fue exitosa y no hay contenido que devolver.</response>
-        /// <response code="404">Si no se encuentra la habitación con el ID proporcionado.</response>
+        /// <response code="404">Si no se encuentra una habitación con el ID proporcionado.</response>
         /// <response code="500">Si ocurre un error en el servidor al procesar la solicitud.</response>
-        // DELETE: api/Habitaciones/{id}
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteHabitacion(int id)
         {
@@ -166,6 +184,10 @@ namespace HospitalApi.Controllers
             {
                 return NotFound("No se ha encontrado ninguna habitación con el ID proporcionado.");
             }
+
+            // Eliminar las camas asociadas a la habitación
+            var camasAsociadas = _context.Camas.Where(c => c.IdHabitacion == id);
+            _context.Camas.RemoveRange(camasAsociadas);
 
             _context.Habitaciones.Remove(habitacion);
             await _context.SaveChangesAsync();

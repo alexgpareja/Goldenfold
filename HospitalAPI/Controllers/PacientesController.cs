@@ -6,7 +6,6 @@ using AutoMapper;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Text.RegularExpressions;
-using Microsoft.IdentityModel.Tokens;
 
 namespace HospitalApi.Controllers
 {
@@ -34,44 +33,42 @@ namespace HospitalApi.Controllers
         /// <response code="200">Devuelve una lista de pacientes que coinciden con los parámetros de búsqueda.</response>
         /// <response code="404">Si no se encuentran pacientes que coincidan con los criterios de búsqueda proporcionados.</response>
         /// <response code="500">Si se produce un error en el servidor al procesar la solicitud.</response>
-        // GET: api/Pacientes
         [HttpGet]
         public async Task<ActionResult<IEnumerable<PacienteDTO>>> GetPacientes([FromQuery] string? nombre, [FromQuery] string? numSS)
         {
             IQueryable<Paciente> query = _context.Pacientes;
-            if (!nombre.IsNullOrEmpty()) query = query.Where(p => p.Nombre.Contains(nombre!.ToLower()));
-            if (!numSS.IsNullOrEmpty()) query = query.Where(p => p.SeguridadSocial.Contains(numSS!.ToLower()));
+            if (!string.IsNullOrEmpty(nombre)) query = query.Where(p => p.Nombre.ToLower().Contains(nombre.ToLower()));
+            if (!string.IsNullOrEmpty(numSS)) query = query.Where(p => p.SeguridadSocial.Contains(numSS));
+
             var pacientes = await query.ToListAsync();
             if (!pacientes.Any())
             {
                 return NotFound("No se han encontrado pacientes que coincidan con los criterios de búsqueda proporcionados.");
             }
+
             var pacientesDTO = _mapper.Map<IEnumerable<PacienteDTO>>(pacientes);
             return Ok(pacientesDTO);
         }
-
 
         /// <summary>
         /// Obtiene un paciente específico por su ID.
         /// </summary>
         /// <param name="id">El ID del paciente que se desea obtener.</param>
         /// <returns>
-        /// Un objeto <see cref="pacienteDTO"/> que representa el paciente solicitado.
+        /// Un objeto <see cref="PacienteDTO"/> que representa el paciente solicitado.
         /// </returns>
         /// <response code="200">Devuelve el paciente solicitado.</response>
         /// <response code="404">Si no se encuentra un paciente con el ID proporcionado.</response>
         /// <response code="500">Si se produce un error en el servidor al procesar la solicitud.</response>
-        // GET: api/Pacientes/{id}
         [HttpGet("{id}")]
         public async Task<ActionResult<PacienteDTO>> GetPaciente(int id)
         {
             var paciente = await _context.Pacientes.FindAsync(id);
             if (paciente == null) return NotFound($"No se ha encontrado ningún paciente con el ID {id}.");
+
             var pacienteDTO = _mapper.Map<PacienteDTO>(paciente);
             return Ok(pacienteDTO);
-
         }
-
 
         /// <summary>
         /// Crea un nuevo paciente en la base de datos.
@@ -82,26 +79,38 @@ namespace HospitalApi.Controllers
         /// </returns>
         /// <response code="201">El paciente ha sido creado exitosamente.</response>
         /// <response code="400">Si los datos proporcionados no son válidos.</response>
-        /// <response code="409">Si el numero de la Seguridad Social del paciente a añadir ya está registrado.</response>
+        /// <response code="409">Si el numero de la Seguridad Social o el DNI ya están registrados.</response>
         /// <response code="500">Si se produce un error en el servidor al procesar la solicitud.</response>
         [HttpPost]
         public async Task<ActionResult<PacienteDTO>> CreatePaciente(PacienteCreateDTO pacienteDTO)
         {
-            // Verificar si ya existe un paciente con el mismo número de seguridad social en la bd
+            // Verificar si ya existe un paciente con el mismo número de seguridad social o DNI
             if (await _context.Pacientes.AnyAsync(p => p.SeguridadSocial == pacienteDTO.SeguridadSocial))
             {
                 return Conflict("Ya existe un paciente con el número de seguridad social proporcionado.");
             }
 
-            if (string.IsNullOrEmpty(pacienteDTO.Estado))
+            if (await _context.Pacientes.AnyAsync(p => p.Dni == pacienteDTO.Dni))
             {
-                pacienteDTO.Estado = "Registrado";
+                return Conflict("Ya existe un paciente con el DNI proporcionado.");
+            }
+
+            // Asignar el valor predeterminado de estado si no se proporciona
+            if (!Enum.IsDefined(typeof(EstadoPaciente), pacienteDTO.Estado))
+            {
+                pacienteDTO.Estado = EstadoPaciente.Registrado;  // Asignar estado predeterminado
             }
 
             // Validar el formato del número de seguridad social
             if (pacienteDTO.SeguridadSocial.Length != 12 || !pacienteDTO.SeguridadSocial.All(char.IsDigit))
             {
                 return BadRequest("El número de seguridad social debe tener exactamente 12 dígitos numéricos.");
+            }
+
+            // Validar formato del DNI
+            if (!Regex.IsMatch(pacienteDTO.Dni, @"^\d{8}[A-Za-z]$"))
+            {
+                return BadRequest("El DNI debe tener 8 números seguidos de una letra.");
             }
 
             // Comprobar que la fecha de nacimiento sea válida
@@ -123,13 +132,11 @@ namespace HospitalApi.Controllers
             }
 
             var paciente = _mapper.Map<Paciente>(pacienteDTO);
-
             _context.Pacientes.Add(paciente);
             await _context.SaveChangesAsync();
 
             var pacienteDTOResult = _mapper.Map<PacienteDTO>(paciente);
             return CreatedAtAction(nameof(GetPaciente), new { id = paciente.IdPaciente }, pacienteDTOResult);
-
         }
 
 
@@ -137,37 +144,42 @@ namespace HospitalApi.Controllers
         /// Actualiza un paciente existente en la base de datos.
         /// </summary>
         /// <param name="id">El ID del paciente que se va a actualizar.</param>
-        /// <param name="pacienteDTO">El objeto <see cref="PacienteDTO"/> que contiene los datos actualizados del paciente.</param>
+        /// <param name="pacienteDTO">El objeto <see cref="PacienteUpdateDTO"/> que contiene los datos actualizados del paciente.</param>
         /// <returns>
         /// Un código de estado HTTP que indica el resultado de la operación de actualización.
         /// </returns>
         /// <response code="204">Indica que la actualización fue exitosa y no hay contenido que devolver.</response>
         /// <response code="400">Si los datos proporcionados no son válidos.</response>
         /// <response code="404">Si no se encuentra el paciente con el ID proporcionado.</response>
-        /// <response code="409">Si el numero de la Seguridad Social del paciente a añadir ya está registrado.</response>
+        /// <response code="409">Si el numero de la Seguridad Social o el DNI ya están registrados.</response>
         /// <response code="500">Si ocurre un error en el servidor al procesar la solicitud.</response>
-        // PUT: api/Pacientes/{id}
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdatePaciente(int id, PacienteUpdateDTO pacienteDTO)
         {
-
             var pacienteExiste = await _context.Pacientes.FindAsync(id);
+            if (pacienteExiste == null) return NotFound("No se encontró el paciente especificado.");
 
-            if (pacienteExiste == null)
-            {
-                return NotFound("No se encontró el paciente especificado.");
-            }
-
-            // Verificar si ya existe un paciente con el mismo número de seguridad social en la bd
+            // Verificar si ya existe un paciente con el mismo número de seguridad social o DNI
             if (await _context.Pacientes.AnyAsync(p => p.SeguridadSocial == pacienteDTO.SeguridadSocial && p.IdPaciente != id))
             {
                 return Conflict("Ya existe un paciente con el número de seguridad social proporcionado.");
+            }
+
+            if (await _context.Pacientes.AnyAsync(p => p.Dni == pacienteDTO.Dni && p.IdPaciente != id))
+            {
+                return Conflict("Ya existe un paciente con el DNI proporcionado.");
             }
 
             // Validar el formato del número de seguridad social
             if (pacienteDTO.SeguridadSocial.Length != 12 || !pacienteDTO.SeguridadSocial.All(char.IsDigit))
             {
                 return BadRequest("El número de seguridad social debe tener exactamente 12 dígitos numéricos.");
+            }
+
+            // Validar formato del DNI
+            if (!Regex.IsMatch(pacienteDTO.Dni, @"^\d{8}[A-Za-z]$"))
+            {
+                return BadRequest("El DNI debe tener 8 números seguidos de una letra.");
             }
 
             // Comprobar que la fecha de nacimiento sea válida
@@ -195,18 +207,11 @@ namespace HospitalApi.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!PacienteExists(id))
-                {
-                    return NotFound("No se encontró el paciente especificado.");
-                }
-                else
-                {
-                    throw;
-                }
+                if (!PacienteExists(id)) return NotFound("No se encontró el paciente especificado.");
+                else throw;
             }
             return NoContent();
         }
-
 
         /// <summary>
         /// Elimina un paciente específico de la base de datos por su ID.
@@ -218,15 +223,12 @@ namespace HospitalApi.Controllers
         /// <response code="204">Indica que la eliminación fue exitosa y no hay contenido que devolver.</response>
         /// <response code="404">Si no se encuentra el paciente con el ID proporcionado.</response>
         /// <response code="500">Si ocurre un error en el servidor al procesar la solicitud.</response>
-        // DELETE: api/Pacientes/{id}
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePaciente(int id)
         {
             var paciente = await _context.Pacientes.FindAsync(id);
-            if (paciente == null)
-            {
-                return NotFound("No se encontró el paciente especificado.");
-            }
+            if (paciente == null) return NotFound("No se encontró el paciente especificado.");
+
             _context.Pacientes.Remove(paciente);
             await _context.SaveChangesAsync();
             return NoContent();
@@ -238,4 +240,3 @@ namespace HospitalApi.Controllers
         }
     }
 }
-

@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using HospitalApi.Models;
 using HospitalApi.DTO;
 using AutoMapper;
-using Microsoft.IdentityModel.Tokens;
 using Swashbuckle.AspNetCore.Filters;
 using HospitalApi.SwaggerExamples;
 
@@ -22,7 +21,6 @@ namespace HospitalApi.Controllers
             _mapper = mapper;
         }
 
-
         /// <summary>
         /// Obtiene una lista de todos los roles disponibles.
         /// </summary>
@@ -30,21 +28,22 @@ namespace HospitalApi.Controllers
         /// <response code="200">Retorna una lista de roles en formato DTO.</response>
         /// <response code="404">Retorna un código HTTP 404 si no se encuentran roles.</response>
         /// <response code="500">Retorna un código HTTP 500 si ocurre un error al recuperar los roles.</response>
-        // GET: api/Roles
         [HttpGet]
         public async Task<ActionResult<IEnumerable<RolDTO>>> GetRoles([FromQuery] string? nombreRol)
         {
             IQueryable<Rol> query = _context.Roles;
-            if (!nombreRol.IsNullOrEmpty()) query = query.Where(r => r.NombreRol.Contains(nombreRol!.ToLower()));
+            if (!string.IsNullOrEmpty(nombreRol)) 
+                query = query.Where(r => r.NombreRol.ToLower().Contains(nombreRol.ToLower()));
+
             var roles = await query.ToListAsync();
             if (!roles.Any())
             {
                 return NotFound("No se han encontrado roles que coincidan con los criterios de búsqueda proporcionados.");
             }
+
             var rolesDTO = _mapper.Map<IEnumerable<RolDTO>>(roles);
             return Ok(rolesDTO);
         }
-
 
         /// <summary>
         /// Obtiene un rol específico por su identificador.
@@ -54,7 +53,6 @@ namespace HospitalApi.Controllers
         /// <response code="200">Retorna el rol en formato DTO si el rol es encontrado.</response>
         /// <response code="404">Retorna un código HTTP 404 si no se encuentra el rol con el identificador especificado.</response>
         /// <response code="500">Retorna un código HTTP 500 si ocurre un error al recuperar el rol.</response>
-        // GET: api/Roles/{id}
         [HttpGet("{id}")]
         public async Task<ActionResult<RolDTO>> GetRol(int id)
         {
@@ -62,7 +60,7 @@ namespace HospitalApi.Controllers
 
             if (rol == null)
             {
-                return NotFound();
+                return NotFound("No se encontró ningún rol con el ID especificado.");
             }
 
             var rolDTO = _mapper.Map<RolDTO>(rol);
@@ -101,7 +99,6 @@ namespace HospitalApi.Controllers
             return CreatedAtAction(nameof(GetRol), new { id = rolDTOResult.IdRol }, rolDTOResult);
         }
 
-
         /// <summary>
         /// Actualiza un rol existente en el sistema.
         /// </summary>
@@ -114,7 +111,6 @@ namespace HospitalApi.Controllers
         /// <response code="404">Indica que no se encontró ningún rol con el ID proporcionado.</response>
         /// <response code="409">Indica que ya existe otro rol con el mismo nombre.</response>
         /// <response code="500">Indica que ocurrió un error al actualizar el rol en la base de datos.</response>
-        // PUT: api/Roles/{id}
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateRol(int id, RolUpdateDTO rolDTO)
         {
@@ -160,7 +156,6 @@ namespace HospitalApi.Controllers
         /// <response code="204">Indica que la eliminación se realizó correctamente.</response>
         /// <response code="404">Indica que no se encontró ningún rol con el ID proporcionado.</response>
         /// <response code="500">Indica que ocurrió un error al actualizar el rol en la base de datos.</response>
-        // DELETE: api/Roles/{id}
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteRol(int id)
         {
@@ -169,6 +164,12 @@ namespace HospitalApi.Controllers
             if (rol == null)
             {
                 return NotFound("No se encontró el rol con el ID proporcionado.");
+            }
+
+            // Verificación de referencias de usuarios a roles
+            if (await _context.Usuarios.AnyAsync(u => u.IdRol == id))
+            {
+                return Conflict("Este rol está asignado a usuarios y no puede ser eliminado.");
             }
 
             _context.Roles.Remove(rol);

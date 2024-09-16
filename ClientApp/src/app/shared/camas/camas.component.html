@@ -30,51 +30,27 @@
         <table class="table">
           <thead>
             <tr>
+              <th>Id cama</th>
               <th>Ubicación</th>
               <th>Estado</th>
               <th>Tipo</th>
+              <th>Id Habitacion</th>
               <th>Acciones</th>
             </tr>
           </thead>
           <tbody>
             <tr *ngFor="let cama of camasFiltradas">
+              <td>{{ cama.IdCama }}</td>
               <td>{{ cama.Ubicacion }}</td>
               <td>{{ cama.Estado }}</td>
               <td>{{ cama.Tipo }}</td>
+              <td>{{ cama.IdHabitacion }}</td>
               <td>
                 <button (click)="abrirFormularioActualizarCama(cama)">Actualizar</button>
-                <button (click)="confirmarBorrarCama(cama)">Borrar</button>
               </td>
             </tr>            
           </tbody>
         </table>
-      </div>
-
-      <div class="form-container" *ngIf="camaParaActualizar">
-        <h3>Actualizar Cama</h3>
-        <form (ngSubmit)="actualizarCama()">
-          <label for="ubicacion">Ubicación:</label>
-          <input type="text" id="ubicacion" name="ubicacion" required [(ngModel)]="camaParaActualizar.Ubicacion" disabled>
-          <label for="estado">Estado:</label>
-          <input type="text" id="estado" required [(ngModel)]="camaParaActualizar.Estado" name="estado">
-          <label for="tipo">Tipo:</label>
-          <input type="text" id="tipo" required [(ngModel)]="camaParaActualizar.Tipo" name="tipo">
-          <button type="submit">Guardar</button>
-        </form>
-      </div>
-      
-
-      <div class="form-container">
-        <h3>Agregar Cama</h3>
-        <form (ngSubmit)="agregarCama()">
-          <label for="ubicacion">Ubicación:</label>
-          <input type="text" id="ubicacion" [(ngModel)]="nuevaCama.Ubicacion" name="ubicacion">
-          <label for="estado">Estado:</label>
-          <input type="text" id="estado" [(ngModel)]="nuevaCama.Estado" name="estado">
-          <label for="tipo">Tipo:</label>
-          <input type="text" id="tipo" [(ngModel)]="nuevaCama.Tipo" name="tipo">
-          <button type="submit">Agregar</button>
-        </form>
       </div>
   </main>
   </div>

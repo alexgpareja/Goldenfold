@@ -14,7 +14,7 @@ import { HttpBackend } from '@angular/common/http';
 export class CamasComponent implements OnInit {
   camas: Cama[] = [];
   camasFiltradas: Cama[] = [];
-  nuevaCama: Cama = { Ubicacion: '', Estado: '', Tipo: '' };
+  nuevaCama: Cama = {IdCama: 0, Ubicacion: '', Estado: '', Tipo: '' , IdHabitacion: 0};
   camaParaActualizar: Cama | null = null;
 
   //variables para el formulario
@@ -46,22 +46,6 @@ export class CamasComponent implements OnInit {
     });
   }
 
-  actualizarCama(): void {
-    if (this.camaParaActualizar) {
-      this.apiService.updateCama(this.camaParaActualizar).subscribe({
-        next: (camaActualizada: Cama) => {
-          this.obtenerCamas(); 
-          this.camaParaActualizar = null;
-          window.alert("Cama actualizada correctamente.") 
-        },
-        error: (error: any) => {
-          console.error('Error al actualizar la cama', error);
-        }
-      });
-    }
-  }
-
-  
 
   aplicarFiltros(): void {
     this.camasFiltradas = this.camas.filter(cama => {
@@ -112,52 +96,5 @@ export class CamasComponent implements OnInit {
     this.mostrarFormularioAgregarCama = false;
     this.mensajeExito = null;
   }
-
-  agregarCama(): void {
-    this.apiService.addCama(this.nuevaCama).subscribe({
-      next: (cama: Cama) => {
-        this.camas.push(cama);
-        this.camasFiltradas = [...this.camas];
-        this.nuevaCama = { Ubicacion: '', Estado: '', Tipo: '' };
-        this.mensajeExito = 'Cama agregada correctamente'; 
-        this.cerrarFormularioAgregarCama(); 
-      },
-      error: (error: any) => {
-        console.error('Error al agregar la cama', error);
-      }
-    });
-  }
-
-  borrarCama(ubicacion: string): void {
-    this.apiService.deleteCama(ubicacion).subscribe({
-      next: () => {
-        this.camas = this.camas.filter(c => c.Ubicacion !== ubicacion);
-        this.camasFiltradas = [...this.camas];
-        window.alert("Cama eliminada correctamente.")
-      },
-      error: (error: any) => {
-        console.error('Error al eliminar la cama', error);
-        window.alert(error.message || "currió un error al eliminar la cama.")
-      }
-    });
-  }
-
-/*
-  manejarClicFuera(event: MouseEvent): void {
-    const target = event.target as HTMLElement;
-    if (target.classList.contains('modal')) {
-      this.cerrarFormularioAgregarCama();
-      this.cerrarFormularioActualizarCama();
-    }
-  }
-*/
-  confirmarBorrarCama(cama: Cama): void {
-    const confirmar = window.confirm(`¿Está seguro de que desea borrar la cama con ubicación ${cama.Ubicacion}?`);
-    if (confirmar) {
-      this.borrarCama(cama.Ubicacion);
-    }
-  }
-
-  
 }
 
