@@ -88,6 +88,11 @@ namespace HospitalApi.Controllers
         [SwaggerResponseExample(201, typeof(RolDTOExample))]
         public async Task<ActionResult<RolDTO>> CreateRol(RolCreateDTO rolDTO)
         {
+            if (string.IsNullOrWhiteSpace(rolDTO.NombreRol))
+            {
+                return BadRequest("No es posible añadir un Rol en blanco.");
+            }
+
             if (await _context.Roles.AnyAsync(r => r.NombreRol == rolDTO.NombreRol))
             {
                 return Conflict("Ya hay un rol registrado con ese nombre. Por favor, elige un nombre diferente para el nuevo rol.");
@@ -123,6 +128,11 @@ namespace HospitalApi.Controllers
             if (rolExiste == null)
             {
                 return NotFound("No se encontró ningún rol con el ID proporcionado.");
+            }
+
+            if (string.IsNullOrWhiteSpace(rolDTO.NombreRol))
+            {
+                return BadRequest("No es posible añadir un Rol en blanco.");
             }
 
             if (await _context.Roles.AnyAsync(r => r.IdRol != id && r.NombreRol == rolDTO.NombreRol))
