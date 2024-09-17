@@ -16,9 +16,8 @@ export class PacientesComponent implements OnInit {
   nuevoPaciente: Paciente = {
     IdPaciente: 0,
     Nombre: '',
-    Edad: 0,
+    Dni: '',
     FechaNacimiento: new Date(),
-    Sintomas: '',
     Estado: '',
     FechaRegistro: new Date(),
     SeguridadSocial: '',
@@ -130,9 +129,8 @@ export class PacientesComponent implements OnInit {
         this.nuevoPaciente = {
           IdPaciente: 0,
           Nombre: '',
-          Edad: 0,
+          Dni: '',
           FechaNacimiento: new Date(),
-          Sintomas: '',
           Estado: '',
           FechaRegistro: new Date(),
           SeguridadSocial: '',

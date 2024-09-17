@@ -12,49 +12,50 @@ namespace HospitalApi
         [Column("id_paciente")]
         public int IdPaciente { get; set; }
 
-        [Required]
-        [StringLength(100)]
+        [Required(ErrorMessage = "El nombre es obligatorio.")]
+        [StringLength(100, ErrorMessage = "El nombre no puede tener más de 100 caracteres.")]
         [Column("nombre")]
         public string Nombre { get; set; }
 
-        [Required]
-        [Range(0, int.MaxValue, ErrorMessage = "La edad debe ser un número positivo.")]
-        [Column("edad")]
-        public int Edad { get; set; }
+        [Required(ErrorMessage = "El DNI es obligatorio.")]
+        [RegularExpression(@"^[0-9]{8}[A-Za-z]$", ErrorMessage = "El DNI debe tener 8 números seguidos de una letra.")]
+        [StringLength(9, MinimumLength = 9, ErrorMessage = "El DNI debe tener exactamente 9 caracteres.")]
+        [Column("dni")]
+        public string Dni { get; set; }
 
-        [StringLength(255)]
-        [Column("sintomas")]
-        public string Sintomas { get; set; }
+        [Required(ErrorMessage = "La fecha de nacimiento es obligatoria.")]
+        [Column("fecha_nacimiento")]
+        public DateTime FechaNacimiento { get; set; }
 
-        [StringLength(50)]
+        [Required(ErrorMessage = "El estado es obligatorio.")]
         [Column("estado")]
-        public string Estado { get; set; } = "Registrado";
+        public EstadoPaciente Estado { get; set; } = EstadoPaciente.Registrado;
 
         [Column("fecha_registro")]
-        public DateTime FechaRegistro { get; set; }
+        public DateTime FechaRegistro { get; set; } = DateTime.Now;
 
-        [Required]
-        [StringLength(12, MinimumLength = 12)]
+        [Required(ErrorMessage = "El número de seguridad social es obligatorio.")]
+        [RegularExpression(@"^\d{12}$", ErrorMessage = "El número de la seguridad social debe tener exactamente 12 dígitos.")]
+        [StringLength(12, MinimumLength = 12, ErrorMessage = "El número de seguridad social debe tener exactamente 12 dígitos.")]
         [Column("seguridad_social")]
         public string SeguridadSocial { get; set; }
 
-        [StringLength(255)]
+        [StringLength(255, ErrorMessage = "La dirección no puede tener más de 255 caracteres.")]
         [Column("direccion")]
         public string Direccion { get; set; }
 
-        [StringLength(9, MinimumLength = 9)]
+        [StringLength(9, MinimumLength = 9, ErrorMessage = "El teléfono debe tener exactamente 9 caracteres.")]
+        [RegularExpression(@"^\d{9}$", ErrorMessage = "El teléfono debe contener exactamente 9 dígitos.")]
         [Column("telefono")]
         public string Telefono { get; set; }
 
-        [StringLength(100)]
+        [EmailAddress(ErrorMessage = "El formato del correo electrónico no es válido.")]
+        [StringLength(100, ErrorMessage = "El correo electrónico no puede tener más de 100 caracteres.")]
         [Column("email")]
         public string Email { get; set; }
 
         [Column("historial_medico")]
         public string HistorialMedico { get; set; }
-
-        [Column("fecha_nacimiento")]
-        public DateTime FechaNacimiento { get; set; }
 
         // Propiedades de navegación
         public ICollection<HistorialAlta> HistorialAltas { get; set; }
@@ -71,5 +72,14 @@ namespace HospitalApi
             Consultas = new List<Consulta>();
             Ingresos = new List<Ingreso>();
         }
+    }
+
+    // Enum para el estado del paciente
+    public enum EstadoPaciente
+    {
+        Registrado,
+        EnConsulta,
+        Ingresado,
+        Alta
     }
 }

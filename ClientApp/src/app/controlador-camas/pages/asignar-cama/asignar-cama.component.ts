@@ -1,10 +1,36 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { ApiService, Ingreso, Cama, Asignacion } from '../../../services/api.service';
+import { HttpErrorResponse } from '@angular/common/http';
+
+// Extender el modelo Ingreso para agregar camasDisponibles temporalmente
+interface IngresoConCamas extends Ingreso {
+  camasDisponibles?: Cama[]; // Propiedad temporal para almacenar las camas disponibles
+}
 
 @Component({
   selector: 'app-asignar-cama',
   templateUrl: './asignar-cama.component.html',
-  styleUrl: './asignar-cama.component.css'
+  styleUrls: ['./asignar-cama.component.css']
 })
-export class AsignarCamaComponent {
+export class AsignarCamaComponent implements OnInit {
+  solicitudesPendientes: IngresoConCamas[] = []; // Usamos la interfaz extendida
+  errorMensaje: string | null = null;
 
+  constructor(private apiService: ApiService) { }
+
+  ngOnInit() {
+    this.obtenerSolicitudesPendientes(); // Cargar solicitudes al iniciar
+  }
+
+  // Obtener todas las solicitudes de ingreso con estado "pendiente"
+  obtenerSolicitudesPendientes() {
+    this.apiService.getIngresos(undefined, undefined, 'pendiente').subscribe({
+      next: (ingresos: IngresoConCamas[]) => {
+        this.solicitudesPendientes = ingresos;
+      },
+      error: (error: HttpErrorResponse) => {
+        this.errorMensaje = 'Error al cargar las solicitudes de ingreso pendientes.';
+      }
+    });
+  }
 }

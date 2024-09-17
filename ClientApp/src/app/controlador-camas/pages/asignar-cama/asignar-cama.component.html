@@ -1,1 +1,43 @@
-<p>asignar-cama works!</p>
+<div class="asignar-cama-section">
+  <h2>Solicitudes de Ingreso Pendientes</h2>
+
+  <!-- Mensaje de error si ocurre algún problema -->
+  <div *ngIf="errorMensaje" class="error-message">{{ errorMensaje }}</div>
+
+  <!-- Mostrar las solicitudes de ingreso si existen -->
+  <ng-container *ngIf="solicitudesPendientes.length > 0; else noSolicitudes">
+    <table class="solicitudes-table">
+      <thead>
+        <tr>
+          <th>ID Paciente</th>
+          <th>ID Médico</th>
+          <th>Motivo</th>
+          <th>Fecha de Solicitud</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let solicitud of solicitudesPendientes">
+          <td>{{ solicitud.IdPaciente }}</td>
+          <td>{{ solicitud.IdMedico }}</td>
+          <td>{{ solicitud.Motivo }}</td>
+          <td>{{ solicitud.FechaSolicitud | date: 'dd/MM/yyyy' }}</td>
+          <td>
+          
+
+            <!-- Lista de camas disponibles del tipo seleccionado -->
+            <div *ngIf="solicitud.camasDisponibles && solicitud.camasDisponibles.length > 0">
+              <label for="cama">Seleccionar Cama Disponible:</label>
+              
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </ng-container>
+
+  <!-- Mensaje si no hay solicitudes pendientes -->
+  <ng-template #noSolicitudes>
+    <p>No hay solicitudes de ingreso pendientes en este momento.</p>
+  </ng-template>
+</div>

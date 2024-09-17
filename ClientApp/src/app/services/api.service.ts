@@ -6,9 +6,8 @@ import { catchError, Observable, throwError } from 'rxjs';
 export interface Paciente {
   IdPaciente: number;
   Nombre: string;
-  Edad: number;
+  Dni: string;
   FechaNacimiento: Date;
-  Sintomas: string;
   Estado: string;
   FechaRegistro: Date;
   SeguridadSocial: string;
@@ -64,10 +63,13 @@ export interface Usuario {
 }
 
 export interface Cama {
+  IdCama: number;
   Ubicacion: string;
   Estado: string;
   Tipo: string;
+  IdHabitacion: number;
 }
+
 
 export interface Habitacion {
   IdHabitacion: number;
@@ -87,21 +89,16 @@ export interface Rol {
 export class ApiService {
   private apiUrl = 'http://localhost:5076/api';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
-  // CRUD para Pacientes con parámetros
-  getPacientes(nombre?: string, numSS?: string): Observable<Paciente[]> {
+  // CRUD para Pacientes  
+  getPacientes(Nombre?: string, Dni?: string, numSS?: string): Observable<Paciente[]> {
     let params = new HttpParams();
-    if (nombre) params = params.set('nombre', nombre);
+    if (Nombre) params = params.set('nombre', Nombre);
+    if (Dni) params = params.set('dni', Dni);
     if (numSS) params = params.set('numSS', numSS);
     return this.http.get<Paciente[]>(`${this.apiUrl}/Pacientes`, { params });
   }
-
-  updatePacienteEstado(idPaciente: number, nuevoEstado: string): Observable<Paciente> {
-    const body = { Estado: nuevoEstado };
-    return this.http.put<Paciente>(`${this.apiUrl}/Pacientes/${idPaciente}`, body);
-  }
-  
 
   addPaciente(paciente: Paciente): Observable<Paciente> {
     return this.http.post<Paciente>(`${this.apiUrl}/Pacientes`, paciente);
@@ -114,31 +111,28 @@ export class ApiService {
     );
   }
 
-  deletePaciente(id?: number, nombre?: string): Observable<void> {
-    let params = new HttpParams();
-    if (id) params = params.set('id', id.toString());
-    if (nombre) params = params.set('nombre', nombre);
-    return this.http.delete<void>(`${this.apiUrl}/Pacientes`, { params });
+  deletePaciente(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/Pacientes/${id}`);
   }
 
   // CRUD para Consultas
   getConsultas(
     idPaciente?: number,
     idMedico?: number,
-    estado?: string
+    estado?: string,
+    fechaSolicitud?: Date,
+    fechaConsulta?: Date,
+    motivo?: string
   ): Observable<Consulta[]> {
     let params = new HttpParams();
     if (idPaciente) params = params.set('idPaciente', idPaciente.toString());
     if (idMedico) params = params.set('idMedico', idMedico.toString());
     if (estado) params = params.set('estado', estado);
-    return this.http.get<Consulta[]>(`${this.apiUrl}/Consultas`, { params });
-  }
+    if (fechaSolicitud) params = params.set('fechaSolicitud', fechaSolicitud.toISOString());
+    if (fechaConsulta) params = params.set('fechaConsulta', fechaConsulta.toISOString());
+    if (motivo) params = params.set('motivo', motivo);
 
-  // Obtener pacientes con consultas pendientes de ingreso
-  getPacientesPendientesIngreso(): Observable<Paciente[]> {
-    return this.http.get<Paciente[]>(
-      `${this.apiUrl}/Consultas/pendientes-ingreso`
-    );
+    return this.http.get<Consulta[]>(`${this.apiUrl}/Consultas`, { params });
   }
 
   addConsulta(consulta: Consulta): Observable<Consulta> {
@@ -152,19 +146,13 @@ export class ApiService {
     );
   }
 
-  deleteConsulta(id?: number, estado?: string): Observable<void> {
-    let params = new HttpParams();
-    if (id) params = params.set('id', id.toString());
-    if (estado) params = params.set('estado', estado);
-    return this.http.delete<void>(`${this.apiUrl}/Consultas`, { params });
+  deleteConsulta(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/Consultas/${id}`);
   }
 
+
   // CRUD para Ingresos
-  getIngresos(
-    idPaciente?: number,
-    idMedico?: number,
-    estado?: string
-  ): Observable<Ingreso[]> {
+  getIngresos(idPaciente?: number, idMedico?: number, estado?: string): Observable<Ingreso[]> {
     let params = new HttpParams();
     if (idPaciente) params = params.set('idPaciente', idPaciente.toString());
     if (idMedico) params = params.set('idMedico', idMedico.toString());
@@ -183,27 +171,26 @@ export class ApiService {
     );
   }
 
-  deleteIngreso(id?: number, estado?: string): Observable<void> {
-    let params = new HttpParams();
-    if (id) params = params.set('id', id.toString());
-    if (estado) params = params.set('estado', estado);
-    return this.http.delete<void>(`${this.apiUrl}/Ingresos`, { params });
+  deleteIngreso(idIngreso: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/Ingresos/${idIngreso}`);
   }
 
   // CRUD para Asignaciones con parámetros
-  getAsignaciones(idPaciente?: number): Observable<Asignacion[]> {
+  getAsignaciones(
+    idPaciente?: number,
+    ubicacion?: string,
+    fechaAsignacion?: Date
+  ): Observable<Asignacion[]> {
     let params = new HttpParams();
     if (idPaciente) params = params.set('idPaciente', idPaciente.toString());
-    return this.http.get<Asignacion[]>(`${this.apiUrl}/Asignaciones`, {
-      params,
-    });
+    if (ubicacion) params = params.set('ubicacion', ubicacion);
+    if (fechaAsignacion) params = params.set('fechaAsignacion', fechaAsignacion.toISOString());
+
+    return this.http.get<Asignacion[]>(`${this.apiUrl}/Asignaciones`, { params });
   }
 
   addAsignacion(asignacion: Asignacion): Observable<Asignacion> {
-    return this.http.post<Asignacion>(
-      `${this.apiUrl}/Asignaciones`,
-      asignacion
-    );
+    return this.http.post<Asignacion>(`${this.apiUrl}/Asignaciones`, asignacion);
   }
 
   updateAsignacion(asignacion: Asignacion): Observable<Asignacion> {
@@ -213,26 +200,28 @@ export class ApiService {
     );
   }
 
-  deleteAsignacion(id?: number): Observable<void> {
-    let params = new HttpParams();
-    if (id) params = params.set('id', id.toString());
-    return this.http.delete<void>(`${this.apiUrl}/Asignaciones`, { params });
+  deleteAsignacion(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/Asignaciones/${id}`);
   }
 
   // CRUD para HistorialAltas
-  getHistorialAltas(idPaciente?: number): Observable<HistorialAlta[]> {
+  getHistorialAltas(
+    idPaciente?: number,
+    fechaAlta?: Date,
+    diagnostico?: string,
+    tratamiento?: string
+  ): Observable<HistorialAlta[]> {
     let params = new HttpParams();
     if (idPaciente) params = params.set('idPaciente', idPaciente.toString());
-    return this.http.get<HistorialAlta[]>(`${this.apiUrl}/HistorialAltas`, {
-      params,
-    });
+    if (fechaAlta) params = params.set('fechaAlta', fechaAlta.toISOString());
+    if (diagnostico) params = params.set('diagnostico', diagnostico);
+    if (tratamiento) params = params.set('tratamiento', tratamiento);
+
+    return this.http.get<HistorialAlta[]>(`${this.apiUrl}/HistorialAltas`, { params });
   }
 
   addHistorialAlta(historialAlta: HistorialAlta): Observable<HistorialAlta> {
-    return this.http.post<HistorialAlta>(
-      `${this.apiUrl}/HistorialAltas`,
-      historialAlta
-    );
+    return this.http.post<HistorialAlta>(`${this.apiUrl}/HistorialAltas`, historialAlta);
   }
 
   updateHistorialAlta(historialAlta: HistorialAlta): Observable<HistorialAlta> {
@@ -242,16 +231,16 @@ export class ApiService {
     );
   }
 
-  deleteHistorialAlta(id?: number): Observable<void> {
-    let params = new HttpParams();
-    if (id) params = params.set('id', id.toString());
-    return this.http.delete<void>(`${this.apiUrl}/HistorialAltas`, { params });
+  deleteHistorialAlta(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/HistorialAltas/${id}`);
   }
 
   // CRUD para Usuarios
-  getUsuarios(nombre?: string): Observable<Usuario[]> {
+  getUsuarios(nombre?: string, nombreUsuario?: string, idRol?: number): Observable<Usuario[]> {
     let params = new HttpParams();
     if (nombre) params = params.set('nombre', nombre);
+    if (nombreUsuario) params = params.set('nombreUsuario', nombreUsuario);
+    if (idRol) params = params.set('idRol', idRol.toString());
     return this.http.get<Usuario[]>(`${this.apiUrl}/Usuarios`, { params });
   }
 
@@ -270,74 +259,61 @@ export class ApiService {
     return this.http.delete<void>(`${this.apiUrl}/Usuarios/${idUsuario}`);
   }
 
+
   // CRUD para Camas
-  getCamas(ubicacion?: string, estado?: string): Observable<Cama[]> {
+  getCamas(ubicacion?: string, estado?: string, tipo?: string, idHabitacion?: number, idCama?: number): Observable<Cama[]> {
     let params = new HttpParams();
     if (ubicacion) params = params.set('ubicacion', ubicacion);
     if (estado) params = params.set('estado', estado);
+    if (tipo) params = params.set('tipo', tipo);
+    if (idHabitacion) params = params.set('idHabitacion', idHabitacion.toString());
+    if (idCama) params = params.set('idCama', idCama.toString());
     return this.http.get<Cama[]>(`${this.apiUrl}/Camas`, { params });
   }
 
-  addCama(cama: Cama): Observable<Cama> {
-    return this.http.post<Cama>(`${this.apiUrl}/Camas`, cama);
-  }
-
-  updateCama( cama: Cama): Observable<Cama> {
-    return this.http.put<Cama>(`${this.apiUrl}/Camas/${cama.Ubicacion}`, cama);
-  }
-
-  deleteCama(ubicacion: string): Observable<void> {
-    // Realiza la solicitud DELETE
-    return this.http.delete<void>(`${this.apiUrl}/Camas/${ubicacion}`);
-  }
   // CRUD para Habitaciones
-  getHabitaciones(id?: number, edificio?: string): Observable<Habitacion[]> {
+  getHabitaciones(Edificio?: string, Planta?: string, IdHabitacion?: number): Observable<Habitacion[]> {
     let params = new HttpParams();
-    if (id) params = params.set('id', id.toString());
-    if (edificio) params = params.set('edificio', edificio);
-    return this.http.get<Habitacion[]>(`${this.apiUrl}/Habitaciones`, {
-      params,
-    });
+    if (Edificio) params = params.set('Edificio', Edificio);
+    if (Planta) params = params.set('Planta', Planta);
+    if (IdHabitacion) params = params.set('IdHabitacion', IdHabitacion.toString());
+
+    return this.http.get<Habitacion[]>(`${this.apiUrl}/Habitaciones`, { params });
   }
 
-  addHabitacion(habitacion: Habitacion): Observable<Habitacion> {
-    return this.http.post<Habitacion>(
-      `${this.apiUrl}/Habitaciones`,
-      habitacion
-    );
+  addHabitacion(Habitacion: Habitacion): Observable<Habitacion> {
+    return this.http.post<Habitacion>(`${this.apiUrl}/Habitaciones`, Habitacion);
   }
 
-  updateHabitacion(habitacion: Habitacion): Observable<Habitacion> {
+  updateHabitacion(Habitacion: Habitacion): Observable<Habitacion> {
     return this.http.put<Habitacion>(
-      `${this.apiUrl}/Habitaciones/${habitacion.IdHabitacion}`,
-      habitacion
+      `${this.apiUrl}/Habitaciones/${Habitacion.IdHabitacion}`,
+      Habitacion
     );
   }
 
-  deleteHabitacion(id?: number): Observable<void> {
-    let params = new HttpParams();
-    if (id) params = params.set('id', id.toString());
-    return this.http.delete<void>(`${this.apiUrl}/Habitaciones`, { params });
+  deleteHabitacion(IdHabitacion: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/Habitaciones/${IdHabitacion}`);
   }
 
   // CRUD para Roles
-  getRoles(nombreRol?: string): Observable<Rol[]> {
+  getRoles(NombreRol?: string): Observable<Rol[]> {
     let params = new HttpParams();
-    if (nombreRol) {
-      params = params.set('nombreRol', nombreRol); // Enviar el parámetro de búsqueda si existe
+    if (NombreRol) {
+      params = params.set('NombreRol', NombreRol);
     }
     return this.http.get<Rol[]>(`${this.apiUrl}/Roles`, { params });
   }
 
-  addRol(rol: Rol): Observable<Rol> {
-    return this.http.post<Rol>(`${this.apiUrl}/Roles`, rol);
+  addRol(Rol: Rol): Observable<Rol> {
+    return this.http.post<Rol>(`${this.apiUrl}/Roles`, Rol);
   }
 
-  updateRol(rol: Rol): Observable<Rol> {
-    return this.http.put<Rol>(`${this.apiUrl}/Roles/${rol.IdRol}`, rol);
+  updateRol(Rol: Rol): Observable<Rol> {
+    return this.http.put<Rol>(`${this.apiUrl}/Roles/${Rol.IdRol}`, Rol);
   }
 
-  deleteRol(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/Roles/${id}`);
+  deleteRol(IdRol: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/Roles/${IdRol}`);
   }
 }

@@ -9,6 +9,7 @@ public class ApplicationDbContext : DbContext
     {
     }
 
+    // DbSets para las entidades
     public DbSet<Paciente> Pacientes { get; set; } = default!;
     public DbSet<Asignacion> Asignaciones { get; set; } = default!;
     public DbSet<Cama> Camas { get; set; } = default!;
@@ -16,8 +17,8 @@ public class ApplicationDbContext : DbContext
     public DbSet<HistorialAlta> HistorialesAltas { get; set; } = default!;
     public DbSet<Rol> Roles { get; set; } = default!;
     public DbSet<Usuario> Usuarios { get; set; } = default!;
-    public DbSet<Consulta> Consultas { get; set; } = default!;   // Nueva tabla Consultas
-    public DbSet<Ingreso> Ingresos { get; set; } = default!;     // Nueva tabla Ingresos
+    public DbSet<Consulta> Consultas { get; set; } = default!;
+    public DbSet<Ingreso> Ingresos { get; set; } = default!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -37,15 +38,30 @@ public class ApplicationDbContext : DbContext
             .HasForeignKey(a => a.IdPaciente);
 
         modelBuilder.Entity<Paciente>()
+            .HasMany(p => p.Consultas)
+            .WithOne(c => c.Paciente)
+            .HasForeignKey(c => c.IdPaciente);
+
+        modelBuilder.Entity<Paciente>()
+            .HasMany(p => p.Ingresos)
+            .WithOne(i => i.Paciente)
+            .HasForeignKey(i => i.IdPaciente);
+
+        modelBuilder.Entity<Paciente>()
+            .Property(p => p.Estado)
+            .HasConversion<string>()  
+            .HasMaxLength(20);
+
+        modelBuilder.Entity<Paciente>()
             .HasIndex(p => p.SeguridadSocial)
             .IsUnique();
 
         // Cama
         modelBuilder.Entity<Cama>()
+            .ToTable("camas")
             .HasKey(c => c.Ubicacion);
 
         modelBuilder.Entity<Cama>()
-            .ToTable("camas")
             .HasMany(c => c.Asignaciones)
             .WithOne(a => a.Cama)
             .HasForeignKey(a => a.Ubicacion);
@@ -54,6 +70,11 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<Habitacion>()
             .ToTable("habitaciones")
             .HasKey(h => h.IdHabitacion);
+
+        modelBuilder.Entity<Habitacion>()
+            .HasMany(h => h.Camas)
+            .WithOne(c => c.Habitacion)
+            .HasForeignKey(c => c.IdHabitacion);
 
         // Asignacion
         modelBuilder.Entity<Asignacion>()
@@ -86,6 +107,11 @@ public class ApplicationDbContext : DbContext
             .WithMany(p => p.HistorialAltas)
             .HasForeignKey(ha => ha.IdPaciente);
 
+        modelBuilder.Entity<HistorialAlta>()
+            .HasOne(ha => ha.Medico)
+            .WithMany(m => m.HistorialAltas)
+            .HasForeignKey(ha => ha.IdMedico);
+
         // Usuario
         modelBuilder.Entity<Usuario>()
             .ToTable("usuarios")
@@ -100,6 +126,16 @@ public class ApplicationDbContext : DbContext
             .HasMany(u => u.Asignaciones)
             .WithOne(a => a.Usuario)
             .HasForeignKey(a => a.AsignadoPor);
+
+        modelBuilder.Entity<Usuario>()
+            .HasMany(u => u.Consultas)
+            .WithOne(c => c.Medico)
+            .HasForeignKey(c => c.IdMedico);
+
+        modelBuilder.Entity<Usuario>()
+            .HasMany(u => u.Ingresos)
+            .WithOne(i => i.Medico)
+            .HasForeignKey(i => i.IdMedico);
 
         modelBuilder.Entity<Usuario>()
             .HasIndex(u => u.NombreUsuario)
@@ -127,8 +163,13 @@ public class ApplicationDbContext : DbContext
 
         modelBuilder.Entity<Consulta>()
             .HasOne(c => c.Medico)
-            .WithMany(u => u.Consultas)
+            .WithMany(m => m.Consultas)
             .HasForeignKey(c => c.IdMedico);
+
+        modelBuilder.Entity<Consulta>()
+            .Property(c => c.Estado)
+            .HasConversion<string>()  
+            .HasMaxLength(20);
 
         // Ingresos
         modelBuilder.Entity<Ingreso>()
@@ -142,13 +183,14 @@ public class ApplicationDbContext : DbContext
 
         modelBuilder.Entity<Ingreso>()
             .HasOne(i => i.Medico)
-            .WithMany(u => u.Ingresos)
+            .WithMany(m => m.Ingresos)
             .HasForeignKey(i => i.IdMedico);
 
         modelBuilder.Entity<Ingreso>()
             .HasOne(i => i.Asignacion)
             .WithMany(a => a.Ingresos)
-            .HasForeignKey(i => i.IdAsignacion);
+            .HasForeignKey(i => i.IdAsignacion)
+            .OnDelete(DeleteBehavior.Restrict);  // No eliminar asignación en cascada, motivo de trazabilidad
 
         // Precarga de roles
         modelBuilder.Entity<Rol>().HasData(

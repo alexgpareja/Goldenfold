@@ -19,12 +19,12 @@ namespace HospitalApi.Controllers
             _mapper = mapper;
         }
 
-                /// <summary>
+        /// <summary>
         /// Obtiene una lista de historiales de alta basada en los parámetros de búsqueda opcionales.
         /// </summary>
         /// <param name="id_paciente">El identificador del paciente a buscar. Este parámetro es opcional.</param>
         /// <param name="fecha_alta">La fecha de alta del paciente a buscar. Este parámetro es opcional.</param>
-         /// <param name="diagnostico">El diagnostico del paciente a buscar. Este parámetro es opcional.</param>
+        /// <param name="diagnostico">El diagnostico del paciente a buscar. Este parámetro es opcional.</param>
         /// <param name="tratamiento">El tratamiento del paciente a buscar. Este parámetro es opcional.</param>
         /// <returns>
         /// Una lista de objetos <see cref="HistorialAltaDTO"/> que representan los historiales de alta encontrados.
@@ -32,8 +32,7 @@ namespace HospitalApi.Controllers
         /// <response code="200">Devuelve una lista de historiales de alta que coinciden con los parámetros de búsqueda.</response>
         /// <response code="404">Si no se encuentran historiales de alta que coincidan con los criterios de búsqueda proporcionados.</response>
         /// <response code="500">Si se produce un error en el servidor al procesar la solicitud.</response>
-
-         // GET: api/HistorialAltas
+        // GET: api/HistorialAltas
         [HttpGet]
         public async Task<ActionResult<IEnumerable<HistorialAltaDTO>>> GetHistorialAltas([FromQuery] int? id_paciente, [FromQuery] DateTime? fecha_alta, [FromQuery] string? diagnostico, [FromQuery] string? tratamiento)
         {
@@ -60,8 +59,8 @@ namespace HospitalApi.Controllers
         /// <returns>Una respuesta HTTP que contiene el historial de alta en formato <see cref="HistorialAltaDTO"/> si se encuentra en la base de datos.</returns>
         /// <response code="200">Retorna un código HTTP 200 (OK) con el historial de alta en formato <see cref="HistorialAltaDTO"/> si el historial de alta se encuentra en la base de datos.</response>
         /// <response code="404">Retorna un código HTTP 404 (Not Found) si no se encuentra ningún historial de alta con el identificador proporcionado.</response>
-         /// <response code="500">Si se produce un error en el servidor al procesar la solicitud.</response>
-        // GET: api/HistorialAltas/{SSPaciente}
+        /// <response code="500">Si se produce un error en el servidor al procesar la solicitud.</response>
+        // GET: api/HistorialAltas/{id}
         [HttpGet("{id}")]
         public async Task<ActionResult<HistorialAltaDTO>> GetHistorialAltaById(int id)
         {
@@ -82,9 +81,8 @@ namespace HospitalApi.Controllers
         /// Un objeto <see cref="HistorialAltaDTO"/> que representa el historial de alta recién creado.
         /// </returns>
         /// <response code="201">El historial de alta ha sido creada exitosamente.</response>
-        /// <response code="400">Si los datos proporcionados no son válidos.</response>        /// <response code="500">Si se produce un error en el servidor al procesar la solicitud.</response>
-       
-        
+        /// <response code="400">Si los datos proporcionados no son válidos.</response>
+        /// <response code="500">Si se produce un error en el servidor al procesar la solicitud.</response>
         // POST: api/HistorialAltas
         [HttpPost]
         public async Task<ActionResult<HistorialAltaDTO>> CreateHistorialAlta(HistorialAltaCreateDTO historialAltaDTO)
@@ -92,7 +90,6 @@ namespace HospitalApi.Controllers
             var historialAlta = _mapper.Map<HistorialAlta>(historialAltaDTO);
             
             _context.HistorialesAltas.Add(historialAlta);
-
             await _context.SaveChangesAsync();
 
             var historialAltaDTOResult = _mapper.Map<HistorialAltaDTO>(historialAlta);
@@ -100,26 +97,22 @@ namespace HospitalApi.Controllers
             return CreatedAtAction(nameof(GetHistorialAltas), new { id = historialAltaDTOResult.IdHistorial }, historialAltaDTOResult);
         }
 
-          /// <summary>
+        /// <summary>
         /// Actualiza un historial de alta existente en la base de datos.
         /// </summary>
-        /// <param name="id_paciente">El identificador del paciente a actualizar. Este parámetro es opcional.</param>
-        /// <param name="fecha_alta">La fecha de alta del paciente a actualizar. Este parámetro es opcional.</param>
-         /// <param name="diagnostico">El diagnostico del paciente a actualizar. Este parámetro es opcional.</param>
-        /// <param name="tratamiento">El tratamiento del paciente a actualizar. Este parámetro es opcional.</param>
-       /// <returns>
+        /// <param name="id">El ID del historial de alta que se va a actualizar.</param>
+        /// <param name="historialAltaDTO">El objeto <see cref="HistorialAltaUpdateDTO"/> que contiene los datos actualizados del historial de alta.</param>
+        /// <returns>
         /// Un código de estado HTTP que indica el resultado de la operación de actualización.
         /// </returns>
         /// <response code="204">Indica que la actualización fue exitosa y no hay contenido que devolver.</response>
         /// <response code="400">Si el ID proporcionado en la URL no coincide con el ID del historial de alta en el cuerpo de la solicitud.</response>
         /// <response code="404">Si no se encuentra el historial de alta con el ID proporcionado.</response>
         /// <response code="500">Si ocurre un error en el servidor al procesar la solicitud.</response>
-       
         // PUT: api/HistorialAltas/{id}
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateHistorialAlta(int id, HistorialAltaUpdateDTO historialAltaDTO)
         {
-            
             var historialAltaExiste = await _context.HistorialesAltas.FindAsync(id);
 
             if (historialAltaExiste == null)
@@ -148,18 +141,16 @@ namespace HospitalApi.Controllers
             return NoContent();
         }
 
-
-         /// <summary>
+        /// <summary>
         /// Elimina un historial de alta específico de la base de datos por su ID.
         /// </summary>
-        /// <param name="id">El ID del hisotiral de alta que se desea eliminar.</param>
+        /// <param name="id">El ID del historial de alta que se desea eliminar.</param>
         /// <returns>
         /// Un código de estado HTTP que indica el resultado de la operación de eliminación.
         /// </returns>
         /// <response code="204">Indica que la eliminación fue exitosa y no hay contenido que devolver.</response>
         /// <response code="404">Si no se encuentra el historial de alta con el ID proporcionado.</response>
         /// <response code="500">Si ocurre un error en el servidor al procesar la solicitud.</response>
-      
         // DELETE: api/HistorialAltas/{id}
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteHistorialAlta(int id)

@@ -1,4 +1,6 @@
+/* Sección principal */
 .consultas-section {
+<<<<<<< HEAD
   font-family: Arial, sans-serif;
   margin: 20px;
   background-color: rgb(228, 224, 224); /* Fondo similar a la tabla de pacientes */
@@ -17,19 +19,31 @@ h2 {
   color: #d9534f;
   font-weight: bold;
   margin-bottom: 15px;
+=======
+  padding: 16px;
+  background-color: #f1f1f1;
+  border-radius: 8px;
+>>>>>>> 6e02e08d2133b6cc05c07465522b41a4a4a90fb5
 }
 
+/* Tabla */
 .consultas-table {
   width: 100%;
   border-collapse: collapse;
+<<<<<<< HEAD
   margin-bottom: 20px;
   border-radius: 5px;
+=======
+  margin-bottom: 16px;
+>>>>>>> 6e02e08d2133b6cc05c07465522b41a4a4a90fb5
 }
 
-.consultas-table th,
+.consultas-table th, 
 .consultas-table td {
-  padding: 12px 15px;
+  padding: 10px;
+  border: 1px solid #ddd;
   text-align: left;
+<<<<<<< HEAD
   border: 1px solid #ccc; /* Similar borde a la tabla de pacientes */
 }
 
@@ -59,16 +73,32 @@ h2 {
   padding: 8px 15px;
   border: none;
   border-radius: 4px; /* Botones con bordes redondeados */
+=======
+}
+
+.consultas-table th {
+  background-color: #4CAF50;
+  color: white;
+}
+
+/* Botones */
+button {
+  padding: 8px 12px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+>>>>>>> 6e02e08d2133b6cc05c07465522b41a4a4a90fb5
   cursor: pointer;
-  font-size: 14px;
-  transition: background-color 0.3s ease;
 }
 
-.action-btn:hover {
-  background-color: #0056b3;
+button:hover {
+  background-color: #45a049;
 }
 
+/* Formulario de evaluación */
 .evaluation-form {
+<<<<<<< HEAD
   background-color: #f9f9f9;
   padding: 20px;
   border-radius: 8px;
@@ -98,14 +128,20 @@ h2 {
   font-size: 14px;
   border: 1px solid #ddd;
   border-radius: 4px;
+=======
+  margin-top: 16px;
+  padding: 16px;
+  background-color: #fafafa;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+>>>>>>> 6e02e08d2133b6cc05c07465522b41a4a4a90fb5
 }
 
-.evaluation-form button {
+.form-group {
   margin-top: 10px;
 }
 
-.no-consultas {
-  font-size: 16px;
-  color: #888;
-  text-align: center;
+select {
+  padding: 6px;
+  margin-right: 10px;
 }

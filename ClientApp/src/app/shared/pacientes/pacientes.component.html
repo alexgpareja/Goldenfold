@@ -22,7 +22,7 @@
         <tr>
           <th (click)="ordenar('IdPaciente')">ID Paciente <span *ngIf="columnaOrdenada === 'IdPaciente'">{{ orden === 'asc' ? '▲' : '▼' }}</span></th>
           <th (click)="ordenar('Nombre')">Nombre <span *ngIf="columnaOrdenada === 'Nombre'">{{ orden === 'asc' ? '▲' : '▼' }}</span></th>
-          <th (click)="ordenar('Edad')">Edad <span *ngIf="columnaOrdenada === 'Edad'">{{ orden === 'asc' ? '▲' : '▼' }}</span></th>
+          <th (click)="ordenar('Dni')">Edad <span *ngIf="columnaOrdenada === 'Dni'">{{ orden === 'asc' ? '▲' : '▼' }}</span></th>
           <th (click)="ordenar('FechaNacimiento')">Fecha de Nacimiento <span *ngIf="columnaOrdenada === 'FechaNacimiento'">{{ orden === 'asc' ? '▲' : '▼' }}</span></th>
           <th (click)="ordenar('Estado')">Estado <span *ngIf="columnaOrdenada === 'Estado'">{{ orden === 'asc' ? '▲' : '▼' }}</span></th>
           <th (click)="ordenar('FechaRegistro')">Fecha de Registro <span *ngIf="columnaOrdenada === 'FechaRegistro'">{{ orden === 'asc' ? '▲' : '▼' }}</span></th>
@@ -35,7 +35,7 @@
         <tr *ngFor="let paciente of pacientesPaginados">
           <td>{{ paciente.IdPaciente }}</td>
           <td>{{ paciente.Nombre }}</td>
-          <td>{{ paciente.Edad }}</td>
+          <td>{{ paciente.Dni }}</td>
           <td>{{ paciente.FechaNacimiento | date:'dd/MM/yyyy' }}</td>
           <td>{{ paciente.Estado }}</td>
           <td>{{ paciente.FechaRegistro | date:'dd/MM/yyyy HH:mm\'h\'' }}</td>
@@ -46,7 +46,6 @@
           </td>
           <td *ngIf="mostrarMas">
             <div>
-              <p>Síntomas: {{ paciente.Sintomas }}</p>
               <p>Dirección: {{ paciente.Direccion }}</p>
               <p>Teléfono: {{ paciente.Telefono }}</p>
               <p>Email: {{ paciente.Email }}</p>
@@ -80,13 +79,10 @@
           <input type="text" id="nombre" [(ngModel)]="pacienteParaActualizar!.Nombre" name="nombre">
           <p></p>
           <label for="edad">Edad:</label>
-          <input type="number" id="edad" [(ngModel)]="pacienteParaActualizar!.Edad" name="edad">
+          <input type="number" id="edad" [(ngModel)]="pacienteParaActualizar!.Dni" name="edad">
           <p></p>
           <label for="fechaNacimiento">Fecha de Nacimiento:</label>
           <input type="date" id="fechaNacimiento" [(ngModel)]="pacienteParaActualizar!.FechaNacimiento" name="fechaNacimiento">
-          <p></p>
-          <label for="sintomas">Síntomas:</label>
-          <input type="text" id="sintomas" [(ngModel)]="pacienteParaActualizar!.Sintomas" name="sintomas">
           <p></p>
           <label for="estado">Estado:</label>
           <input type="text" id="estado" [(ngModel)]="pacienteParaActualizar!.Estado" name="estado">
@@ -125,13 +121,10 @@
         <input type="text" id="nombre" [(ngModel)]="nuevoPaciente.Nombre" name="nombre">
         <p></p>
         <label for="edad">Edad:</label>
-        <input type="number" id="edad" [(ngModel)]="nuevoPaciente.Edad" name="edad">
+        <input type="number" id="edad" [(ngModel)]="nuevoPaciente.Dni" name="edad">
         <p></p>
         <label for="fechaNacimiento">Fecha de Nacimiento:</label>
         <input type="date" id="fechaNacimiento" [(ngModel)]="nuevoPaciente.FechaNacimiento" name="fechaNacimiento">
-        <p></p>
-        <label for="sintomas">Síntomas:</label>
-        <input type="text" id="sintomas" [(ngModel)]="nuevoPaciente.Sintomas" name="sintomas">
         <p></p>
         <label for="estado">Estado:</label>
         <input type="text" id="estado" [(ngModel)]="nuevoPaciente.Estado" name="estado">

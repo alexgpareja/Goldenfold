@@ -32,48 +32,42 @@ namespace HospitalApi.Controllers
         /// <response code="404">Si no se encuentran consultas que coincidan con los criterios de búsqueda proporcionados.</response>
         /// <response code="500">Si se produce un error en el servidor al procesar la solicitud.</response>
         // GET: api/Consultas
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<ConsultaDTO>>> GetConsultas([FromQuery] int? idPaciente, [FromQuery] int? idMedico, [FromQuery] string? estado)
+      [HttpGet]
+public async Task<ActionResult<IEnumerable<ConsultaDTO>>> GetConsultas([FromQuery] int? idPaciente, [FromQuery] int? idMedico, [FromQuery] string? estado)
+{
+    IQueryable<Consulta> query = _context.Consultas;
+
+    if (idPaciente.HasValue) 
+        query = query.Where(c => c.IdPaciente == idPaciente.Value);
+
+    if (idMedico.HasValue) 
+        query = query.Where(c => c.IdMedico == idMedico.Value);
+
+    // Verificamos si el estado es válido si es un enum
+    if (!string.IsNullOrEmpty(estado))
+    {
+        if (Enum.TryParse(typeof(EstadoConsulta), estado, true, out var estadoEnum))
         {
-            IQueryable<Consulta> query = _context.Consultas;
-
-            if (idPaciente.HasValue) query = query.Where(c => c.IdPaciente == idPaciente.Value);
-            if (idMedico.HasValue) query = query.Where(c => c.IdMedico == idMedico.Value);
-            if (!string.IsNullOrEmpty(estado)) query = query.Where(c => c.Estado.ToLower() == estado.ToLower());
-
-            var consultas = await query.ToListAsync();
-            if (!consultas.Any())
-            {
-                return NotFound("No se encontraron consultas con los criterios de búsqueda proporcionados.");
-            }
-
-            var consultasDTO = _mapper.Map<IEnumerable<ConsultaDTO>>(consultas);
-            return Ok(consultasDTO);
+            query = query.Where(c => c.Estado == (EstadoConsulta)estadoEnum);
         }
-
-
-        /// <summary>
-        /// Obtiene una lista de pacientes cuyas consultas están pendientes de ingreso.
-        /// </summary>
-        /// <returns>Una lista de pacientes con consultas pendientes de ingreso.</returns>
-        [HttpGet("pendientes-ingreso")]
-        public async Task<ActionResult<IEnumerable<PacienteDTO>>> GetPacientesPendientesIngreso()
+        else
         {
-            var consultasPendientes = await _context.Consultas
-                .Where(c => c.Estado == "pendiente de ingreso")
-                .Include(c => c.Paciente) // Relacionar con la tabla Pacientes
-                .ToListAsync();
-
-            if (!consultasPendientes.Any())
-            {
-                return NotFound("No se encontraron pacientes con consultas pendientes de ingreso.");
-            }
-
-            var pacientes = consultasPendientes.Select(c => c.Paciente).Distinct();
-            var pacientesDTO = _mapper.Map<IEnumerable<PacienteDTO>>(pacientes);
-            return Ok(pacientesDTO);
+            return BadRequest("El valor de estado no es válido.");
         }
-        
+    }
+
+    var consultas = await query.ToListAsync();
+
+    if (!consultas.Any())
+    {
+        return NotFound("No se encontraron consultas con los criterios de búsqueda proporcionados.");
+    }
+
+    var consultasDTO = _mapper.Map<IEnumerable<ConsultaDTO>>(consultas);
+    return Ok(consultasDTO);
+}
+
+
 
         /// <summary>
         /// Obtiene una consulta específica por su ID.
@@ -182,7 +176,6 @@ namespace HospitalApi.Controllers
         /// <response code="204">Indica que la eliminación fue exitosa y no hay contenido que devolver.</response>
         /// <response code="404">Si no se encuentra la consulta con el ID proporcionado.</response>
         /// <response code="500">Si ocurre un error en el servidor al procesar la solicitud.</response>
-        // DELETE: api/Consultas/{id}
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteConsulta(int id)
         {
