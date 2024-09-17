@@ -32,40 +32,40 @@ namespace HospitalApi.Controllers
         /// <response code="404">Si no se encuentran consultas que coincidan con los criterios de búsqueda proporcionados.</response>
         /// <response code="500">Si se produce un error en el servidor al procesar la solicitud.</response>
         // GET: api/Consultas
-      [HttpGet]
-public async Task<ActionResult<IEnumerable<ConsultaDTO>>> GetConsultas([FromQuery] int? idPaciente, [FromQuery] int? idMedico, [FromQuery] string? estado)
-{
-    IQueryable<Consulta> query = _context.Consultas;
-
-    if (idPaciente.HasValue) 
-        query = query.Where(c => c.IdPaciente == idPaciente.Value);
-
-    if (idMedico.HasValue) 
-        query = query.Where(c => c.IdMedico == idMedico.Value);
-
-    // Verificamos si el estado es válido si es un enum
-    if (!string.IsNullOrEmpty(estado))
-    {
-        if (Enum.TryParse(typeof(EstadoConsulta), estado, true, out var estadoEnum))
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<ConsultaDTO>>> GetConsultas([FromQuery] int? idPaciente, [FromQuery] int? idMedico, [FromQuery] string? estado)
         {
-            query = query.Where(c => c.Estado == (EstadoConsulta)estadoEnum);
+            IQueryable<Consulta> query = _context.Consultas;
+
+            if (idPaciente.HasValue)
+                query = query.Where(c => c.IdPaciente == idPaciente.Value);
+
+            if (idMedico.HasValue)
+                query = query.Where(c => c.IdMedico == idMedico.Value);
+
+            // Verificamos si el estado es válido si es un enum
+            if (!string.IsNullOrEmpty(estado))
+            {
+                if (Enum.TryParse(typeof(EstadoConsulta), estado, true, out var estadoEnum))
+                {
+                    query = query.Where(c => c.Estado == (EstadoConsulta)estadoEnum);
+                }
+                else
+                {
+                    return BadRequest("El valor de estado no es válido.");
+                }
+            }
+
+            var consultas = await query.ToListAsync();
+
+            if (!consultas.Any())
+            {
+                return NotFound("No se encontraron consultas con los criterios de búsqueda proporcionados.");
+            }
+
+            var consultasDTO = _mapper.Map<IEnumerable<ConsultaDTO>>(consultas);
+            return Ok(consultasDTO);
         }
-        else
-        {
-            return BadRequest("El valor de estado no es válido.");
-        }
-    }
-
-    var consultas = await query.ToListAsync();
-
-    if (!consultas.Any())
-    {
-        return NotFound("No se encontraron consultas con los criterios de búsqueda proporcionados.");
-    }
-
-    var consultasDTO = _mapper.Map<IEnumerable<ConsultaDTO>>(consultas);
-    return Ok(consultasDTO);
-}
 
 
 
@@ -83,16 +83,19 @@ public async Task<ActionResult<IEnumerable<ConsultaDTO>>> GetConsultas([FromQuer
         [HttpGet("{id}")]
         public async Task<ActionResult<ConsultaDTO>> GetConsultaById(int id)
         {
-            var consulta = await _context.Consultas.FindAsync(id);
+            var consulta = await _context.Consultas
+                .Include(c => c.Paciente) // Incluir los datos del paciente
+                .FirstOrDefaultAsync(c => c.IdConsulta == id);
 
             if (consulta == null)
             {
-                return NotFound($"No se encontró ninguna consulta con el ID {id}.");
+                return NotFound();
             }
 
             var consultaDTO = _mapper.Map<ConsultaDTO>(consulta);
             return Ok(consultaDTO);
         }
+
 
         /// <summary>
         /// Crea una nueva consulta en la base de datos.
@@ -108,14 +111,32 @@ public async Task<ActionResult<IEnumerable<ConsultaDTO>>> GetConsultas([FromQuer
         [HttpPost]
         public async Task<ActionResult<ConsultaDTO>> CreateConsulta(ConsultaCreateDTO consultaDTO)
         {
+            // Mapear la consulta desde el DTO
             var consulta = _mapper.Map<Consulta>(consultaDTO);
 
+            // Buscar el paciente en la base de datos
+            var paciente = await _context.Pacientes.FindAsync(consultaDTO.IdPaciente);
+            if (paciente == null)
+            {
+                return NotFound("El paciente especificado no existe.");
+            }
+
+            // Cambiar el estado del paciente a "EnConsulta"
+            paciente.Estado = EstadoPaciente.EnConsulta;  // Aquí asegúrate de que "EstadoPaciente" sea el Enum correcto o string
+
+            // Agregar la consulta a la base de datos
             _context.Consultas.Add(consulta);
+
+            // Guardar los cambios
             await _context.SaveChangesAsync();
 
+            // Mapear la consulta de vuelta a DTO para devolverla
             var consultaDTOResult = _mapper.Map<ConsultaDTO>(consulta);
+
+            // Devolver la respuesta creada con el ID de la consulta
             return CreatedAtAction(nameof(GetConsultaById), new { id = consultaDTOResult.IdConsulta }, consultaDTOResult);
         }
+
 
         /// <summary>
         /// Actualiza una consulta existente en la base de datos.

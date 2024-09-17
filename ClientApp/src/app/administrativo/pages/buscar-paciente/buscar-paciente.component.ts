@@ -24,7 +24,7 @@ export class BuscarPacienteComponent {
     Motivo: '',
     FechaSolicitud: new Date(),
     FechaConsulta: null,
-    Estado: 'pendiente de consultar'
+    Estado: 'pendiente'
   };
 
   constructor(private apiService: ApiService) {}
@@ -85,7 +85,7 @@ export class BuscarPacienteComponent {
     // Rellenar los campos de la consulta con los valores predeterminados
     this.consulta.IdPaciente = paciente.IdPaciente;
     this.consulta.FechaSolicitud = new Date(); // Fecha actual
-    this.consulta.Estado = 'pendiente de consultar';
+    this.consulta.Estado = 'pendiente';
   }
   
 
@@ -129,7 +129,7 @@ export class BuscarPacienteComponent {
       Motivo: '',
       FechaSolicitud: new Date(),
       FechaConsulta: null,
-      Estado: 'pendiente de consultar'
+      Estado: 'pendiente'
     };
   }
 }

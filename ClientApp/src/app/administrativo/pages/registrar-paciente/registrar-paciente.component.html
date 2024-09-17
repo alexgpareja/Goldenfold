@@ -9,9 +9,9 @@
     </div>
 
     <div class="form-group">
-      <label for="edad">Edad</label>
-      <input type="number" id="edad" [(ngModel)]="nuevoPaciente.Dni" name="Dni" required placeholder="Edad del paciente" min="0" />
-      <div *ngIf="pacienteForm.submitted && pacienteForm.controls['Edad']?.invalid" class="error-message">Por favor, ingresa una edad válida.</div>
+      <label for="edad">DNI</label>
+      <input type="text" id="dni" [(ngModel)]="nuevoPaciente.Dni" name="Dni" required placeholder="DNI del paciente" min="0" />
+      <div *ngIf="pacienteForm.submitted && pacienteForm.controls['Dni']?.invalid" class="error-message">Por favor, ingresa una edad válida.</div>
     </div>
 
     <div class="form-group">

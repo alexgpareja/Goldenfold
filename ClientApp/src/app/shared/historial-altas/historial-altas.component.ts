@@ -33,6 +33,7 @@ export class HistorialAltasComponent implements OnInit {
     return {
       IdHistorial: 0,
       IdPaciente: 0,
+      IdMedico: 0,
       FechaAlta: new Date(),
       Diagnostico: '',
       Tratamiento: ''

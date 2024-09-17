@@ -28,30 +28,50 @@
       </tbody>
     </table>
   </ng-container>
-
-  <!-- Formulario de evaluación fuera de la tabla -->
-  <div *ngIf="consultaSeleccionada" class="evaluation-form">
-    <h3>Evaluar Paciente: {{ consultaSeleccionada.IdPaciente }}</h3>
-    
-    <!-- Opción de dar de alta sin ingresar -->
-    <button (click)="darAlta(consultaSeleccionada.IdPaciente)">Dar de Alta</button>
-
-    <!-- Opción de solicitar ingreso -->
-    <div class="form-group">
-      <label for="tipo-cama">Tipo de Cama:</label>
-      <select id="tipo-cama" [(ngModel)]="tipoCamaSeleccionado">
-        <option value="UCI">UCI</option>
-        <option value="General">General</option>
-        <option value="Postoperatorio">Postoperatorio</option>
-      </select>
-      <button (click)="solicitarIngreso(consultaSeleccionada.IdPaciente, tipoCamaSeleccionado)">
-        Solicitar Ingreso
-      </button>
-    </div>
-  </div>
-
+  
   <!-- Mensaje si no hay consultas -->
   <ng-template #noConsultas>
-    <p>No hay consultas pendientes para este médico.</p>
+    <p></p>
   </ng-template>
+
+  <!-- Mostrar botones y formularios tras seleccionar una consulta -->
+  <div *ngIf="consultaSeleccionada">
+    <h3>Evaluando consulta de: {{ consultaSeleccionada.IdPaciente }}</h3>
+    
+    <!-- Botones para "Dar de Alta" y "Solicitar Ingreso" -->
+    <button (click)="mostrarFormulario('alta')">Dar de Alta</button>
+    <button (click)="mostrarFormulario('ingreso')">Solicitar Ingreso</button>
+
+    <!-- Formulario para "Dar de Alta" -->
+    <div *ngIf="formularioSeleccionado === 'alta'">
+      <h4>Formulario de Alta</h4>
+      <form (ngSubmit)="darDeAlta()">
+        <label for="diagnostico">Diagnóstico:</label>
+        <input id="diagnostico" [(ngModel)]="diagnostico" name="diagnostico" required />
+
+        <label for="tratamiento">Tratamiento:</label>
+        <input id="tratamiento" [(ngModel)]="tratamiento" name="tratamiento" required />
+
+        <button type="submit">Confirmar Alta</button>
+      </form>
+    </div>
+
+    <!-- Formulario para "Solicitar Ingreso" -->
+    <div *ngIf="formularioSeleccionado === 'ingreso'">
+      <h4>Formulario de Ingreso</h4>
+      <form (ngSubmit)="solicitarIngreso()">
+        <label for="tipoCama">Tipo de Cama:</label>
+        <select id="tipoCama" [(ngModel)]="tipoCama" name="tipoCama" required>
+          <option value="general">General</option>
+          <option value="uci">UCI</option>
+          <option value="postoperatorio">Postoperatorio</option>
+        </select>
+
+        <label for="motivoIngreso">Motivo:</label>
+        <input id="motivoIngreso" [(ngModel)]="motivoIngreso" name="motivoIngreso" required />
+
+        <button type="submit">Confirmar Ingreso</button>
+      </form>
+    </div>
+  </div>
 </div>

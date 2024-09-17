@@ -111,7 +111,7 @@ namespace HospitalApi.Controllers
                 var cama = new Cama
                 {
                     Ubicacion = $"{habitacionDTO.Edificio}{habitacionDTO.Planta}{habitacionDTO.NumeroHabitacion}{i:00}",
-                    Estado = (EstadoCama)Enum.Parse(typeof(EstadoCama), "Ocupada"),
+                    Estado = (EstadoCama)Enum.Parse(typeof(EstadoCama), "Disponible"),
                     Tipo = (TipoCama)Enum.Parse(typeof(TipoCama), "General"),  // Se podría hacer más dinámico según el tipo de habitación
                     IdHabitacion = habitacion.IdHabitacion
                 };
