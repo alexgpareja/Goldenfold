@@ -40,6 +40,7 @@ export interface Ingreso {
 export interface HistorialAlta {
   IdHistorial: number;
   IdPaciente: number;
+  IdMedico: number;
   FechaAlta: Date;
   Diagnostico: string;
   Tratamiento: string;
@@ -216,9 +217,10 @@ export class ApiService {
     if (fechaAlta) params = params.set('fechaAlta', fechaAlta.toISOString());
     if (diagnostico) params = params.set('diagnostico', diagnostico);
     if (tratamiento) params = params.set('tratamiento', tratamiento);
-
+  
     return this.http.get<HistorialAlta[]>(`${this.apiUrl}/HistorialAltas`, { params });
   }
+  
 
   addHistorialAlta(historialAlta: HistorialAlta): Observable<HistorialAlta> {
     return this.http.post<HistorialAlta>(`${this.apiUrl}/HistorialAltas`, historialAlta);

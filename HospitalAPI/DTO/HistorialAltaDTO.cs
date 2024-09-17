@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-
 namespace HospitalApi.DTO
 {
     public class HistorialAltaDTO
@@ -21,6 +20,10 @@ namespace HospitalApi.DTO
         [Required(ErrorMessage = "El tratamiento es obligatorio.")]
         [StringLength(255, ErrorMessage = "El tratamiento no puede tener más de 255 caracteres.")]
         public string Tratamiento { get; set; }
+
+        // Agregar la propiedad IdMedico en el DTO de consulta
+        [Required(ErrorMessage = "El ID del médico es obligatorio.")]
+        public int IdMedico { get; set; }  // <-- Corregido
     }
 
     public class HistorialAltaCreateDTO
@@ -35,6 +38,10 @@ namespace HospitalApi.DTO
         [Required(ErrorMessage = "El tratamiento es obligatorio.")]
         [StringLength(255, ErrorMessage = "El tratamiento no puede tener más de 255 caracteres.")]
         public string Tratamiento { get; set; }
+
+        // Agregar la propiedad IdMedico en el DTO de creación
+        [Required(ErrorMessage = "El ID del médico es obligatorio.")]
+        public int IdMedico { get; set; }  // <-- Corregido
     }
 
     public class HistorialAltaUpdateDTO
@@ -49,5 +56,9 @@ namespace HospitalApi.DTO
         [Required(ErrorMessage = "El tratamiento es obligatorio.")]
         [StringLength(255, ErrorMessage = "El tratamiento no puede tener más de 255 caracteres.")]
         public string Tratamiento { get; set; }
+
+        // Agregar la propiedad IdMedico en el DTO de actualización
+        [Required(ErrorMessage = "El ID del médico es obligatorio.")]
+        public int IdMedico { get; set; }  // <-- Corregido
     }
 }

@@ -41,7 +41,7 @@ namespace HospitalApi.Controllers
             if (!(fecha_alta == null)) query = query.Where(h => h.FechaAlta == fecha_alta);
             if (!String.IsNullOrEmpty(diagnostico)) query = query.Where(h => h.Diagnostico.Contains(diagnostico!.ToLower()));
             if (!String.IsNullOrEmpty(tratamiento)) query = query.Where(h => h.Tratamiento.Contains(tratamiento!.ToLower()));
-           
+
             var historialAlta = await query.ToListAsync();
 
             if (!historialAlta.Any())
@@ -87,15 +87,54 @@ namespace HospitalApi.Controllers
         [HttpPost]
         public async Task<ActionResult<HistorialAltaDTO>> CreateHistorialAlta(HistorialAltaCreateDTO historialAltaDTO)
         {
+            // Buscar el paciente en la base de datos usando el IdPaciente del historialAltaDTO
+            var paciente = await _context.Pacientes.FindAsync(historialAltaDTO.IdPaciente);
+            if (paciente == null)
+            {
+                return NotFound("El paciente especificado no existe.");
+            }
+
+            // Buscar el médico en la base de datos usando el IdMedico del historialAltaDTO
+            var medico = await _context.Usuarios.FindAsync(historialAltaDTO.IdMedico);
+            if (medico == null)
+            {
+                return NotFound("El médico especificado no existe.");
+            }
+
+            // Cambiar el estado del paciente a "Alta"
+            paciente.Estado = EstadoPaciente.Alta;  // Asegúrate de que "EstadoPaciente" es el Enum o string correcto
+
+            // Buscar la consulta relacionada con el paciente
+            var consulta = await _context.Consultas
+                .Where(c => c.IdPaciente == historialAltaDTO.IdPaciente && c.Estado == EstadoConsulta.pendiente)
+                .FirstOrDefaultAsync();
+
+            if (consulta == null)
+            {
+                return NotFound("No se encontró una consulta pendiente para este paciente.");
+            }
+
+            // Cambiar el estado de la consulta a "completada"
+            consulta.Estado = EstadoConsulta.completada;
+            consulta.FechaConsulta = DateTime.Now;
+
+            // Mapear el historial de alta desde el DTO
             var historialAlta = _mapper.Map<HistorialAlta>(historialAltaDTO);
-            
+
+            // Agregar el historial de alta a la base de datos
             _context.HistorialesAltas.Add(historialAlta);
+
+            // Guardar los cambios (tanto para el historial de alta como para la consulta)
             await _context.SaveChangesAsync();
 
+            // Mapear el historial de alta de vuelta a DTO para devolverlo
             var historialAltaDTOResult = _mapper.Map<HistorialAltaDTO>(historialAlta);
 
+            // Devolver la respuesta creada con el ID del historial de alta
             return CreatedAtAction(nameof(GetHistorialAltas), new { id = historialAltaDTOResult.IdHistorial }, historialAltaDTOResult);
         }
+
+
 
         /// <summary>
         /// Actualiza un historial de alta existente en la base de datos.
@@ -156,7 +195,7 @@ namespace HospitalApi.Controllers
         public async Task<IActionResult> DeleteHistorialAlta(int id)
         {
             var historialAlta = await _context.HistorialesAltas.FindAsync(id);
-            
+
             if (historialAlta == null)
             {
                 return NotFound("No se encontró el historial especificado.");
