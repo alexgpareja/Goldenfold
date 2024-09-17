@@ -1,13 +1,14 @@
 .consultas-section {
+  font-family: Arial, sans-serif;
+  margin: 20px;
+  background-color: rgb(228, 224, 224); /* Fondo similar a la tabla de pacientes */
   padding: 20px;
-  background-color: #f9f9f9;
   border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  font-family: 'Arial', sans-serif;
+  box-shadow: 0 0 10px rgba(8, 8, 8, 0.1); /* Sombra para dar un efecto elevado */
 }
 
 h2 {
-  font-size: 24px;
+  font-size: 34px;
   color: #333;
   margin-bottom: 20px;
 }
@@ -22,27 +23,34 @@ h2 {
   width: 100%;
   border-collapse: collapse;
   margin-bottom: 20px;
+  border-radius: 5px;
 }
 
 .consultas-table th,
 .consultas-table td {
   padding: 12px 15px;
   text-align: left;
-  border-bottom: 1px solid #ddd;
+  border: 1px solid #ccc; /* Similar borde a la tabla de pacientes */
 }
 
 .consultas-table th {
-  background-color: #f1f1f1;
+  background-color: #0078d4; /* Color azul en el encabezado */
+  color: white;
   font-weight: bold;
-  color: #555;
+  border-radius: 5px;
 }
 
 .consultas-table td {
+  background-color: rgb(228, 224, 224); /* Fondo gris claro para las celdas */
   color: #333;
 }
 
+.consultas-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
 .consultas-table tr:hover {
-  background-color: #f5f5f5;
+  background-color: #f1f1f1;
 }
 
 .action-btn {
@@ -50,7 +58,7 @@ h2 {
   color: #fff;
   padding: 8px 15px;
   border: none;
-  border-radius: 5px;
+  border-radius: 4px; /* Botones con bordes redondeados */
   cursor: pointer;
   font-size: 14px;
   transition: background-color 0.3s ease;
@@ -61,11 +69,11 @@ h2 {
 }
 
 .evaluation-form {
-  background-color: #f7f7f7;
-  padding: 15px;
-  border-radius: 10px;
-  margin-top: 15px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
 }
 
 .evaluation-form h3 {
@@ -89,7 +97,7 @@ h2 {
   padding: 8px;
   font-size: 14px;
   border: 1px solid #ddd;
-  border-radius: 5px;
+  border-radius: 4px;
 }
 
 .evaluation-form button {

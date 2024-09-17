@@ -1,36 +1,46 @@
 .dashboard-layout {
   display: flex;
-  height: 100vh; /* Asegura que el layout ocupe toda la altura de la pantalla */
+  height: 100vh;
 }
 
 .sidebar {
-  width: 200px;
-  background-color: #f4f4f4;
-  padding: 20px;
-  padding-top: 70px;
-  height: 100%; /* Ocupa toda la altura de la pantalla */
-}
-
-.content {
-  flex-grow: 1;
-  padding: 20px;
+  width: 200px; /* Ajusta el ancho del sidebar según lo necesario */
+  background-color: #343a40;
+  display: flex;
+  justify-content: center;
 }
 
 .sidebar ul {
-  list-style-type: none;
+  list-style: none;
   padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* Espacio entre los elementos de la lista */
+}
+::-webkit-scrollbar {
+  display: none;
+}
+.sidebar li {
+  display: block;
 }
 
-.sidebar ul li {
-  margin-bottom: 10px;
-}
-
-.sidebar ul li a {
+.sidebar a {
+  color: white;
   text-decoration: none;
-  color: #333;
+  font-size: 16px;
+  padding: 10px 20px;
+  display: block;
+  margin-top: 15px;
 }
 
-.sidebar ul li a.active {
-  font-weight: bold;
-  color: #007bff;
+.sidebar a.active {
+  background-color: #007bff;
+  border-radius: 5px;
+}
+
+.content {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
 }

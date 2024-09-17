@@ -58,24 +58,35 @@ export class PacientesComponent implements OnInit {
   }
 
   filtrarPacientes(): void {
+    // Filtra la lista de pacientes buscando coincidencias con el filtro de nombre
+    // Convierte el nombre del paciente y el filtro a minúsculas para evitar problemas de mayúsculas/minúsculas
     let pacientesFiltrados = this.pacientes.filter((paciente) =>
       paciente.Nombre.toLowerCase().includes(this.filtroNombre.toLowerCase())
     );
 
+    // Si hay una columna seleccionada para ordenar (es decir, si 'columnaOrdenada' no es una cadena vacía)
     if (this.columnaOrdenada) {
+      // Ordena los pacientes filtrados basándose en el valor de la columna seleccionada
       pacientesFiltrados.sort((a, b) => {
+        // Obtiene los valores de la columna seleccionada para dos pacientes a comparar
         const valorA = a[this.columnaOrdenada as keyof Paciente];
         const valorB = b[this.columnaOrdenada as keyof Paciente];
 
+        // Compara los valores de la columna seleccionada para decidir el orden
+        // Si el valor del paciente A es menor que el del paciente B, devuelve -1 o 1 según el orden (ascendente o descendente)
         if (valorA < valorB) {
           return this.orden === 'asc' ? -1 : 1;
         }
+        // Si el valor del paciente A es mayor que el del paciente B, devuelve 1 o -1 según el orden
         if (valorA > valorB) {
           return this.orden === 'asc' ? 1 : -1;
         }
+        // Si los valores son iguales, devuelve 0 (no cambia el orden)
         return 0;
       });
     }
+
+
 
     const inicio = (this.paginaActual - 1) * this.pacientesPorPagina;
     const fin = inicio + this.pacientesPorPagina;
@@ -110,11 +121,12 @@ export class PacientesComponent implements OnInit {
   }
 
   agregarPaciente(): void {
-    this.apiService.addPaciente(this.nuevoPaciente).subscribe({
-      next: (paciente: Paciente) => {
+    this.apiService.addPaciente(this.nuevoPaciente).subscribe(
+      (paciente: Paciente) => {
+        // Manejar el paciente agregado exitosamente
         this.pacientes.push(paciente);
-        this.filtrarPacientes();
-       
+        this.mostrarFormularioAgregar = false;
+        this.notificacion = 'Paciente agregado con éxito';
         this.nuevoPaciente = {
           IdPaciente: 0,
           Nombre: '',
@@ -129,12 +141,13 @@ export class PacientesComponent implements OnInit {
           Email: '',
           HistorialMedico: '',
         };
-
       },
-      error: (error: any) => {
-        console.error('Error al agregar el paciente', error);
-      },
-    });
+      (err) => {
+        // Manejar errores
+        console.error('Error al agregar paciente', err);
+        this.notificacion = 'Error al agregar paciente';
+      }
+    );
   }
   mostrarFormularioActualizar: boolean = false;
   toggleActualizarPaciente(paciente: Paciente): void {
