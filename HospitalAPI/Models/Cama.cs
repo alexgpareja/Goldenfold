@@ -8,9 +8,13 @@ namespace HospitalApi
     public class Cama
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Column("id_cama")]
+        public int IdCama { get; set; } // Corregido para usar IdCama como la clave primaria
+
         [Required(ErrorMessage = "La ubicación es obligatoria.")]
-        [StringLength(8, MinimumLength = 8, ErrorMessage = "La ubicación debe tener exactamente 8 caracteres.")]
-        [Column("Ubicacion")]
+        [StringLength(10, MinimumLength = 10, ErrorMessage = "La ubicación debe tener entre 1 y 10 caracteres.")]
+        [Column("ubicacion")]
         public string Ubicacion { get; set; }
 
         [Required(ErrorMessage = "El estado de la cama es obligatorio.")]
@@ -19,16 +23,15 @@ namespace HospitalApi
 
         [Required(ErrorMessage = "El tipo de cama es obligatorio.")]
         [Column("tipo")]
-        public TipoCama Tipo { get; set; }
+        public TipoCama Tipo { get; set; } = TipoCama.General;
 
         // Relación con la clase Habitacion
         [ForeignKey("Habitacion")]
         [Column("id_habitacion")]
         public int IdHabitacion { get; set; }
-
         public Habitacion Habitacion { get; set; }
 
-        // Propiedad de navegación
+        // Propiedad de navegación para Asignaciones
         public ICollection<Asignacion> Asignaciones { get; set; }
 
         // Constructor

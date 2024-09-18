@@ -45,11 +45,11 @@ export interface HistorialAlta {
   Diagnostico: string;
   Tratamiento: string;
 }
-
+ 
 export interface Asignacion {
   IdAsignacion: number;
   IdPaciente: number;
-  Ubicacion: string;
+  IdCama: number;
   FechaAsignacion: Date;
   FechaLiberacion: Date | null;
   AsignadoPor: number;
@@ -263,13 +263,13 @@ export class ApiService {
 
 
   // CRUD para Camas
-  getCamas(ubicacion?: string, estado?: string, tipo?: string, idHabitacion?: number, idCama?: number): Observable<Cama[]> {
+  getCamas(Ubicacion?: string, Estado?: string, Tipo?: string, IdHabitacion?: number, IdCama?: number): Observable<Cama[]> {
     let params = new HttpParams();
-    if (ubicacion) params = params.set('ubicacion', ubicacion);
-    if (estado) params = params.set('estado', estado);
-    if (tipo) params = params.set('tipo', tipo);
-    if (idHabitacion) params = params.set('idHabitacion', idHabitacion.toString());
-    if (idCama) params = params.set('idCama', idCama.toString());
+    if (Ubicacion) params = params.set('Ubicacion', Ubicacion);
+    if (Estado) params = params.set('Estado', Estado);
+    if (Tipo) params = params.set('Tipo', Tipo);
+    if (IdHabitacion) params = params.set('IdHabitacion', IdHabitacion.toString());
+    if (IdCama) params = params.set('IdCama', IdCama.toString());
     return this.http.get<Cama[]>(`${this.apiUrl}/Camas`, { params });
   }
 
