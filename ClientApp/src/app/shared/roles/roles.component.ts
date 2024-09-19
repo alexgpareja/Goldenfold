@@ -19,11 +19,11 @@ import { CustomValidators } from '../../validators/whitespace.validator';
 })
 export class RolesComponent implements OnInit {
   roles: Rol[] = [];
-  searchTerm: string = '';
 
   // Formularios Reactivos
   agregarRolForm!: FormGroup;
   actualizarRolForm!: FormGroup;
+  searchRolForm!: FormGroup;
 
   rolParaActualizar: Rol | null = null;
 
@@ -33,6 +33,11 @@ export class RolesComponent implements OnInit {
     this.obtenerRoles();
 
     // Inicializamos los formularios reactivos
+    this.searchRolForm = new FormGroup({
+      searchTerm: new FormControl(''),
+      searchType: new FormControl('nombreRol'), // Valor por defecto pa buscar
+    });
+
     this.agregarRolForm = new FormGroup({
       NombreRol: new FormControl('', [
         CustomValidators.noWhitespaceValidator(),
@@ -59,23 +64,42 @@ export class RolesComponent implements OnInit {
   }
 
   filtrarRoles(): void {
-    if (!this.searchTerm.trim()) {
+    const searchTerm = this.searchRolForm.get('searchTerm')?.value;
+    const searchType = this.searchRolForm.get('searchType')?.value;
+
+    if (!searchTerm.trim()) {
       this.obtenerRoles(); // Si no hay término de búsqueda, obtener todos los roles
     } else {
-      this.apiService.getRoles(this.searchTerm).subscribe({
-        next: (data: Rol[]) => {
-          this.roles = data;
-        },
-        error: (error: any) => {
-          console.error('Error al filtrar los roles', error);
-        },
-      });
+      if (searchType === 'id') {
+        const id = Number(searchTerm);
+        if (!isNaN(id)) {
+          this.apiService.getRolById(id).subscribe({
+            next: (rol: Rol) => {
+              this.roles = rol ? [rol] : []; // Mostrar el rol encontrado por ID
+            },
+            error: (error: any) => {
+              console.error('Error al buscar rol por ID', error);
+              this.roles = []; // Limpiar la lista si no se encuentra el rol
+            },
+          });
+        }
+      } else if (searchType === 'nombreRol') {
+        this.apiService.getRoles(searchTerm).subscribe({
+          next: (roles: Rol[]) => {
+            this.roles = roles; // Actualizar los roles filtrados
+          },
+          error: (error: any) => {
+            console.error('Error al buscar roles por nombre', error);
+          },
+        });
+      }
     }
   }
 
   agregarRol(): void {
     if (this.agregarRolForm.invalid) {
-      return; // No permitir la búsqueda si el formulario es inválido (incluyendo solo espacios en blanco)
+      this.agregarRolForm.markAllAsTouched();
+      return;
     }
 
     const nombreRolAdd = this.agregarRolForm.get('NombreRol')?.value.trim();
@@ -127,7 +151,8 @@ export class RolesComponent implements OnInit {
 
   actualizarRol(): void {
     if (this.actualizarRolForm.invalid) {
-      return; // No permitir la búsqueda si el formulario es inválido (incluyendo solo espacios en blanco)
+      this.agregarRolForm.markAllAsTouched();
+      return;
     }
 
     const nombreRolActualizar = this.actualizarRolForm
