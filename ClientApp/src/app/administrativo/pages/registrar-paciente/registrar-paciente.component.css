@@ -1,11 +1,11 @@
 /* Estilo general del formulario */
 .register-section {
-  max-width: 600px;
-  margin: 20px auto;
+  background-color: rgb(228, 224, 224);
   padding: 20px;
-  border: 1px solid #ddd;
+  margin: 20px;
   border-radius: 10px;
-  background-color: #f9f9f9;
+  box-shadow: 0 0 10px rgba(8, 8, 8, 0.1);
+  margin-bottom: 20px;
 }
 
 .register-section h2 {
@@ -46,7 +46,7 @@
 /* Estilo del botón de envío */
 .submit-btn {
   padding: 12px 20px;
-  background-color: #28a745;
+  background-color: #007bff;
   color: white;
   border: none;
   border-radius: 5px;
@@ -58,7 +58,7 @@
 }
 
 .submit-btn:hover {
-  background-color: #218838;
+  background-color: #0056b3;
 }
 
 /* Estilo de los mensajes de error */

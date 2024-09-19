@@ -35,7 +35,7 @@ namespace HospitalApi
 
         [Required(ErrorMessage = "El estado de la consulta es obligatorio.")]
         [Column("estado")]
-        public EstadoConsulta Estado { get; set; } = EstadoConsulta.PendienteDeConsultar;
+        public EstadoConsulta Estado { get; set; } = EstadoConsulta.pendiente;
 
         // Propiedades de navegación
         public virtual Paciente Paciente { get; set; }
@@ -45,8 +45,7 @@ namespace HospitalApi
     // Enum para el estado de la consulta
     public enum EstadoConsulta
     {
-        PendienteDeConsultar,
-        PendienteDeIngreso,
-        Completada
+        pendiente,
+        completada
     }
 }

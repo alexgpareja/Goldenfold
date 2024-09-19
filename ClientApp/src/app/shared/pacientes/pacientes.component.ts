@@ -26,17 +26,25 @@ export class PacientesComponent implements OnInit {
     Email: '',
     HistorialMedico: '',
   };
+  pacienteSeleccionado: Paciente | null = null;  // Paciente seleccionado para ver más detalles
+
+  mostrarDetallesPaciente(paciente: Paciente): void {
+    this.pacienteSeleccionado = paciente;
+  }
+
+  cerrarPopup(): void {
+    this.pacienteSeleccionado = null;
+  }
 
   pacienteParaActualizar: Paciente | null = null;
 
   paginaActual: number = 1;
-  pacientesPorPagina: number = 5;
+  pacientesPorPagina: number = 3;
   totalPaginas: number = 0;
 
-  filtroNombre: string = '';
+  filtro: string = '';  // Filtro combinado para nombre y DNI
   orden: 'asc' | 'desc' = 'asc';
   columnaOrdenada: keyof Paciente | '' = '';
-  filtro: string = '';
 
   constructor(private apiService: ApiService) {}
 
@@ -57,10 +65,13 @@ export class PacientesComponent implements OnInit {
   }
 
   filtrarPacientes(): void {
+    // Filtra la lista de pacientes buscando coincidencias con el filtro de nombre o DNI
     let pacientesFiltrados = this.pacientes.filter((paciente) =>
-      paciente.Nombre.toLowerCase().includes(this.filtroNombre.toLowerCase())
+      paciente.Nombre.toLowerCase().includes(this.filtro.toLowerCase()) ||
+      paciente.Dni.includes(this.filtro)
     );
 
+    // Si hay una columna seleccionada para ordenar
     if (this.columnaOrdenada) {
       pacientesFiltrados.sort((a, b) => {
         const valorA = a[this.columnaOrdenada as keyof Paciente];
@@ -76,12 +87,46 @@ export class PacientesComponent implements OnInit {
       });
     }
 
+    // Actualiza la paginación
     const inicio = (this.paginaActual - 1) * this.pacientesPorPagina;
     const fin = inicio + this.pacientesPorPagina;
     this.pacientesPaginados = pacientesFiltrados.slice(inicio, fin);
+
+    // Calcula el total de páginas
     this.totalPaginas = Math.ceil(
       pacientesFiltrados.length / this.pacientesPorPagina
     );
+
+    // Verifica si la página actual tiene datos, si no, redirige a la última página con datos
+    if (this.pacientesPaginados.length === 0 && this.paginaActual > 1) {
+      this.paginaActual--;
+      this.filtrarPacientes(); // Llama nuevamente para ajustar la paginación
+    }
+  }
+
+  paginaAnterior(): void {
+    if (this.paginaActual > 1) {
+      this.paginaActual--;
+      this.filtrarPacientes();
+    }
+  }
+  // Método para ir a la primera página
+irAPrimeraPagina(): void {
+  this.paginaActual = 1;
+  this.filtrarPacientes();
+}
+
+// Método para ir a la última página
+irALaUltimaPagina(): void {
+  this.paginaActual = this.totalPaginas;
+  this.filtrarPacientes();
+}
+
+  paginaSiguiente(): void {
+    if (this.paginaActual < this.totalPaginas) {
+      this.paginaActual++;
+      this.filtrarPacientes();
+    }
   }
 
   ordenar(columna: keyof Paciente): void {
@@ -94,26 +139,13 @@ export class PacientesComponent implements OnInit {
     this.filtrarPacientes();
   }
 
-  paginaAnterior(): void {
-    if (this.paginaActual > 1) {
-      this.paginaActual--;
-      this.filtrarPacientes();
-    }
-  }
-
-  paginaSiguiente(): void {
-    if (this.paginaActual < this.totalPaginas) {
-      this.paginaActual++;
-      this.filtrarPacientes();
-    }
-  }
-
   agregarPaciente(): void {
-    this.apiService.addPaciente(this.nuevoPaciente).subscribe({
-      next: (paciente: Paciente) => {
+    this.apiService.addPaciente(this.nuevoPaciente).subscribe(
+      (paciente: Paciente) => {
+        // Manejar el paciente agregado exitosamente
         this.pacientes.push(paciente);
-        this.filtrarPacientes();
-       
+        this.mostrarFormularioAgregar = false;
+        this.notificacion = 'Paciente agregado con éxito';
         this.nuevoPaciente = {
           IdPaciente: 0,
           Nombre: '',
@@ -127,14 +159,17 @@ export class PacientesComponent implements OnInit {
           Email: '',
           HistorialMedico: '',
         };
-
       },
-      error: (error: any) => {
-        console.error('Error al agregar el paciente', error);
-      },
-    });
+      (err) => {
+        // Manejar errores
+        console.error('Error al agregar paciente', err);
+        this.notificacion = 'Error al agregar paciente';
+      }
+    );
   }
+
   mostrarFormularioActualizar: boolean = false;
+
   toggleActualizarPaciente(paciente: Paciente): void {
     if (
       this.pacienteParaActualizar &&
@@ -169,9 +204,11 @@ export class PacientesComponent implements OnInit {
       this.notificacion = null;
     }, 2000);
   }
+
   cerrar() {
     window.close();
   }
+
   borrarPaciente(id: number): void {
     const confirmacion = confirm(
       '¿Estás seguro de que quieres eliminar este paciente?'
@@ -181,7 +218,8 @@ export class PacientesComponent implements OnInit {
         next: () => {
           this.pacientes = this.pacientes.filter((p) => p.IdPaciente !== id);
           this.filtrarPacientes();
-          alert('Paciente eliminado con éxito');        },
+          alert('Paciente eliminado con éxito');
+        },
         error: (error: any) => {
           console.error('Error al borrar el paciente', error);
           alert('Error al borrar el paciente. Por favor, inténtelo de nuevo.');
@@ -190,21 +228,24 @@ export class PacientesComponent implements OnInit {
     }
   }
 
-  aplicarFiltroNombre(filtro: string): void {
-    this.filtroNombre = filtro;
+  aplicarFiltro(filtro: string): void {  // Método combinado para nombre y DNI
+    this.filtro = filtro;
     this.filtrarPacientes();
   }
+
   mostrarFormularioAgregar: boolean = false;
 
   // Método para alternar la visibilidad del formulario de agregar paciente
   toggleFormularioAgregar(): void {
     this.mostrarFormularioAgregar = !this.mostrarFormularioAgregar;
   }
+
   mostrarMas: boolean = false;
 
   // Método para alternar la visibilidad de la información adicional
   toggleMostrarMas(): void {
     this.mostrarMas = !this.mostrarMas;
   }
+
   notificacion: string | null = null;
 }

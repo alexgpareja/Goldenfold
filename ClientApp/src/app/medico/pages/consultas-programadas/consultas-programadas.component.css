@@ -1,57 +1,109 @@
-/* Sección principal */
 .consultas-section {
-  padding: 16px;
-  background-color: #f1f1f1;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f9f9f9;
   border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Tabla */
+h2, h3, h4 {
+  color: #333;
+  margin-bottom: 15px;
+}
+
+.error-message {
+  color: red;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
 .consultas-table {
   width: 100%;
   border-collapse: collapse;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
 }
 
 .consultas-table th, 
 .consultas-table td {
-  padding: 10px;
   border: 1px solid #ddd;
+  padding: 10px;
   text-align: left;
 }
 
 .consultas-table th {
-  background-color: #4CAF50;
-  color: white;
+  background-color: #f4f4f4;
+  color: #333;
 }
 
-/* Botones */
+.consultas-table td {
+  background-color: #fff;
+}
+
+.consultas-table tr:hover {
+  background-color: #f1f1f1;
+}
+
 button {
   padding: 8px 12px;
-  background-color: #4CAF50;
-  color: white;
+  margin-right: 10px;
   border: none;
   border-radius: 4px;
+  background-color: #007bff;
+  color: white;
+  font-size: 14px;
   cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 button:hover {
-  background-color: #45a049;
+  background-color: #0056b3;
 }
 
-/* Formulario de evaluación */
-.evaluation-form {
-  margin-top: 16px;
-  padding: 16px;
-  background-color: #fafafa;
-  border: 1px solid #ddd;
-  border-radius: 8px;
+form {
+  margin-top: 20px;
 }
 
-.form-group {
+form label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
+form input,
+form select {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+form button {
+  width: auto;
+  background-color: #28a745;
+}
+
+form button:hover {
+  background-color: #218838;
+}
+
+form button[type="submit"] {
+  display: inline-block;
   margin-top: 10px;
 }
 
-select {
-  padding: 6px;
-  margin-right: 10px;
+h3 {
+  margin-top: 30px;
+}
+
+h4 {
+  margin-bottom: 15px;
+}
+
+p {
+  font-size: 14px;
+  color: #666;
 }

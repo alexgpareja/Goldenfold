@@ -95,12 +95,6 @@ namespace HospitalApi.Controllers
                 return Conflict("Ya existe un paciente con el DNI proporcionado.");
             }
 
-            // Asignar el valor predeterminado de estado si no se proporciona
-            if (!Enum.IsDefined(typeof(EstadoPaciente), pacienteDTO.Estado))
-            {
-                pacienteDTO.Estado = EstadoPaciente.Registrado;  // Asignar estado predeterminado
-            }
-
             // Validar el formato del número de seguridad social
             if (pacienteDTO.SeguridadSocial.Length != 12 || !pacienteDTO.SeguridadSocial.All(char.IsDigit))
             {
@@ -138,7 +132,6 @@ namespace HospitalApi.Controllers
             var pacienteDTOResult = _mapper.Map<PacienteDTO>(paciente);
             return CreatedAtAction(nameof(GetPaciente), new { id = paciente.IdPaciente }, pacienteDTOResult);
         }
-
 
         /// <summary>
         /// Actualiza un paciente existente en la base de datos.

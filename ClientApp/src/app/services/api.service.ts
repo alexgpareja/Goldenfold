@@ -44,6 +44,7 @@ export interface Ingreso {
 export interface HistorialAlta {
   IdHistorial: number;
   IdPaciente: number;
+  IdMedico: number;
   FechaAlta: Date;
   Diagnostico: string;
   Tratamiento: string;
@@ -52,7 +53,7 @@ export interface HistorialAlta {
 export interface Asignacion {
   IdAsignacion: number;
   IdPaciente: number;
-  Ubicacion: string;
+  IdCama: number;
   FechaAsignacion: Date;
   FechaLiberacion: Date | null;
   AsignadoPor: number;
@@ -288,11 +289,11 @@ export class ApiService {
 
   // CRUD para Camas
   getCamas(
-    ubicacion?: string,
-    estado?: string,
-    tipo?: string,
-    idHabitacion?: number,
-    idCama?: number
+    Ubicacion?: string,
+    Estado?: string,
+    Tipo?: string,
+    IdHabitacion?: number,
+    IdCama?: number
   ): Observable<Cama[]> {
     let params = new HttpParams();
     if (ubicacion) params = params.set('ubicacion', ubicacion);

@@ -15,7 +15,7 @@
       <tbody>
         <tr *ngFor="let asignacion of asignaciones">
           <td>{{ asignacion.IdPaciente }}</td>
-          <td>{{ asignacion.Ubicacion }}</td>
+          <td>{{ asignacion.IdCama }}</td>
           <td>{{ asignacion.FechaAsignacion | date:'dd/MM/yyyy HH:mm\'h\'' }}</td>
           <td>{{ asignacion.FechaLiberacion ? (asignacion.FechaLiberacion | date:'dd/MM/yyyy HH:mm') : 'N/A' }}</td>
           <td>{{ asignacion.AsignadoPor }}</td>
@@ -32,8 +32,8 @@
                 <label for="idPaciente">ID Paciente:</label>
                 <input type="number" id="idPaciente" [(ngModel)]="asignacionParaActualizar.IdPaciente" name="idPaciente"disabled
                   required>
-                <label for="ubicacion">Ubicación:</label>
-                <input type="text" id="ubicacion" [(ngModel)]="asignacionParaActualizar.Ubicacion" name="ubicacion"
+                <label for="idCama">Ubicación:</label>
+                <input type="text" id="idCama" [(ngModel)]="asignacionParaActualizar.IdCama" name="idCama"
                   required>
                 <label for="fechaAsignacion">Fecha de Asignación:</label>
                 <input type="date" id="fechaAsignacion" [(ngModel)]="asignacionParaActualizar.FechaAsignacion"
@@ -58,8 +58,8 @@
     <form (ngSubmit)="agregarAsignacion()">
       <label for="idPaciente">ID Paciente:</label>
       <input type="number" id="idPaciente" [(ngModel)]="nuevaAsignacion.IdPaciente" name="idPaciente" required>
-      <label for="ubicacion">Ubicación:</label>
-      <input type="text" id="ubicacion" [(ngModel)]="nuevaAsignacion.Ubicacion" name="ubicacion" required>
+      <label for="idCama">Ubicación:</label>
+      <input type="text" id="idCama" [(ngModel)]="nuevaAsignacion.IdCama" name="idCama" required>
       <label for="fechaAsignacion">Fecha de Asignación:</label>
       <input type="date" id="fechaAsignacion" [(ngModel)]="nuevaAsignacion.FechaAsignacion" name="fechaAsignacion"
         required>

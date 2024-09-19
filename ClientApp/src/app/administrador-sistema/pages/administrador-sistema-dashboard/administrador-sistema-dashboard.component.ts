@@ -11,6 +11,7 @@ export class AdministradorSistemaDashboardComponent {
 
   logout() {
     alert('Sesión cerrada');
-    this.router.navigate(["/inicio"]); 
+    this.router.navigate(["/inicio"]);
   }
+
 }

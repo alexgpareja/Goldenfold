@@ -40,7 +40,6 @@ namespace HospitalApi.Controllers
             if (idMedico.HasValue)
                 query = query.Where(i => i.IdMedico == idMedico.Value);
 
-            // Si estado es un enum, manejar la conversión correctamente
             if (!string.IsNullOrEmpty(estado))
             {
                 if (Enum.TryParse(typeof(EstadoIngreso), estado, true, out var estadoEnum))
@@ -52,6 +51,7 @@ namespace HospitalApi.Controllers
                     return BadRequest("El valor de estado no es válido.");
                 }
             }
+
 
             var ingresos = await query.ToListAsync();
 
@@ -73,7 +73,7 @@ namespace HospitalApi.Controllers
         /// <response code="404">Si no se encuentra un ingreso con el ID proporcionado.</response>
         /// <response code="500">Si ocurre un error en el servidor al procesar la solicitud.</response>
         [HttpGet("{id}")]
-        public async Task<ActionResult<IngresoDTO>> GetIngresoById(int id)
+        public async Task<ActionResult<IngresoDTO>> GetIngreso(int id)
         {
             var ingreso = await _context.Ingresos.FindAsync(id);
 
@@ -87,7 +87,7 @@ namespace HospitalApi.Controllers
         }
 
         /// <summary>
-        /// Crea un nuevo ingreso en la base de datos.
+        /// Crea un nuevo ingreso en la base de datos. 
         /// </summary>
         /// <param name="ingresoDTO">El objeto <see cref="IngresoCreateDTO"/> que contiene los datos del ingreso a crear.</param>
         /// <returns>Un objeto <see cref="IngresoDTO"/> que representa el ingreso recién creado.</returns>
@@ -97,6 +97,7 @@ namespace HospitalApi.Controllers
         [HttpPost]
         public async Task<ActionResult<IngresoDTO>> CreateIngreso(IngresoCreateDTO ingresoDTO)
         {
+            // Verificar si el paciente y el médico existen
             if (!await _context.Pacientes.AnyAsync(p => p.IdPaciente == ingresoDTO.IdPaciente))
             {
                 return BadRequest("El paciente especificado no existe.");
@@ -107,12 +108,18 @@ namespace HospitalApi.Controllers
                 return BadRequest("El médico especificado no existe.");
             }
 
+            // Mapea desde DTO a modelo de entidad
             var ingreso = _mapper.Map<Ingreso>(ingresoDTO);
+
+            // Guardar el ingreso en la base de datos
             _context.Ingresos.Add(ingreso);
             await _context.SaveChangesAsync();
 
+            // Mapea la entidad de vuelta a DTO para la respuesta
             var ingresoDTOResult = _mapper.Map<IngresoDTO>(ingreso);
-            return CreatedAtAction(nameof(GetIngresoById), new { id = ingresoDTOResult.IdIngreso }, ingresoDTOResult);
+
+            // Devuelve la respuesta
+            return CreatedAtAction(nameof(GetIngreso), new { id = ingresoDTOResult.IdIngreso }, ingresoDTOResult);
         }
 
         /// <summary>
@@ -139,6 +146,7 @@ namespace HospitalApi.Controllers
                 return NotFound($"No se encontró ningún ingreso con el ID {id}.");
             }
 
+            // Mapear los cambios desde DTO al modelo
             _mapper.Map(ingresoDTO, ingresoExiste);
 
             try
