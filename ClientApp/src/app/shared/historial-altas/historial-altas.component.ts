@@ -21,8 +21,11 @@ export class HistorialAltasComponent implements OnInit {
   totalPaginas: number = 0;
   columnaOrdenada: keyof HistorialAlta | null = null;
   orden: 'asc' | 'desc' = 'asc';
-  filtro: string = '';
+  filtro: string = ''; 
+  fechaAltaFiltro: string | undefined;
 
+
+  
   constructor(private apiService: ApiService) {}
 
   ngOnInit(): void {
@@ -40,6 +43,23 @@ export class HistorialAltasComponent implements OnInit {
     };
   }
 
+  filtrarPorFecha() {
+    if (this.fechaAltaFiltro) {
+      this.historialAltasPaginadas = this.historialAltas.filter(historial => {
+        //convertir la fecha del historial a formato YYYY-MM-DD
+        const fechaHistorial = new Date(historial.FechaAlta).toISOString().slice(0, 10);
+        return fechaHistorial === this.fechaAltaFiltro;
+      });
+    } else {
+      this.historialAltasPaginadas = [...this.historialAltas];
+    }
+  }
+  
+  filtrarPorNumeroSS(event:Event) {}
+
+  aplicarFiltros(): void {
+   //para poder filtrar por varios filtros
+  }
   obtenerHistorialAltas(): void {
     this.apiService.getHistorialAltas().subscribe({
       next: (data: HistorialAlta[]) => {
