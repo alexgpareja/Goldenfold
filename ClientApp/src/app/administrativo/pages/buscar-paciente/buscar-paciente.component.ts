@@ -31,9 +31,17 @@ export class BuscarPacienteComponent {
 
   buscarPaciente(event: Event) {
     event.preventDefault();
+  
+    // Si ya hay resultados de pacientes y se vuelve a ejecutar la búsqueda, ocultar el formulario
+    if (this.pacientesEncontrados.length > 0) {
+      this.pacientesEncontrados = [];
+      this.errorMensaje = null;
+      return;
+    }
+  
     this.errorMensaje = null;
     this.pacientesEncontrados = [];
-  
+    
     if (this.searchName.trim() !== '' || this.searchSS.trim() !== '') {
       this.apiService.getPacientes(this.searchName, this.searchSS).subscribe({
         next: (pacientes: Paciente[]) => {
@@ -52,13 +60,22 @@ export class BuscarPacienteComponent {
     }
   }
   
+  
 
   // Seleccionar un paciente para editar
-  editarPaciente(paciente: Paciente) {
+editarPaciente(paciente: Paciente) {
+  if (this.pacienteSeleccionado && this.pacienteSeleccionado.IdPaciente === paciente.IdPaciente) {
+    // Si ya está seleccionado, ocultar el formulario
+    this.pacienteSeleccionado = null;
+    this.mostrarFormularioEdicion = false;
+  } else {
+    // Si no está seleccionado, mostrar el formulario de edición
     this.pacienteSeleccionado = { ...paciente }; // Clona el paciente seleccionado
     this.mostrarFormularioEdicion = true; // Mostrar el formulario de edición
     this.mostrarFormularioConsulta = false; // Ocultar el formulario de consulta
   }
+}
+
 
   // Actualizar los datos del paciente
   actualizarPaciente() {
@@ -77,16 +94,25 @@ export class BuscarPacienteComponent {
     }
   }
 
-  abrirFormularioConsulta(paciente: Paciente) {
+  // Seleccionar un paciente para consulta
+abrirFormularioConsulta(paciente: Paciente) {
+  if (this.pacienteSeleccionado && this.pacienteSeleccionado.IdPaciente === paciente.IdPaciente && this.mostrarFormularioConsulta) {
+    // Si ya está seleccionado y el formulario de consulta está visible, ocultarlo
+    this.pacienteSeleccionado = null;
+    this.mostrarFormularioConsulta = false;
+  } else {
+    // Si no está seleccionado o el formulario de consulta no está visible, mostrarlo
     this.pacienteSeleccionado = paciente;
     this.mostrarFormularioConsulta = true; // Mostrar el formulario de consulta
     this.mostrarFormularioEdicion = false; // Ocultar el formulario de edición
-  
+
     // Rellenar los campos de la consulta con los valores predeterminados
     this.consulta.IdPaciente = paciente.IdPaciente;
     this.consulta.FechaSolicitud = new Date(); // Fecha actual
     this.consulta.Estado = 'pendiente';
   }
+}
+
   
 
   // Método para registrar la consulta

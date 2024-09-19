@@ -1,125 +1,157 @@
+/* Estilo general de la sección de solicitudes de ingreso */
 .solicitudes-ingreso-section {
-  width: 80%;
-  margin: 20px auto;
+  font-family: Arial, sans-serif;
+  margin: 20px;
+  max-width: 1200px;
   background-color: #f9f9f9;
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+/* Estilo para el título de la sección */
 .solicitudes-ingreso-section h2 {
-  text-align: center;
+  font-size: 1.5rem;
   color: #333;
+  margin-bottom: 20px;
+  text-align: center;
+  font-weight: bold;
+}
+
+/* Estilo para el mensaje de error */
+.error-message {
+  color: #d9534f;
+  font-size: 14px;
   margin-bottom: 20px;
 }
 
+/* Estilo de la tabla de solicitudes */
 .solicitudes-table {
   width: 100%;
   border-collapse: collapse;
+  font-size: 14px;
   margin-bottom: 20px;
 }
 
-.solicitudes-table th, .solicitudes-table td {
-  border: 1px solid #ddd;
-  padding: 12px 15px;
+.solicitudes-table th,
+.solicitudes-table td {
+  padding: 10px;
+  border: 1px solid #ccc;
   text-align: left;
 }
 
 .solicitudes-table th {
-  background-color: #4CAF50;
-  color: white;
+  background-color: #007bff;
+  color: #fff;
+  font-weight: bold;
+}
+
+.solicitudes-table td {
+  background-color: #f9f9f9;
 }
 
 .solicitudes-table tr:nth-child(even) {
-  background-color: #f2f2f2;
+  background-color: #f1f1f1;
 }
 
-.solicitudes-table tr:hover {
-  background-color: #ddd;
-}
-
-.solicitudes-table td button {
-  background-color: #4CAF50;
-  color: white;
+/* Estilo para los botones de acciones */
+.solicitudes-table button {
+  padding: 8px 12px;
   border: none;
-  padding: 10px 15px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 14px;
-  margin: 4px 2px;
-  cursor: pointer;
   border-radius: 4px;
-  transition: background-color 0.3s;
-}
-
-.solicitudes-table td button:hover {
-  background-color: #45a049;
-}
-
-.solicitudes-ingreso-section .error-message {
-  color: red;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
   font-size: 14px;
+  transition: background-color 0.3s ease;
+}
+
+.solicitudes-table button:hover {
+  background-color: #0056b3;
+}
+
+/* Estilo para la sección de acciones de la solicitud seleccionada */
+.solicitudes-ingreso-section h3 {
+  font-size: 1.3rem;
+  color: #333;
+  margin-top: 20px;
   margin-bottom: 10px;
 }
 
-.solicitudes-ingreso-section h3 {
-  margin-top: 20px;
-  color: #333;
-}
-
+/* Botones para las acciones de solicitud */
 .solicitudes-ingreso-section button {
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  cursor: pointer;
-  border-radius: 4px;
-  font-size: 14px;
+  padding: 10px 16px;
   margin-right: 10px;
-  transition: background-color 0.3s;
+  border: none;
+  border-radius: 4px;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
 }
 
 .solicitudes-ingreso-section button:hover {
-  background-color: #45a049;
+  background-color: #0056b3;
 }
 
+.solicitudes-ingreso-section button:last-child {
+  margin-right: 0;
+}
+
+/* Formulario de selección de cama */
 .solicitudes-ingreso-section form {
   margin-top: 20px;
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.solicitudes-ingreso-section form label {
-  display: block;
+.solicitudes-ingreso-section label {
   font-weight: bold;
-  margin-bottom: 10px;
+  color: #333;
+  margin-bottom: 5px;
+  display: block;
 }
 
-.solicitudes-ingreso-section form select {
+.solicitudes-ingreso-section select {
   width: 100%;
   padding: 10px;
-  margin-bottom: 20px;
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 14px;
+  margin-bottom: 15px;
+  box-sizing: border-box;
 }
 
 .solicitudes-ingreso-section form button {
-  background-color: #4CAF50;
-  color: white;
+  width: 100%;
+  padding: 10px;
   border: none;
-  padding: 10px 20px;
-  cursor: pointer;
   border-radius: 4px;
-  font-size: 14px;
-  margin-right: 10px;
+  background-color: #28a745;
+  color: white;
+  cursor: pointer;
+  font-size: 16px;
 }
 
 .solicitudes-ingreso-section form button:hover {
-  background-color: #45a049;
+  background-color: #218838;
 }
 
-.solicitudes-ingreso-section p {
-  text-align: center;
-  color: #555;
-}
+/* Estilo responsivo */
+@media (max-width: 768px) {
+  .solicitudes-ingreso-section {
+    padding: 15px;
+  }
 
+  .solicitudes-ingreso-section button {
+    font-size: 14px;
+    padding: 8px 12px;
+  }
+
+  .solicitudes-ingreso-section form button {
+    font-size: 14px;
+  }
+}

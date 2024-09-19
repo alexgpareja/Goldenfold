@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ApiService, Consulta } from '../../../services/api.service';
+import { ApiService, Consulta, Ingreso } from '../../../services/api.service';
 import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
@@ -10,16 +10,14 @@ import { HttpErrorResponse } from '@angular/common/http';
 export class ConsultasProgramadasComponent {
   consultasPendientes: Consulta[] = [];
   errorMensaje: string | null = null;
-  consultaSeleccionada: Consulta | null = null; // Para seleccionar la consulta a evaluar
-  formularioSeleccionado: 'alta' | 'ingreso' | null = null; // Para elegir qué formulario mostrar
+  consultaSeleccionada: Consulta | null = null; 
+  formularioSeleccionado: 'alta' | 'ingreso' | null = null; 
+  tipoCama: string = 'general'; // Valor por defecto
+  motivoIngreso: string = ''; 
 
   // Datos del formulario "Dar de Alta"
   diagnostico: string = '';
   tratamiento: string = '';
-
-  // Datos del formulario "Solicitar Ingreso"
-  tipoCama: string = '';
-  motivoIngreso: string = '';
 
   constructor(private apiService: ApiService) { }
 
@@ -101,13 +99,33 @@ export class ConsultasProgramadasComponent {
   
 
   // Lógica para "Solicitar Ingreso" del paciente
+  // Método para "Solicitar Ingreso"
   solicitarIngreso() {
-    console.log('Ingreso solicitado:', this.tipoCama, this.motivoIngreso);
-    // Aquí puedes añadir la lógica para enviar estos datos a la API
-    // Ejemplo:
-    // this.apiService.solicitarIngreso(this.consultaSeleccionada.id, this.tipoCama, this.motivoIngreso)
-    //   .subscribe(...);
-    this.resetFormulario(); // Limpiar el formulario tras el ingreso
+    // Crear el objeto "Ingreso"
+    const nuevoIngreso: Ingreso = {
+      IdIngreso: 0, // Este campo se asignará en la base de datos
+      IdPaciente: this.consultaSeleccionada!.IdPaciente,
+      IdMedico: this.consultaSeleccionada!.IdMedico,
+      Motivo: `${this.motivoIngreso} INGRESAR EN:  ${this.tipoCama.charAt(0).toUpperCase() + this.tipoCama.slice(1)}`, 
+      FechaSolicitud: new Date(),
+      Estado: 'Pendiente', // O el estado inicial que prefieras
+      IdAsignacion: null // Esto será null hasta que se asigne una cama
+    };
+
+    // Llamar al servicio API para crear el ingreso
+    this.apiService.addIngreso(nuevoIngreso).subscribe({
+      next: (response) => {
+        console.log('Ingreso registrado exitosamente', response);
+        // Limpiar el formulario después de la operación
+        this.resetFormulario();
+  
+        // Volver a cargar las consultas pendientes
+        this.obtenerConsultasPendientes();
+      },
+      error: (error) => {
+        console.error('Error al registrar el ingreso', error);
+      }
+    });
   }
 
   // Método para resetear el formulario y volver al estado inicial
@@ -116,7 +134,7 @@ export class ConsultasProgramadasComponent {
     this.formularioSeleccionado = null;
     this.diagnostico = '';
     this.tratamiento = '';
-    this.tipoCama = '';
     this.motivoIngreso = '';
+    this.tipoCama = 'General';
   }
 }
