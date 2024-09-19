@@ -1,92 +1,90 @@
-/* Estilo general del formulario */
+/* Estilo general de la sección de registro */
 .register-section {
-  background-color: rgb(228, 224, 224);
-  padding: 20px;
+  font-family: Arial, sans-serif;
   margin: 20px;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(8, 8, 8, 0.1);
-  margin-bottom: 20px;
+  max-width: 1200px; /* Ajusta según el ancho que prefieras */
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+/* Estilo para el título del formulario */
 .register-section h2 {
-  text-align: center;
+  font-size: 1.5rem;
   color: #333;
+  margin-bottom: 20px;
+  text-align: center;
+  font-weight: bold;
 }
 
-.register-form {
-  display: flex;
-  flex-direction: column;
-}
-
+/* Estilo para los grupos de formularios */
 .form-group {
   margin-bottom: 15px;
 }
 
 .form-group label {
-  font-weight: bold;
-  margin-bottom: 5px;
   display: block;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 5px;
 }
 
 .form-group input,
 .form-group textarea {
+  width: 100%;
   padding: 10px;
   border: 1px solid #ccc;
-  border-radius: 5px;
-  width: 100%;
-  font-size: 16px;
+  border-radius: 4px;
+  font-size: 14px;
   box-sizing: border-box;
 }
 
+.form-group input[type="date"] {
+  padding: 8px;
+}
+
 .form-group textarea {
-  resize: vertical; /* Permite que el textarea sea redimensionable solo verticalmente */
-  min-height: 100px;
+  height: 100px; /* Ajusta la altura del textarea */
+  resize: vertical; /* Permite cambiar el tamaño verticalmente */
+}
+
+/* Estilo de los mensajes de error */
+.error-message {
+  color: #d9534f;
+  font-size: 12px;
+  margin-top: 5px;
 }
 
 /* Estilo del botón de envío */
 .submit-btn {
-  padding: 12px 20px;
-  background-color: #007bff;
-  color: white;
+  display: block;
+  width: 100%;
+  padding: 10px 20px;
   border: none;
   border-radius: 5px;
+  background-color: #007bff;
+  color: #fff;
   cursor: pointer;
   font-size: 16px;
-  font-weight: bold;
   transition: background-color 0.3s ease;
-  width: 100%;
+  margin-top: 20px;
 }
 
 .submit-btn:hover {
   background-color: #0056b3;
 }
 
-/* Estilo de los mensajes de error */
-.error-message {
-  color: #dc3545;
-  font-size: 14px;
-  margin-top: 5px;
-  font-style: italic;
-}
-
-/* Estilo del campo con error */
-input.ng-invalid.ng-touched,
-textarea.ng-invalid.ng-touched {
-  border-color: #dc3545;
-}
-
-/* Efecto en los inputs cuando están en foco */
-input:focus,
-textarea:focus {
-  outline: none;
-  border-color: #007bff;
-  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
-}
-
-/* Responsivo */
+/* Estilo responsivo */
 @media (max-width: 768px) {
   .register-section {
+    margin: 10px;
     padding: 15px;
+  }
+
+  .form-group input,
+  .form-group textarea {
+    padding: 8px;
   }
 
   .submit-btn {

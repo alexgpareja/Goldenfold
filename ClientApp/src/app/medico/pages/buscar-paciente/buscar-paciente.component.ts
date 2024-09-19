@@ -20,20 +20,28 @@ export class BuscarPacienteComponent {
   consulta: Consulta = {
     IdConsulta: 0,
     IdPaciente: 0,
-    IdMedico: 0, 
+    IdMedico: 0,
     Motivo: '',
     FechaSolicitud: new Date(),
     FechaConsulta: null,
-    Estado: 'pendiente de consultar'
+    Estado: 'pendiente'
   };
 
-  constructor(private apiService: ApiService) {}
+  constructor(private apiService: ApiService) { }
 
   buscarPaciente(event: Event) {
     event.preventDefault();
+
+    // Si ya hay resultados de pacientes y se vuelve a ejecutar la búsqueda, ocultar el formulario
+    if (this.pacientesEncontrados.length > 0) {
+      this.pacientesEncontrados = [];
+      this.errorMensaje = null;
+      return;
+    }
+
     this.errorMensaje = null;
     this.pacientesEncontrados = [];
-  
+
     if (this.searchName.trim() !== '' || this.searchSS.trim() !== '') {
       this.apiService.getPacientes(this.searchName, this.searchSS).subscribe({
         next: (pacientes: Paciente[]) => {
@@ -51,14 +59,23 @@ export class BuscarPacienteComponent {
       this.errorMensaje = 'Por favor, ingresa un nombre o un número de seguridad social para buscar.';
     }
   }
-  
+
+
 
   // Seleccionar un paciente para editar
   editarPaciente(paciente: Paciente) {
-    this.pacienteSeleccionado = { ...paciente }; // Clona el paciente seleccionado
-    this.mostrarFormularioEdicion = true; // Mostrar el formulario de edición
-    this.mostrarFormularioConsulta = false; // Ocultar el formulario de consulta
+    if (this.pacienteSeleccionado && this.pacienteSeleccionado.IdPaciente === paciente.IdPaciente) {
+      // Si ya está seleccionado, ocultar el formulario
+      this.pacienteSeleccionado = null;
+      this.mostrarFormularioEdicion = false;
+    } else {
+      // Si no está seleccionado, mostrar el formulario de edición
+      this.pacienteSeleccionado = { ...paciente }; // Clona el paciente seleccionado
+      this.mostrarFormularioEdicion = true; // Mostrar el formulario de edición
+      this.mostrarFormularioConsulta = false; // Ocultar el formulario de consulta
+    }
   }
+
 
   // Actualizar los datos del paciente
   actualizarPaciente() {
@@ -76,60 +93,9 @@ export class BuscarPacienteComponent {
       });
     }
   }
-
-  abrirFormularioConsulta(paciente: Paciente) {
-    this.pacienteSeleccionado = paciente;
-    this.mostrarFormularioConsulta = true; // Mostrar el formulario de consulta
-    this.mostrarFormularioEdicion = false; // Ocultar el formulario de edición
-  
-    // Rellenar los campos de la consulta con los valores predeterminados
-    this.consulta.IdPaciente = paciente.IdPaciente;
-    this.consulta.FechaSolicitud = new Date(); // Fecha actual
-    this.consulta.Estado = 'pendiente de consultar';
-  }
-  
-
-  // Método para registrar la consulta
-  registrarConsulta() {
-    if (this.consulta.IdMedico && this.consulta.Motivo) {
-      this.apiService.addConsulta(this.consulta).subscribe({
-        next: () => {
-          alert('Consulta registrada con éxito.');
-          this.mostrarFormularioConsulta = false;
-          this.pacienteSeleccionado = null; // Limpiar el paciente seleccionado después de registrar la consulta
-          this.resetConsulta(); // Reiniciar el formulario de consulta
-        },
-        error: (error: HttpErrorResponse) => {
-          this.errorMensaje = 'Error al registrar la consulta. Por favor, inténtalo de nuevo.';
-        }
-      });
-    } else {
-      alert('Por favor, ingrese todos los datos requeridos.');
-    }
-  }
-
   // Método para cancelar la edición del paciente
   cancelarEdicion() {
     this.pacienteSeleccionado = null; // Limpiar el paciente seleccionado
     this.mostrarFormularioEdicion = false; // Ocultar el formulario de edición
-  }
-
-  // Método para cancelar el registro de la consulta
-  cancelarConsulta() {
-    this.mostrarFormularioConsulta = false;
-    this.resetConsulta(); // Reiniciar el formulario de consulta
-  }
-
-  // Método para reiniciar el formulario de consulta
-  resetConsulta() {
-    this.consulta = {
-      IdConsulta: 0,
-      IdPaciente: 0,
-      IdMedico: 0,
-      Motivo: '',
-      FechaSolicitud: new Date(),
-      FechaConsulta: null,
-      Estado: 'pendiente de consultar'
-    };
   }
 }
