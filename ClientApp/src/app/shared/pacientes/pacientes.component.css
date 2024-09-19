@@ -17,7 +17,7 @@ h2 {
 .filter-container {
   padding-left: 20px;
   display: flex;
-  gap:100px;
+  gap:250px;
   margin-bottom: 20px;
 }
 
@@ -59,17 +59,17 @@ input[type="text"] {
   width: 100%;
   border-collapse: collapse;
   font-size: 12px; /* Tamaño de texto más pequeño para compactar todo */
-  table-layout: auto; /* Permite ajustar el tamaño de las columnas automáticamente */
+  table-layout: auto;
+
 }
 
 .table th,
 .table td {
-  padding: 6px 8px; /* Reduce el espacio dentro de las celdas */
+  padding: 10px 8px; /* Reduce el espacio dentro de las celdas */
   border: 1px solid #ccc;
   white-space: nowrap; /* Mantiene el texto en una sola línea */
   overflow: hidden; /* Oculta cualquier desbordamiento de contenido */
-  text-overflow: ellipsis; /* Añade puntos suspensivos si el contenido es demasiado largo */
-}
+ }
 
 .table th {
   background-color: #0078d4;
