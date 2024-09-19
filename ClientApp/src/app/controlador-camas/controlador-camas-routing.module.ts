@@ -4,6 +4,7 @@ import { ControladorCamasDashboardComponent } from './pages/controlador-camas-da
 import { ControladorCamasInicioComponent } from './pages/controlador-camas-inicio/controlador-camas-inicio.component';
 import { AsignarCamaComponent } from './pages/asignar-cama/asignar-cama.component';
 import { EstadoCamasComponent } from './pages/estado-camas/estado-camas.component';
+import { SolicitudesIngresoComponent } from './pages/solicitudes-ingreso/solicitudes-ingreso.component';
 
 
 const routes: Routes = [
@@ -14,6 +15,7 @@ const routes: Routes = [
       { path: 'controlador-camas-inicio', component: ControladorCamasInicioComponent },
       { path: 'asignar-cama', component: AsignarCamaComponent },
       { path: 'estado-camas', component: EstadoCamasComponent },
+      { path: 'solicitudes-ingreso', component: SolicitudesIngresoComponent },
       { path: '', redirectTo: 'controlador-camas-inicio', pathMatch: 'full' },  // Página por defecto
     ]
   }

@@ -17,10 +17,10 @@ namespace HospitalApi
         [Column("id_paciente")]
         public int IdPaciente { get; set; }
 
-        [Required(ErrorMessage = "La ubicación de la cama es obligatoria.")]
-        [MaxLength(8, ErrorMessage = "La ubicación no puede tener más de 8 caracteres.")]
-        [Column("ubicacion")]
-        public string Ubicacion { get; set; }
+        [ForeignKey("Cama")]
+        [Required(ErrorMessage = "El ID de la cama es obligatorio.")]
+        [Column("id_cama")]
+        public int IdCama { get; set; }
 
         [Required(ErrorMessage = "La fecha de asignación es obligatoria.")]
         [Column("fecha_asignacion")]
@@ -38,7 +38,7 @@ namespace HospitalApi
 
         // Propiedades de navegación
         public Paciente Paciente { get; set; }
-        public Cama Cama { get; set; }
+        public Cama Cama { get; set; } // Ahora se usa IdCama en lugar de Ubicacion
         public Usuario Usuario { get; set; }
         public ICollection<Ingreso> Ingresos { get; set; } = new List<Ingreso>();
 
@@ -62,3 +62,4 @@ namespace HospitalApi
         }
     }
 }
+

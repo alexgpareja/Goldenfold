@@ -14,7 +14,7 @@ namespace HospitalApi
 
         [Required(ErrorMessage = "El nombre es obligatorio.")]
         [StringLength(100, ErrorMessage = "El nombre no puede tener más de 100 caracteres.")]
-        [Column("nombre")]
+        [Column("nombre")] 
         public string Nombre { get; set; }
 
         [Required(ErrorMessage = "El DNI es obligatorio.")]

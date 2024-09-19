@@ -26,24 +26,25 @@ namespace HospitalApi.Controllers
         /// </summary>
         /// <returns>Una lista de objetos <see cref="RolDTO"/> que representan los roles.</returns>
         /// <response code="200">Retorna una lista de roles en formato DTO.</response>
-        /// <response code="404">Retorna un código HTTP 404 si no se encuentran roles.</response>
         /// <response code="500">Retorna un código HTTP 500 si ocurre un error al recuperar los roles.</response>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<RolDTO>>> GetRoles([FromQuery] string? nombreRol)
         {
             IQueryable<Rol> query = _context.Roles;
-            if (!string.IsNullOrEmpty(nombreRol)) 
+
+            // Filtrar por el nombre del rol si se proporciona
+            if (!string.IsNullOrEmpty(nombreRol))
                 query = query.Where(r => r.NombreRol.ToLower().Contains(nombreRol.ToLower()));
 
+            // Obtener la lista de roles
             var roles = await query.ToListAsync();
-            if (!roles.Any())
-            {
-                return NotFound("No se han encontrado roles que coincidan con los criterios de búsqueda proporcionados.");
-            }
 
+            // Mapear la lista de roles (puede estar vacía) a DTOs
             var rolesDTO = _mapper.Map<IEnumerable<RolDTO>>(roles);
+
             return Ok(rolesDTO);
         }
+
 
         /// <summary>
         /// Obtiene un rol específico por su identificador.

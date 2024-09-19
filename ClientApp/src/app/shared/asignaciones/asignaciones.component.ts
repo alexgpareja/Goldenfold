@@ -15,7 +15,7 @@ export class AsignacionesComponent implements OnInit {
   nuevaAsignacion: Asignacion = {
     IdAsignacion: 0,
     IdPaciente: 0,
-    Ubicacion: '',
+    IdCama: 0,
     FechaAsignacion: new Date(),
     FechaLiberacion: new Date(),
     AsignadoPor: 0
@@ -46,7 +46,7 @@ export class AsignacionesComponent implements OnInit {
         this.nuevaAsignacion = {
           IdAsignacion: 0,
           IdPaciente: 0,
-          Ubicacion: '',
+          IdCama: 0,
           FechaAsignacion: new Date(),
           FechaLiberacion: new Date(),
           AsignadoPor: 0

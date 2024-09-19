@@ -49,7 +49,7 @@ public class ApplicationDbContext : DbContext
 
         modelBuilder.Entity<Paciente>()
             .Property(p => p.Estado)
-            .HasConversion<string>()  
+            .HasConversion<string>()
             .HasMaxLength(20);
 
         modelBuilder.Entity<Paciente>()
@@ -59,12 +59,23 @@ public class ApplicationDbContext : DbContext
         // Cama
         modelBuilder.Entity<Cama>()
             .ToTable("camas")
-            .HasKey(c => c.Ubicacion);
+            .HasKey(c => c.IdCama);
 
         modelBuilder.Entity<Cama>()
             .HasMany(c => c.Asignaciones)
             .WithOne(a => a.Cama)
-            .HasForeignKey(a => a.Ubicacion);
+            .HasForeignKey(a => a.IdCama);
+
+        modelBuilder.Entity<Cama>()
+    .Property(c => c.Estado)
+    .HasConversion<string>()
+    .HasMaxLength(20);
+
+        modelBuilder.Entity<Cama>()
+            .Property(c => c.Tipo)
+            .HasConversion<string>()
+            .HasMaxLength(20);
+
 
         // Habitacion
         modelBuilder.Entity<Habitacion>()
@@ -89,7 +100,7 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<Asignacion>()
             .HasOne(a => a.Cama)
             .WithMany(c => c.Asignaciones)
-            .HasForeignKey(a => a.Ubicacion)
+            .HasForeignKey(a => a.IdCama)
             .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<Asignacion>()
@@ -168,13 +179,18 @@ public class ApplicationDbContext : DbContext
 
         modelBuilder.Entity<Consulta>()
             .Property(c => c.Estado)
-            .HasConversion<string>()  
+            .HasConversion<string>()
             .HasMaxLength(20);
 
         // Ingresos
         modelBuilder.Entity<Ingreso>()
             .ToTable("ingresos")
             .HasKey(i => i.IdIngreso);
+
+        modelBuilder.Entity<Ingreso>()
+            .Property(i => i.Estado)
+            .HasConversion<string>()
+            .HasMaxLength(20);
 
         modelBuilder.Entity<Ingreso>()
             .HasOne(i => i.Paciente)
@@ -190,7 +206,7 @@ public class ApplicationDbContext : DbContext
             .HasOne(i => i.Asignacion)
             .WithMany(a => a.Ingresos)
             .HasForeignKey(i => i.IdAsignacion)
-            .OnDelete(DeleteBehavior.Restrict);  // No eliminar asignación en cascada, motivo de trazabilidad
+            .OnDelete(DeleteBehavior.Restrict);
 
         // Precarga de roles
         modelBuilder.Entity<Rol>().HasData(

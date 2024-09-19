@@ -34,42 +34,82 @@
     </table>
   </div>
 
+  <!-- Formulario de Actualización -->
   <div class="form-container" *ngIf="rolParaActualizar">
     <h3>Actualizar Rol</h3>
-    <form (ngSubmit)="actualizarRol()">
+    <form [formGroup]="actualizarRolForm" (ngSubmit)="actualizarRol()">
       <label for="idRol">ID Rol:</label>
-      <input
-        type="number"
-        id="idRol"
-        [(ngModel)]="rolParaActualizar.IdRol"
-        name="idRol"
-        disabled
-      />
+      <input type="number" id="idRol" formControlName="IdRol" IdRol.disabled />
+
       <label for="nombreRol">Nombre Rol:</label>
-      <input
-        type="text"
-        id="nombreRol"
-        [(ngModel)]="rolParaActualizar.NombreRol"
-        name="nombreRol"
-      />
+      <input type="text" id="nombreRol" formControlName="NombreRol" />
+
+      <!-- Mensajes de error de actualización -->
+      <div
+        *ngIf="
+          actualizarRolForm.get('NombreRol')?.invalid &&
+          (actualizarRolForm.get('NombreRol')?.touched ||
+            actualizarRolForm.get('NombreRol')?.dirty)
+        "
+      >
+        <!-- Mostrar error si el campo está vacío o solo tiene espacios en blanco -->
+        <span
+          *ngIf="actualizarRolForm.get('NombreRol')?.errors?.['whitespace']"
+        >
+          El campo no puede estar vacío o contener solo espacios.
+        </span>
+
+        <!-- Mostrar error si el rol ya existe -->
+        <span
+          *ngIf="actualizarRolForm.get('NombreRol')?.errors?.['nombreRolExiste']"
+        >
+          Este rol ya existe.
+        </span>
+      </div>
+
       <div class="botones">
-        <button type="submit">Guardar</button>
+        <button type="submit" [disabled]="actualizarRolForm.invalid">
+          Guardar
+        </button>
         <button type="button" (click)="descartarCambios()">Descartar</button>
       </div>
     </form>
   </div>
 
+  <!-- Formulario de Agregar -->
   <div class="form-container">
     <h3>Agregar Rol</h3>
-    <form (ngSubmit)="agregarRol()">
+    <form [formGroup]="agregarRolForm" (ngSubmit)="agregarRol()">
       <label for="nombreRol">Nombre Rol:</label>
-      <input
-        type="text"
-        id="nombreRol"
-        [(ngModel)]="nuevoRol.NombreRol"
-        name="nombreRol"
-      />
-      <button type="submit">Agregar</button>
+      <input type="text" id="nombreRol" formControlName="NombreRol" />
+
+      <!-- Mensajes de error de agregar -->
+      <div
+        *ngIf="
+          agregarRolForm.get('NombreRol')?.invalid &&
+          (agregarRolForm.get('NombreRol')?.touched ||
+            agregarRolForm.get('NombreRol')?.dirty)
+        "
+      >
+        <!-- Mostrar error si el campo está vacío o solo tiene espacios en blanco -->
+        <span *ngIf="agregarRolForm.get('NombreRol')?.errors?.['whitespace']">
+          El campo no puede estar vacío o contener solo espacios.
+        </span>
+
+        <!-- Mostrar error si el rol ya existe -->
+        <span
+          *ngIf="agregarRolForm.get('NombreRol')?.errors?.['nombreRolExiste']"
+        >
+          Este rol ya existe.
+        </span>
+      </div>
+
+      <div class="botones">
+        <button type="submit">Agregar</button>
+        <button type="button" (click)="descartarCambios('agregar')">
+          Cancelar
+        </button>
+      </div>
     </form>
   </div>
 </div>
