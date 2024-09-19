@@ -95,18 +95,14 @@ export class ApiService {
 
   constructor(private http: HttpClient) {}
 
-  // CRUD para Pacientes
-  getPacientes(
-    Nombre?: string,
-    Dni?: string,
-    numSS?: string
-  ): Observable<Paciente[]> {
-    let params = new HttpParams();
-    if (Nombre) params = params.set('nombre', Nombre);
-    if (Dni) params = params.set('dni', Dni);
-    if (numSS) params = params.set('numSS', numSS);
-    return this.http.get<Paciente[]>(`${this.apiUrl}/Pacientes`, { params });
-  }
+ // CRUD para Pacientes
+getPacientes(Nombre?: string, numSS?: string): Observable<Paciente[]> {
+  let params = new HttpParams();
+  if (Nombre) params = params.set('nombre', Nombre);
+  if (numSS) params = params.set('numSS', numSS);
+  return this.http.get<Paciente[]>(`${this.apiUrl}/Pacientes`, { params });
+}
+
 
   addPaciente(paciente: Paciente): Observable<Paciente> {
     return this.http.post<Paciente>(`${this.apiUrl}/Pacientes`, paciente);

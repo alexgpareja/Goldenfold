@@ -62,6 +62,7 @@ textarea {
 /* Botones generales */
 .submit-btn, .update-btn, .cancel-btn, .edit-btn, .consulta-btn {
   padding: 10px 16px;
+  margin: 10px;
   border: none;
   border-radius: 4px;
   cursor: pointer;

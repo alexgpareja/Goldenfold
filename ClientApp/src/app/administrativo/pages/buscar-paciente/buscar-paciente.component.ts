@@ -32,16 +32,11 @@ export class BuscarPacienteComponent {
   buscarPaciente(event: Event) {
     event.preventDefault();
   
-    // Si ya hay resultados de pacientes y se vuelve a ejecutar la búsqueda, ocultar el formulario
-    if (this.pacientesEncontrados.length > 0) {
-      this.pacientesEncontrados = [];
-      this.errorMensaje = null;
-      return;
-    }
-  
+    // Resetea los resultados anteriores
     this.errorMensaje = null;
     this.pacientesEncontrados = [];
-    
+
+    // Verificar si al menos uno de los campos de búsqueda está lleno
     if (this.searchName.trim() !== '' || this.searchSS.trim() !== '') {
       this.apiService.getPacientes(this.searchName, this.searchSS).subscribe({
         next: (pacientes: Paciente[]) => {
@@ -58,7 +53,8 @@ export class BuscarPacienteComponent {
     } else {
       this.errorMensaje = 'Por favor, ingresa un nombre o un número de seguridad social para buscar.';
     }
-  }
+}
+
   
   
 
@@ -94,8 +90,14 @@ editarPaciente(paciente: Paciente) {
     }
   }
 
-  // Seleccionar un paciente para consulta
+// Seleccionar un paciente para consulta
 abrirFormularioConsulta(paciente: Paciente) {
+  if (paciente.Estado === 'EnConsulta') {
+    // Si el paciente ya está en consulta, mostrar un mensaje y no permitir abrir el formulario
+    alert('Este paciente ya está en consulta.');
+    return;
+  }
+
   if (this.pacienteSeleccionado && this.pacienteSeleccionado.IdPaciente === paciente.IdPaciente && this.mostrarFormularioConsulta) {
     // Si ya está seleccionado y el formulario de consulta está visible, ocultarlo
     this.pacienteSeleccionado = null;
@@ -112,6 +114,7 @@ abrirFormularioConsulta(paciente: Paciente) {
     this.consulta.Estado = 'pendiente';
   }
 }
+
 
   
 
