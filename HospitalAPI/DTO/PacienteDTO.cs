@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace HospitalApi.DTO
 {
-    public class PacienteDTO
+    public class PacienteDTO 
     {
         public int IdPaciente { get; set; }
 
@@ -94,7 +94,7 @@ namespace HospitalApi.DTO
         public DateTime FechaNacimiento { get; set; }
 
         [Required(ErrorMessage = "El estado del paciente es obligatorio.")]
-        public string Estado { get; set; }
+        public string Estado { get; set; } 
 
         [Required(ErrorMessage = "El número de seguridad social es obligatorio.")]
         [RegularExpression(@"^\d{12}$", ErrorMessage = "El número de seguridad social debe tener exactamente 12 dígitos.")]

@@ -1,5 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpErrorResponse,
+  HttpParams,
+} from '@angular/common/http';
 import { catchError, Observable, throwError } from 'rxjs';
 
 // Definición de las interfaces de las tablas
@@ -49,7 +53,7 @@ export interface HistorialAlta {
 export interface Asignacion {
   IdAsignacion: number;
   IdPaciente: number;
-  Ubicacion: string;
+  IdCama: number;
   FechaAsignacion: Date;
   FechaLiberacion: Date | null;
   AsignadoPor: number;
@@ -71,7 +75,6 @@ export interface Cama {
   IdHabitacion: number;
 }
 
-
 export interface Habitacion {
   IdHabitacion: number;
   Edificio: string;
@@ -90,10 +93,14 @@ export interface Rol {
 export class ApiService {
   private apiUrl = 'http://localhost:5076/api';
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
-  // CRUD para Pacientes  
-  getPacientes(Nombre?: string, Dni?: string, numSS?: string): Observable<Paciente[]> {
+  // CRUD para Pacientes
+  getPacientes(
+    Nombre?: string,
+    Dni?: string,
+    numSS?: string
+  ): Observable<Paciente[]> {
     let params = new HttpParams();
     if (Nombre) params = params.set('nombre', Nombre);
     if (Dni) params = params.set('dni', Dni);
@@ -129,8 +136,10 @@ export class ApiService {
     if (idPaciente) params = params.set('idPaciente', idPaciente.toString());
     if (idMedico) params = params.set('idMedico', idMedico.toString());
     if (estado) params = params.set('estado', estado);
-    if (fechaSolicitud) params = params.set('fechaSolicitud', fechaSolicitud.toISOString());
-    if (fechaConsulta) params = params.set('fechaConsulta', fechaConsulta.toISOString());
+    if (fechaSolicitud)
+      params = params.set('fechaSolicitud', fechaSolicitud.toISOString());
+    if (fechaConsulta)
+      params = params.set('fechaConsulta', fechaConsulta.toISOString());
     if (motivo) params = params.set('motivo', motivo);
 
     return this.http.get<Consulta[]>(`${this.apiUrl}/Consultas`, { params });
@@ -151,9 +160,12 @@ export class ApiService {
     return this.http.delete<void>(`${this.apiUrl}/Consultas/${id}`);
   }
 
-
   // CRUD para Ingresos
-  getIngresos(idPaciente?: number, idMedico?: number, estado?: string): Observable<Ingreso[]> {
+  getIngresos(
+    idPaciente?: number,
+    idMedico?: number,
+    estado?: string
+  ): Observable<Ingreso[]> {
     let params = new HttpParams();
     if (idPaciente) params = params.set('idPaciente', idPaciente.toString());
     if (idMedico) params = params.set('idMedico', idMedico.toString());
@@ -185,13 +197,19 @@ export class ApiService {
     let params = new HttpParams();
     if (idPaciente) params = params.set('idPaciente', idPaciente.toString());
     if (ubicacion) params = params.set('ubicacion', ubicacion);
-    if (fechaAsignacion) params = params.set('fechaAsignacion', fechaAsignacion.toISOString());
+    if (fechaAsignacion)
+      params = params.set('fechaAsignacion', fechaAsignacion.toISOString());
 
-    return this.http.get<Asignacion[]>(`${this.apiUrl}/Asignaciones`, { params });
+    return this.http.get<Asignacion[]>(`${this.apiUrl}/Asignaciones`, {
+      params,
+    });
   }
 
   addAsignacion(asignacion: Asignacion): Observable<Asignacion> {
-    return this.http.post<Asignacion>(`${this.apiUrl}/Asignaciones`, asignacion);
+    return this.http.post<Asignacion>(
+      `${this.apiUrl}/Asignaciones`,
+      asignacion
+    );
   }
 
   updateAsignacion(asignacion: Asignacion): Observable<Asignacion> {
@@ -217,13 +235,17 @@ export class ApiService {
     if (fechaAlta) params = params.set('fechaAlta', fechaAlta.toISOString());
     if (diagnostico) params = params.set('diagnostico', diagnostico);
     if (tratamiento) params = params.set('tratamiento', tratamiento);
-  
-    return this.http.get<HistorialAlta[]>(`${this.apiUrl}/HistorialAltas`, { params });
+
+    return this.http.get<HistorialAlta[]>(`${this.apiUrl}/HistorialAltas`, {
+      params,
+    });
   }
-  
 
   addHistorialAlta(historialAlta: HistorialAlta): Observable<HistorialAlta> {
-    return this.http.post<HistorialAlta>(`${this.apiUrl}/HistorialAltas`, historialAlta);
+    return this.http.post<HistorialAlta>(
+      `${this.apiUrl}/HistorialAltas`,
+      historialAlta
+    );
   }
 
   updateHistorialAlta(historialAlta: HistorialAlta): Observable<HistorialAlta> {
@@ -238,7 +260,11 @@ export class ApiService {
   }
 
   // CRUD para Usuarios
-  getUsuarios(nombre?: string, nombreUsuario?: string, idRol?: number): Observable<Usuario[]> {
+  getUsuarios(
+    nombre?: string,
+    nombreUsuario?: string,
+    idRol?: number
+  ): Observable<Usuario[]> {
     let params = new HttpParams();
     if (nombre) params = params.set('nombre', nombre);
     if (nombreUsuario) params = params.set('nombreUsuario', nombreUsuario);
@@ -261,30 +287,46 @@ export class ApiService {
     return this.http.delete<void>(`${this.apiUrl}/Usuarios/${idUsuario}`);
   }
 
-
   // CRUD para Camas
-  getCamas(ubicacion?: string, estado?: string, tipo?: string, idHabitacion?: number, idCama?: number): Observable<Cama[]> {
+  getCamas(
+    Ubicacion?: string,
+    Estado?: string,
+    Tipo?: string,
+    IdHabitacion?: number,
+    IdCama?: number
+  ): Observable<Cama[]> {
     let params = new HttpParams();
-    if (ubicacion) params = params.set('ubicacion', ubicacion);
-    if (estado) params = params.set('estado', estado);
-    if (tipo) params = params.set('tipo', tipo);
-    if (idHabitacion) params = params.set('idHabitacion', idHabitacion.toString());
-    if (idCama) params = params.set('idCama', idCama.toString());
+    if (Ubicacion) params = params.set('ubicacion', Ubicacion);
+    if (Estado) params = params.set('estado', Estado);
+    if (Tipo) params = params.set('tipo', Tipo);
+    if (IdHabitacion)
+      params = params.set('idHabitacion', IdHabitacion.toString());
+    if (IdCama) params = params.set('idCama', IdCama.toString());
     return this.http.get<Cama[]>(`${this.apiUrl}/Camas`, { params });
   }
 
   // CRUD para Habitaciones
-  getHabitaciones(Edificio?: string, Planta?: string, IdHabitacion?: number): Observable<Habitacion[]> {
+  getHabitaciones(
+    Edificio?: string,
+    Planta?: string,
+    IdHabitacion?: number
+  ): Observable<Habitacion[]> {
     let params = new HttpParams();
     if (Edificio) params = params.set('Edificio', Edificio);
     if (Planta) params = params.set('Planta', Planta);
-    if (IdHabitacion) params = params.set('IdHabitacion', IdHabitacion.toString());
+    if (IdHabitacion)
+      params = params.set('IdHabitacion', IdHabitacion.toString());
 
-    return this.http.get<Habitacion[]>(`${this.apiUrl}/Habitaciones`, { params });
+    return this.http.get<Habitacion[]>(`${this.apiUrl}/Habitaciones`, {
+      params,
+    });
   }
 
   addHabitacion(Habitacion: Habitacion): Observable<Habitacion> {
-    return this.http.post<Habitacion>(`${this.apiUrl}/Habitaciones`, Habitacion);
+    return this.http.post<Habitacion>(
+      `${this.apiUrl}/Habitaciones`,
+      Habitacion
+    );
   }
 
   updateHabitacion(Habitacion: Habitacion): Observable<Habitacion> {
@@ -295,7 +337,9 @@ export class ApiService {
   }
 
   deleteHabitacion(IdHabitacion: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/Habitaciones/${IdHabitacion}`);
+    return this.http.delete<void>(
+      `${this.apiUrl}/Habitaciones/${IdHabitacion}`
+    );
   }
 
   // CRUD para Roles

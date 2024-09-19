@@ -22,22 +22,13 @@ namespace HospitalApi.Controllers
         /// <summary>
         /// Obtiene una lista de asignaciones basada en los parámetros de búsqueda opcionales.
         /// </summary>
-        /// <param name="id_paciente">El identificador del paciente a buscar. Este parámetro es opcional.</param>
-        /// <param name="ubicacion">La ubicación de la asignación a buscar. Este parámetro es opcional.</param>
-        /// <param name="fecha_asignacion">La fecha de asignación a buscar. Este parámetro es opcional.</param>
-        /// <param name="fecha_liberacion">La fecha de liberación a buscar. Este parámetro es opcional.</param>
-        /// <param name="asignado_por">El identificador del usuario que realizó la asignación. Este parámetro es opcional.</param>
-        /// <returns>Una lista de objetos <see cref="AsignacionDTO"/> que representan las asignaciones encontradas.</returns>
-        /// <response code="200">Devuelve una lista de asignaciones que coinciden con los parámetros de búsqueda.</response>
-        /// <response code="404">Si no se encuentran asignaciones con los criterios proporcionados.</response>
-        /// <response code="500">Si ocurre un error en el servidor al procesar la solicitud.</response>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<AsignacionDTO>>> GetAsignaciones([FromQuery] int? id_paciente, [FromQuery] string? ubicacion, [FromQuery] DateTime? fecha_asignacion, [FromQuery] DateTime? fecha_liberacion, [FromQuery] int? asignado_por)
+        public async Task<ActionResult<IEnumerable<AsignacionDTO>>> GetAsignaciones([FromQuery] int? id_paciente, [FromQuery] int? id_cama, [FromQuery] DateTime? fecha_asignacion, [FromQuery] DateTime? fecha_liberacion, [FromQuery] int? asignado_por)
         {
             IQueryable<Asignacion> query = _context.Asignaciones;
 
             if (id_paciente.HasValue) query = query.Where(a => a.IdPaciente == id_paciente);
-            if (!string.IsNullOrEmpty(ubicacion)) query = query.Where(a => a.Ubicacion.ToLower().Contains(ubicacion.ToLower()));
+            if (id_cama.HasValue) query = query.Where(a => a.IdCama == id_cama); // Cambiado a IdCama
             if (fecha_asignacion.HasValue) query = query.Where(a => a.FechaAsignacion.Date == fecha_asignacion.Value.Date);
             if (fecha_liberacion.HasValue) query = query.Where(a => a.FechaLiberacion.Value.Date == fecha_liberacion.Value.Date);
             if (asignado_por.HasValue) query = query.Where(a => a.AsignadoPor == asignado_por);
@@ -56,11 +47,6 @@ namespace HospitalApi.Controllers
         /// <summary>
         /// Obtiene una asignación específica por su ID.
         /// </summary>
-        /// <param name="id">El ID de la asignación que se desea obtener.</param>
-        /// <returns>Un objeto <see cref="AsignacionDTO"/> que representa la asignación solicitada.</returns>
-        /// <response code="200">Devuelve la asignación solicitada.</response>
-        /// <response code="404">Si no se encuentra una asignación con el ID proporcionado.</response>
-        /// <response code="500">Si ocurre un error en el servidor al procesar la solicitud.</response>
         [HttpGet("{id}")]
         public async Task<ActionResult<AsignacionDTO>> GetAsignacion(int id)
         {
@@ -76,12 +62,6 @@ namespace HospitalApi.Controllers
         /// <summary>
         /// Crea una nueva asignación en la base de datos.
         /// </summary>
-        /// <param name="asignacionDTO">El objeto <see cref="AsignacionCreateDTO"/> que contiene los datos de la asignación a crear.</param>
-        /// <returns>Un objeto <see cref="AsignacionDTO"/> que representa la asignación recién creada.</returns>
-        /// <response code="201">La asignación ha sido creada exitosamente.</response>
-        /// <response code="400">Si los datos proporcionados no son válidos.</response>
-        /// <response code="409">Si el usuario o la cama especificada no existen.</response>
-        /// <response code="500">Si ocurre un error en el servidor al procesar la solicitud.</response>
         [HttpPost]
         public async Task<ActionResult<AsignacionDTO>> CreateAsignacion(AsignacionCreateDTO asignacionDTO)
         {
@@ -90,7 +70,7 @@ namespace HospitalApi.Controllers
                 return Conflict("El usuario proporcionado no existe. Por favor, selecciona un usuario válido para la asignación.");
             }
 
-            if (!await _context.Camas.AnyAsync(c => c.Ubicacion == asignacionDTO.Ubicacion))
+            if (!await _context.Camas.AnyAsync(c => c.IdCama == asignacionDTO.IdCama)) // Cambiado a IdCama
             {
                 return BadRequest("La cama especificada no existe.");
             }
@@ -98,8 +78,8 @@ namespace HospitalApi.Controllers
             var asignacion = _mapper.Map<Asignacion>(asignacionDTO);
 
             // Actualizar el estado de la cama a "Ocupada"
-            var cama = await _context.Camas.FindAsync(asignacion.Ubicacion);
-            cama.Estado = (EstadoCama)Enum.Parse(typeof(EstadoCama), "Ocupada");
+            var cama = await _context.Camas.FindAsync(asignacion.IdCama);
+            cama.Estado = EstadoCama.NoDisponible;
             _context.Camas.Update(cama);
 
             _context.Asignaciones.Add(asignacion);
@@ -112,13 +92,6 @@ namespace HospitalApi.Controllers
         /// <summary>
         /// Actualiza una asignación existente en la base de datos.
         /// </summary>
-        /// <param name="id">El ID de la asignación que se va a actualizar.</param>
-        /// <param name="asignacionDTO">El objeto <see cref="AsignacionUpdateDTO"/> que contiene los datos actualizados de la asignación.</param>
-        /// <returns>Un código de estado HTTP que indica el resultado de la operación de actualización.</returns>
-        /// <response code="204">Indica que la actualización fue exitosa.</response>
-        /// <response code="400">Si el ID proporcionado no coincide con el ID de la asignación.</response>
-        /// <response code="404">Si no se encuentra la asignación con el ID proporcionado.</response>
-        /// <response code="500">Si ocurre un error en el servidor al procesar la solicitud.</response>
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateAsignacion(int id, AsignacionUpdateDTO asignacionDTO)
         {
@@ -133,7 +106,7 @@ namespace HospitalApi.Controllers
                 return Conflict("El usuario proporcionado para esta asignación no existe.");
             }
 
-            if (!await _context.Camas.AnyAsync(c => c.Ubicacion == asignacionDTO.Ubicacion))
+            if (!await _context.Camas.AnyAsync(c => c.IdCama == asignacionDTO.IdCama)) // Cambiado a IdCama
             {
                 return BadRequest("La cama especificada no existe.");
             }
@@ -162,11 +135,6 @@ namespace HospitalApi.Controllers
         /// <summary>
         /// Elimina una asignación específica de la base de datos por su ID.
         /// </summary>
-        /// <param name="id">El ID de la asignación que se desea eliminar.</param>
-        /// <returns>Un código de estado HTTP que indica el resultado de la operación de eliminación.</returns>
-        /// <response code="204">Indica que la eliminación fue exitosa.</response>
-        /// <response code="404">Si no se encuentra la asignación con el ID proporcionado.</response>
-        /// <response code="500">Si ocurre un error en el servidor al procesar la solicitud.</response>
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAsignacion(int id)
         {
@@ -176,10 +144,10 @@ namespace HospitalApi.Controllers
                 return NotFound("No se encontró la asignación especificada.");
             }
 
-            var cama = await _context.Camas.FindAsync(asignacion.Ubicacion);
+            var cama = await _context.Camas.FindAsync(asignacion.IdCama); // Cambiado a IdCama
             if (cama != null)
             {
-                cama.Estado = (EstadoCama)Enum.Parse(typeof(EstadoCama), "Disponible");
+                cama.Estado = EstadoCama.Disponible;
                 _context.Camas.Update(cama);
             }
 

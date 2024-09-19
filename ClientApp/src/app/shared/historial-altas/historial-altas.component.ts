@@ -17,7 +17,7 @@ export class HistorialAltasComponent implements OnInit {
   historialAltaParaActualizar: HistorialAlta | null = null;
 
   paginaActual: number = 1;
-  historialAltasPorPagina: number = 8;
+  historialAltasPorPagina: number = 5;
   totalPaginas: number = 0;
   columnaOrdenada: keyof HistorialAlta | null = null;
   orden: 'asc' | 'desc' = 'asc';
@@ -101,14 +101,35 @@ export class HistorialAltasComponent implements OnInit {
       this.paginaActual = nuevaPagina;
       this.actualizarHistorialAltasPaginados();
     }
+  if(this.historialAltasPaginadas.length === 0 && this.paginaActual > 1){
+    this.paginaActual--;
+    this.obtenerHistorialAltas();
+  }
   }
 
   paginaAnterior(): void {
-    this.cambiarPagina(-1);
+    if (this.paginaActual > 1) {
+      this.paginaActual--;
+      this.obtenerHistorialAltas();
+    }
   }
+  // Método para ir a la primera página
+irAPrimeraPagina(): void {
+  this.paginaActual = 1;
+  this.obtenerHistorialAltas();
+}
+
+// Método para ir a la última página
+irALaUltimaPagina(): void {
+  this.paginaActual = this.totalPaginas;
+  this.obtenerHistorialAltas();
+}
 
   paginaSiguiente(): void {
-    this.cambiarPagina(1);
+    if (this.paginaActual < this.totalPaginas) {
+      this.paginaActual++;
+      this.obtenerHistorialAltas();
+    }
   }
 
   agregarHistorialAlta(): void {

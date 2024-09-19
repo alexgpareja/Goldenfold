@@ -34,7 +34,7 @@ namespace HospitalApi
         [Column("estado")]
         public EstadoIngreso Estado { get; set; } = EstadoIngreso.Pendiente;
 
-        [ForeignKey("Asignacion")]
+        [ForeignKey("Asignacion")] 
         [Column("id_asignacion")]
         public int? IdAsignacion { get; set; }
 

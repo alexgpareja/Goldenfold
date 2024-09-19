@@ -14,7 +14,13 @@ import { HttpBackend } from '@angular/common/http';
 export class CamasComponent implements OnInit {
   camas: Cama[] = [];
   camasFiltradas: Cama[] = [];
-  nuevaCama: Cama = {IdCama: 0, Ubicacion: '', Estado: '', Tipo: '' , IdHabitacion: 0};
+  
+  nuevaCama: Cama = 
+  {IdCama: 0, 
+    Ubicacion: '', 
+    Estado: '', 
+    Tipo: '' , 
+    IdHabitacion: 0};
   camaParaActualizar: Cama | null = null;
 
   //variables para el formulario
@@ -37,6 +43,7 @@ export class CamasComponent implements OnInit {
   obtenerCamas(): void {
     this.apiService.getCamas().subscribe({
       next: (data: Cama[]) => {
+        console.log(data);
         this.camas = data;
         this.camasFiltradas = [...this.camas];
       },
@@ -75,26 +82,6 @@ export class CamasComponent implements OnInit {
     const selectElement = event.target as HTMLSelectElement;
     this.filtroTipo = selectElement.value;
     this.aplicarFiltros();
-  }
-
-  abrirFormularioAgregarCama(): void {
-    this.mostrarFormularioAgregarCama = true;
-    this.mensajeExito = null; 
-  }
-  abrirFormularioActualizarCama(cama: Cama): void {
-    this.camaParaActualizar = { ...cama }; 
-    this.mostrarFormularioActualizarCama = true;
-    this.mensajeExito = null;
-  }
- 
-  cerrarFormularioAgregarCama(): void {
-    this.mostrarFormularioAgregarCama = false;
-    this.mensajeExito = null;
-  }
-
-  cerrarFormularioActualizarCama(): void {
-    this.mostrarFormularioAgregarCama = false;
-    this.mensajeExito = null;
   }
 }
 

@@ -12,25 +12,11 @@ interface IngresoConCamas extends Ingreso {
   templateUrl: './asignar-cama.component.html',
   styleUrls: ['./asignar-cama.component.css']
 })
-export class AsignarCamaComponent implements OnInit {
+export class AsignarCamaComponent  {
   solicitudesPendientes: IngresoConCamas[] = []; // Usamos la interfaz extendida
   errorMensaje: string | null = null;
 
   constructor(private apiService: ApiService) { }
 
-  ngOnInit() {
-    this.obtenerSolicitudesPendientes(); // Cargar solicitudes al iniciar
+ 
   }
-
-  // Obtener todas las solicitudes de ingreso con estado "pendiente"
-  obtenerSolicitudesPendientes() {
-    this.apiService.getIngresos(undefined, undefined, 'pendiente').subscribe({
-      next: (ingresos: IngresoConCamas[]) => {
-        this.solicitudesPendientes = ingresos;
-      },
-      error: (error: HttpErrorResponse) => {
-        this.errorMensaje = 'Error al cargar las solicitudes de ingreso pendientes.';
-      }
-    });
-  }
-}
