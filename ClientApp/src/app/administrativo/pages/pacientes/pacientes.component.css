@@ -46,7 +46,7 @@ input[type="text"] {
 .table-container {
   width: 100%;
   overflow-x: auto; /* Permite el desplazamiento horizontal si es necesario */
-  background-color: rgb(228, 224, 224);
+  background-color: rgb(243, 240, 240);
   padding: 10px;
   margin: 5px;
   border-radius: 7px;
@@ -78,7 +78,7 @@ input[type="text"] {
 }
 
 .table td {
-  background-color: rgb(228, 224, 224);
+  background-color: rgb(248, 233, 233);
 }
 
 .table td button {
@@ -365,7 +365,7 @@ button[type="submit"]:hover {
   border-radius: 8px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
   width: 100%;
-  max-width: 500px;
+  max-width: 800px;
   padding: 15px;
   position: relative;
   display: flex;
