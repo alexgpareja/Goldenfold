@@ -1,39 +1,70 @@
 .roles-section {
+  font-family: Arial, sans-serif;
   margin: 20px;
 }
 
-/* Añadir un contenedor para alinear en una sola fila */
-.search-container {
-  display: flex;
-  align-items: center;
-  gap: 10px; /* Espacio entre el select y el input */
-  
-
+.search-container form {
+  display: inline-block; /* Alinea los elementos del formulario en una fila */
 }
 
-/* Estilo para el searchbox con desplegable al lado */
-.search-container select {
-  width: 150px;
-  padding: 5px;
-  font-size: 14px;
-}
+.search-container label,
+.search-container select,
 .search-container input {
-  flex-grow: 1;
+  display: inline-block; /* Asegura que los elementos estén alineados horizontalmente */
+  margin-right: 10px; /* Espacio entre los elementos */
+}
+
+.search-container select {
+  width: 150px; /* Ancho para el selector */
+  padding: 5px;
+}
+
+.search-container input {
+  width: 200px; /* Ancho para el campo de texto */
+  padding: 5px;
+}
+.search-group {
+  display: flex;
+  align-items: center; /* Alinea verticalmente los elementos */
+  border: 1px solid #ccc; /* Borde para el recuadro */
+  border-radius: 5px; /* Bordes redondeados */
+  padding: 5px;
+  gap: 5px; /* Espacio entre el select y el input */
+  background-color: white; /* Color de fondo */
+}
+.select {
+  border-right: 1px solid black;
+}
+.search-group select,
+.search-group input {
+  border: none; /* Elimina los bordes de los elementos internos */
+  background-color: transparent; /* Hace que el fondo sea transparente */
   padding: 5px;
   font-size: 14px;
+}
+
+.search-group select {
+  width: 150px; /* Ancho fijo del select */
+}
+
+.search-group input {
+  flex-grow: 1; /* Hace que el input ocupe el espacio restante */
 }
 
 /* Contenedor para la tabla */
 .table-container,
 .form-container {
   background-color: rgb(228, 224, 224);
-  padding: 20px;
-  margin: 20px;
-  border-radius: 10px;
+  padding: 10px;
+  margin: 5px;
+  border-radius: 7px;
   box-shadow: 0 0 10px rgba(8, 8, 8, 0.1);
   margin-bottom: 20px;
+  padding-bottom: 2.5px;
 }
-
+.form-container {
+  padding-bottom: 10px;
+}
 .table {
   width: 100%;
   border-collapse: collapse;
@@ -44,14 +75,14 @@
 th,
 td {
   border: 1px solid #ccc;
-  border-radius: 5px;
+  white-space: nowrap;
 }
 
 th,
 td {
-  padding: 10px;
-  text-align: left;
-  border-radius: 5px;
+  padding: 6px 8px;
+  border: 1px solid #ccc;
+  overflow: hidden;
 }
 
 th {
