@@ -95,32 +95,50 @@ namespace HospitalApi.Controllers
         /// <response code="400">Si los datos proporcionados no son válidos.</response>
         /// <response code="500">Si se produce un error en el servidor al procesar la solicitud.</response>
         [HttpPost]
-        public async Task<ActionResult<IngresoDTO>> CreateIngreso(IngresoCreateDTO ingresoDTO)
-        {
-            // Verificar si el paciente y el médico existen
-            if (!await _context.Pacientes.AnyAsync(p => p.IdPaciente == ingresoDTO.IdPaciente))
-            {
-                return BadRequest("El paciente especificado no existe.");
-            }
+public async Task<ActionResult<IngresoDTO>> CreateIngreso(IngresoCreateDTO ingresoDTO)
+{
+    // Verificar si el paciente y el médico existen
+    if (!await _context.Pacientes.AnyAsync(p => p.IdPaciente == ingresoDTO.IdPaciente))
+    {
+        return BadRequest("El paciente especificado no existe.");
+    }
 
-            if (!await _context.Usuarios.AnyAsync(u => u.IdUsuario == ingresoDTO.IdMedico))
-            {
-                return BadRequest("El médico especificado no existe.");
-            }
+    if (!await _context.Usuarios.AnyAsync(u => u.IdUsuario == ingresoDTO.IdMedico))
+    {
+        return BadRequest("El médico especificado no existe.");
+    }
 
-            // Mapea desde DTO a modelo de entidad
-            var ingreso = _mapper.Map<Ingreso>(ingresoDTO);
+    // Mapea desde DTO a modelo de entidad
+    var ingreso = _mapper.Map<Ingreso>(ingresoDTO);
 
-            // Guardar el ingreso en la base de datos
-            _context.Ingresos.Add(ingreso);
-            await _context.SaveChangesAsync();
+    // Guardar el ingreso en la base de datos
+    _context.Ingresos.Add(ingreso);
+    await _context.SaveChangesAsync();
 
-            // Mapea la entidad de vuelta a DTO para la respuesta
-            var ingresoDTOResult = _mapper.Map<IngresoDTO>(ingreso);
+    // Buscar la consulta relacionada con el paciente
+    var consulta = await _context.Consultas
+        .Where(c => c.IdPaciente == ingresoDTO.IdPaciente && c.Estado == EstadoConsulta.pendiente)
+        .FirstOrDefaultAsync();
 
-            // Devuelve la respuesta
-            return CreatedAtAction(nameof(GetIngreso), new { id = ingresoDTOResult.IdIngreso }, ingresoDTOResult);
-        }
+    if (consulta == null)
+    {
+        return NotFound("No se encontró una consulta pendiente para este paciente.");
+    }
+
+    // Cambiar el estado de la consulta a "completada" y asignar la fecha de consulta
+    consulta.Estado = EstadoConsulta.completada;
+    consulta.FechaConsulta = DateTime.Now;
+
+    // Guardar los cambios de la consulta
+    _context.Consultas.Update(consulta);
+    await _context.SaveChangesAsync();
+
+    // Mapea la entidad de vuelta a DTO para la respuesta
+    var ingresoDTOResult = _mapper.Map<IngresoDTO>(ingreso);
+
+    // Devuelve la respuesta
+    return CreatedAtAction(nameof(GetIngreso), new { id = ingresoDTOResult.IdIngreso }, ingresoDTOResult);
+}
 
         /// <summary>
         /// Actualiza un ingreso existente en la base de datos.

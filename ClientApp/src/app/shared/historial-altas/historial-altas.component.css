@@ -113,3 +113,44 @@ button[type="submit"]:hover {
   font-size: 14px;
   color: #333;
 }
+
+
+.filter-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 500px;
+  height: 50px;
+  font-size: 0.8rem;
+  padding-left: 12px;
+
+}
+
+.filters-container {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-items: space-evenly;
+  padding: 5px;
+
+}
+
+.form-container select {
+  height: 40px;
+}
+select {
+  width: 100px;
+  height: 30px;
+}
+
+select label {
+  width: 300px;
+}
+.search-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 200px;
+  height: 30px;
+  font-size: 0.9rem;
+}

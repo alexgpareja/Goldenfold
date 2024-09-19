@@ -1,11 +1,20 @@
 <div class="historial-altas-section">
   <h2>Historial de Altas</h2>
 
-  <!-- Filtro -->
-  <div class="filter-container">
-    <input type="text" placeholder="Filtrar..." [(ngModel)]="filtro" (ngModelChange)="aplicarFiltro($event)">
-  </div>
 
+  <div class="filters-container">
+    <div class="search-container">
+      <label for="searchNumeroSS">Buscar por número SS:</label>
+      <input placeholder="Número SS" name="searchNumeroSS" type="text" id="searchUbicacion" (input)="filtrarPorNumeroSS($event)">
+    </div>
+    
+    <div class="filter-container">
+      <label for="filterFechaAlta">Filtrar por Fecha Alta:</label>
+      <input type="date" id="filterFechaAlta" [(ngModel)]="fechaAltaFiltro" (change)="filtrarPorFecha()" />
+    </div>
+    
+  </div>
+  
   <div class="table-container">
     <table class="table">
       <thead>

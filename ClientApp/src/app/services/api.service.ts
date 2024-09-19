@@ -351,6 +351,10 @@ export class ApiService {
     return this.http.get<Rol[]>(`${this.apiUrl}/Roles`, { params });
   }
 
+  getRolById(IdRol: number): Observable<Rol> {
+    return this.http.get<Rol>(`${this.apiUrl}/Roles/${IdRol}`);
+  }
+
   addRol(Rol: Rol): Observable<Rol> {
     return this.http.post<Rol>(`${this.apiUrl}/Roles`, Rol);
   }
