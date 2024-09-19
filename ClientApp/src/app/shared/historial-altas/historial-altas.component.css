@@ -79,30 +79,37 @@ button[type="submit"] {
 button[type="submit"]:hover {
   background-color: #0056a3;
 }
-.pagination {
+.paginacion {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 20px;
-  gap: 10px;
+  margin: 20px 0;
+  gap: 5px;
 }
 
-.pagination button {
+.paginacion button {
   padding: 8px 16px;
   border: none;
-  border-radius: 4px;
-  background-color: #0078d4;
-  color: white;
+  border-radius: 3px;
+  background-color: #007bff;
+  color: #f0f0f0;
+  font-size: 14px;
   cursor: pointer;
-  font-size: 14px;
+  transition: background-color 0.2s, color 0.2s;
 }
 
-.pagination button:disabled {
-  background-color: #cccccc;
+.paginacion button:disabled {
   cursor: not-allowed;
+  background-color: #e0e0e0;
+  color: #999;
 }
 
-.pagination span {
+.paginacion button:not(:disabled):hover {
+  background-color: #0a4c93;
+  color: #fff;
+}
+
+.paginacion span {
   font-size: 14px;
-  font-weight: bold;
+  color: #333;
 }
