@@ -14,14 +14,18 @@ import { HttpBackend } from '@angular/common/http';
 export class CamasComponent implements OnInit {
   camas: Cama[] = [];
   camasFiltradas: Cama[] = [];
-  
-  nuevaCama: Cama = 
-  {IdCama: 0, 
-    Ubicacion: '', 
-    Estado: '', 
-    Tipo: '' , 
+
+  nuevaCama: Cama =
+  {IdCama: 0,
+    Ubicacion: '',
+    Estado: '',
+    Tipo: '' ,
     IdHabitacion: 0};
   camaParaActualizar: Cama | null = null;
+
+  paginaActual: number = 1;
+  camasPorPagina: number = 7;
+  totalPaginas: number = 0;
 
   //variables para el formulario
   mostrarFormularioAgregarCama: boolean = false;
@@ -64,6 +68,7 @@ export class CamasComponent implements OnInit {
 
       return coincideUbicacion && coincideEstado && coincideTipo;
     });
+    
   }
 
   filtrarPorUbicacion(event: Event): void {
@@ -83,5 +88,6 @@ export class CamasComponent implements OnInit {
     this.filtroTipo = selectElement.value;
     this.aplicarFiltros();
   }
+
 }
 

@@ -1,14 +1,18 @@
 .camas-section {
     margin: 20px;
+    font-family: Arial, sans-serif;
+
   }
-  
+
   /* Contenedor para la tabla */
   .table-container, .form-container {
     background-color: rgb(228, 224, 224);
-    padding: 20px;
-    border-radius: 10px;
+    padding: 10px;
+    margin: 5px;
+    border-radius: 7px;
     box-shadow: 0 0 10px rgba(8, 8, 8, 0.1);
-    margin-bottom: 20px;
+    margin-bottom: 0px;
+    padding-bottom: 1.5px;
   }
   .form-container {
     display: flex;
@@ -16,9 +20,9 @@
     gap: 10px;
     width: 100%;
   }
-  
-  .form-container input, 
-.form-container select, 
+
+  .form-container input,
+.form-container select,
 .form-container button {
   width: 100%;
   padding: 8px;
@@ -32,23 +36,24 @@
     border-collapse: collapse;
     border-radius: 5px;
   }
-  
+
   .table, th, td {
     border: 1px solid #ccc;
     border-radius: 5px;
   }
-  
+
   th, td {
     padding: 10px;
     text-align: left;
     border-radius: 5px;
+    font-size: 14px;
   }
-  
+
   th {
     background-color: #0078d4;
     color: white;
   }
-  
+
   button {
     margin-right: 5px;
     padding: 5px 10px;
@@ -56,24 +61,24 @@
     border-radius: 3px;
     cursor: pointer;
   }
-  
+
   button:hover {
     background-color: #0056a3;
     color: white;
   }
-  
+
   form {
     display: flex;
     flex-direction: column;
     gap: 5px;
     margin-top: 20px;
   }
-  
+
   label {
     font-weight: bold;
     margin-bottom: 5px;
   }
-  
+
   input[type="number"],
   input[type="date"],
   input[type="text"] {
@@ -83,17 +88,17 @@
     width: 100%;
     box-sizing: border-box;
   }
-  
+
   button[type="submit"] {
     align-self: flex-start;
     background-color: #0078d4;
     color: white;
   }
-  
+
   button[type="submit"]:hover {
     background-color: #0056a3;
   }
-  
+
   .filter-container {
     display: flex;
     align-items: center;
