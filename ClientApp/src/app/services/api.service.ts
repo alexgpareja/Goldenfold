@@ -296,12 +296,12 @@ export class ApiService {
     IdCama?: number
   ): Observable<Cama[]> {
     let params = new HttpParams();
-    if (ubicacion) params = params.set('ubicacion', ubicacion);
-    if (estado) params = params.set('estado', estado);
-    if (tipo) params = params.set('tipo', tipo);
-    if (idHabitacion)
-      params = params.set('idHabitacion', idHabitacion.toString());
-    if (idCama) params = params.set('idCama', idCama.toString());
+    if (Ubicacion) params = params.set('ubicacion', Ubicacion);
+    if (Estado) params = params.set('estado', Estado);
+    if (Tipo) params = params.set('tipo', Tipo);
+    if (IdHabitacion)
+      params = params.set('idHabitacion', IdHabitacion.toString());
+    if (IdCama) params = params.set('idCama', IdCama.toString());
     return this.http.get<Cama[]>(`${this.apiUrl}/Camas`, { params });
   }
 
