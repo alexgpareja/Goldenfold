@@ -17,6 +17,9 @@ namespace HospitalApi.DTO
 
         [Required(ErrorMessage = "El tipo de cama es obligatorio.")]
         public string Tipo { get; set; }
+
+        [Required]
+         public int IdHabitacion { get; set; }
     }
 
     public class CamaCreateDTO

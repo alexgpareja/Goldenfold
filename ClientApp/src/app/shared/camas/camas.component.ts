@@ -14,6 +14,7 @@ import { HttpBackend } from '@angular/common/http';
 export class CamasComponent implements OnInit {
   camas: Cama[] = [];
   camasFiltradas: Cama[] = [];
+  
   nuevaCama: Cama = 
   {IdCama: 0, 
     Ubicacion: '', 
@@ -42,6 +43,7 @@ export class CamasComponent implements OnInit {
   obtenerCamas(): void {
     this.apiService.getCamas().subscribe({
       next: (data: Cama[]) => {
+        console.log(data);
         this.camas = data;
         this.camasFiltradas = [...this.camas];
       },
