@@ -1,13 +1,17 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SharedRoutingModule } from './shared-routing.module';
+import { SearchBoxComponent } from './search-box/search-box.component';
 
 @NgModule({
   imports: [
     CommonModule,
+    ReactiveFormsModule,
     FormsModule,
-    SharedRoutingModule
-  ]
+    SharedRoutingModule,
+  ],
+  declarations: [SearchBoxComponent],
+  exports: [SearchBoxComponent],
 })
-export class SharedModule { }
+export class SharedModule {}

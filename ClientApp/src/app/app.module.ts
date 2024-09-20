@@ -24,7 +24,8 @@ import { ReactiveFormsModule } from '@angular/forms';
     multi: true,
     deps: [KeycloakService]
   }
-    */],
-  bootstrap: [AppComponent]
+    */
+  ],
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

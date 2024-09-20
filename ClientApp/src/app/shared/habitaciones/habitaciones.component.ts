@@ -15,10 +15,6 @@ export class HabitacionesComponent implements OnInit {
   nuevaHabitacion: Habitacion = { IdHabitacion: 0, Edificio: '', Planta: '', NumeroHabitacion: '', TipoCama: ''  };
   habitacionParaActualizar: Habitacion | null = null;
 
-  paginaActual: number = 1;
-  habitacionesPorPagina: number = 5;
-  totalPaginas: number = 0;
-
   constructor(private apiService: ApiService) {}
 
   ngOnInit(): void {
@@ -75,7 +71,6 @@ export class HabitacionesComponent implements OnInit {
     this.apiService.deleteHabitacion(id).subscribe({
       next: () => {
         this.habitaciones = this.habitaciones.filter(h => h.IdHabitacion !== id);
-        this.totalPaginas = Math.ceil(this.habitaciones.length / this.habitacionesPorPagina); // Recalcular total de páginas
       },
       error: (error: any) => {
         console.error('Error al borrar la habitación', error);
