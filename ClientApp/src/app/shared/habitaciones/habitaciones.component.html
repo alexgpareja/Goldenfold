@@ -54,11 +54,23 @@
     <form (ngSubmit)="agregarHabitacion()">
       <label for="edificio">Edificio:</label>
       <input type="text" id="edificio" [(ngModel)]="nuevaHabitacion.Edificio" name="edificio">
+      
       <label for="planta">Planta:</label>
       <input type="text" id="planta" [(ngModel)]="nuevaHabitacion.Planta" name="planta">
+      
       <label for="numeroHabitacion">Número de Habitación:</label>
       <input type="text" id="numeroHabitacion" [(ngModel)]="nuevaHabitacion.NumeroHabitacion" name="numeroHabitacion">
+
+      <!-- Selección de Tipo de Cama -->
+      <label for="tipoCama">Tipo de Cama:</label>
+      <select id="tipoCama" [(ngModel)]="nuevaHabitacion.TipoCama" name="tipoCama" required>
+        <option value="General">General</option>
+        <option value="UCI">UCI</option>
+        <option value="Postoperatorio">Postoperatorio</option>
+      </select>
+
       <button type="submit">Agregar</button>
     </form>
-  </div>
+</div>
+
 </div>

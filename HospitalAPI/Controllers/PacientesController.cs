@@ -36,19 +36,45 @@ namespace HospitalApi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<PacienteDTO>>> GetPacientes([FromQuery] string? nombre, [FromQuery] string? numSS)
         {
+            // Empieza creando la consulta básica
             IQueryable<Paciente> query = _context.Pacientes;
-            if (!string.IsNullOrEmpty(nombre)) query = query.Where(p => p.Nombre.ToLower().Contains(nombre.ToLower()));
-            if (!string.IsNullOrEmpty(numSS)) query = query.Where(p => p.SeguridadSocial.Contains(numSS));
 
-            var pacientes = await query.ToListAsync();
-            if (!pacientes.Any())
+            // Limpiar entradas eliminando espacios adicionales
+            nombre = nombre?.Trim();
+            numSS = numSS?.Trim();
+
+            // Aplica los filtros si están presentes
+            if (!string.IsNullOrEmpty(nombre) && !string.IsNullOrEmpty(numSS))
             {
-                return NotFound("No se han encontrado pacientes que coincidan con los criterios de búsqueda proporcionados.");
+                // Buscar pacientes que coincidan con ambos criterios (nombre y número de seguridad social)
+                query = query.Where(p => p.Nombre.ToLower().Contains(nombre.ToLower()) && p.SeguridadSocial.Trim() == numSS);
+            }
+            else if (!string.IsNullOrEmpty(nombre))
+            {
+                // Si solo el nombre está presente
+                query = query.Where(p => p.Nombre.ToLower().Contains(nombre.ToLower()));
+            }
+            else if (!string.IsNullOrEmpty(numSS))
+            {
+                // Si solo el número de seguridad social está presente
+                query = query.Where(p => p.SeguridadSocial.Trim() == numSS);
             }
 
+            // Ejecuta la consulta y obtén los resultados
+            var pacientes = await query.ToListAsync();
+
+            // Verifica si se encontraron resultados
+            if (!pacientes.Any())
+            {
+                return NotFound("No se han encontrado pacientes que coincidan con el nombre y número de seguridad social proporcionados.");
+            }
+
+            // Mapea los pacientes a DTOs y devuélvelos
             var pacientesDTO = _mapper.Map<IEnumerable<PacienteDTO>>(pacientes);
             return Ok(pacientesDTO);
         }
+
+
 
         /// <summary>
         /// Obtiene un paciente específico por su ID.

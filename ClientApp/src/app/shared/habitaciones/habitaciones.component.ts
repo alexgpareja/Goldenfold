@@ -12,8 +12,12 @@ import { ApiService, Habitacion } from '../../services/api.service';
 })
 export class HabitacionesComponent implements OnInit {
   habitaciones: Habitacion[] = [];
+<<<<<<< HEAD
   habitacionesFiltradas: Habitacion[] = [];
   nuevaHabitacion: Habitacion = { IdHabitacion: 0, Edificio: '', Planta: '', NumeroHabitacion: '' };
+=======
+  nuevaHabitacion: Habitacion = { IdHabitacion: 0, Edificio: '', Planta: '', NumeroHabitacion: '', TipoCama: ''  };
+>>>>>>> 114d952f399ac69b48260d4d5011b0b3e6a4b20c
   habitacionParaActualizar: Habitacion | null = null;
 
   paginaActual: number = 1;
@@ -33,7 +37,8 @@ export class HabitacionesComponent implements OnInit {
           IdHabitacion: item.IdHabitacion,
           Edificio: item.Edificio,
           Planta: item.Planta,
-          NumeroHabitacion: item.NumeroHabitacion
+          NumeroHabitacion: item.NumeroHabitacion,
+          TipoCama: item.TipoCama
         }));
         // Calcular total de páginas
         this.totalPaginas = Math.ceil(this.habitaciones.length / this.habitacionesPorPagina);
@@ -49,9 +54,13 @@ export class HabitacionesComponent implements OnInit {
     this.apiService.addHabitacion(this.nuevaHabitacion).subscribe({
       next: (nuevaHabitacion: Habitacion) => {
         this.habitaciones.push(nuevaHabitacion);
+<<<<<<< HEAD
         this.nuevaHabitacion = { IdHabitacion: 0, Edificio: '', Planta: '', NumeroHabitacion: '' };
         this.totalPaginas = Math.ceil(this.habitaciones.length / this.habitacionesPorPagina); // Recalcular total de páginas
         this.filtrarHabitaciones(); // Refrescar la vista paginada
+=======
+        this.nuevaHabitacion = { IdHabitacion: 0, Edificio: '', Planta: '', NumeroHabitacion: '', TipoCama: "" };
+>>>>>>> 114d952f399ac69b48260d4d5011b0b3e6a4b20c
       },
       error: (error: any) => {
         console.error('Error al agregar la habitación', error);
