@@ -1,15 +1,15 @@
 <div class="historial-altas-section">
   <h2>Historial de Altas</h2>
 
-
+  <main>
   <div class="filters-container">
     <div class="search-container">
-      <label for="searchNumeroSS">Buscar por número SS:</label>
-      <input placeholder="Número SS" name="searchNumeroSS" type="text" id="searchUbicacion" (input)="filtrarPorNumeroSS($event)">
+      <label for="searchNumeroSS">NSS:</label>
+      <input placeholder="NSS" name="searchNumeroSS" type="text" id="searchUbicacion" (input)="filtrarPorNumeroSS($event)">
     </div>
     
     <div class="filter-container">
-      <label for="filterFechaAlta">Filtrar por Fecha Alta:</label>
+      <label for="filterFechaAlta">Fecha Alta:</label>
       <input type="date" id="filterFechaAlta" [(ngModel)]="fechaAltaFiltro" (change)="filtrarPorFecha()" />
     </div>
     
@@ -87,4 +87,5 @@
       <button type="submit">Agregar</button>
     </form>
   </div>
+</main>
 </div>

@@ -10,6 +10,7 @@
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(8, 8, 8, 0.1);
   margin-bottom: 20px;
+  width: 100%;
 }
 
 .table {
@@ -128,11 +129,19 @@ button[type="submit"]:hover {
 
 .filters-container {
   display: flex;
-  width: 100%;
+  width: 80%;
+  margin-left: 20px;
+  margin-right: 20px;
   align-items: center;
-  justify-items: space-evenly;
+  justify-items: center;
   padding: 5px;
 
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .form-container select {
@@ -153,4 +162,14 @@ select label {
   width: 200px;
   height: 30px;
   font-size: 0.9rem;
+}
+
+.search-container label {
+  padding-right: 10px;
+
+}
+
+.filter-container label {
+  padding-right: 10px;
+  width: 100px;
 }
