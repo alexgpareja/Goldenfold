@@ -70,6 +70,7 @@ export class HabitacionesComponent implements OnInit {
   borrarHabitacion(id: number): void {
     this.apiService.deleteHabitacion(id).subscribe({
       next: () => {
+        this.habitaciones = this.habitaciones.filter(h => h.IdHabitacion !== id);
       },
       error: (error: any) => {
         console.error('Error al borrar la habitación', error);

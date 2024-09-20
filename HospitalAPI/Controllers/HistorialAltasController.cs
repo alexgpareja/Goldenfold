@@ -109,7 +109,7 @@ namespace HospitalApi.Controllers
                 .Where(c => c.IdPaciente == historialAltaDTO.IdPaciente && c.Estado == EstadoConsulta.pendiente)
                 .FirstOrDefaultAsync();
 
-            if (consulta == null)
+            if (consulta == null )
             {
                 return NotFound("No se encontró una consulta pendiente para este paciente.");
             }
