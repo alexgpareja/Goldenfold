@@ -14,43 +14,40 @@ import { HttpBackend } from '@angular/common/http';
 export class CamasComponent implements OnInit {
   camas: Cama[] = [];
   camasFiltradas: Cama[] = [];
+  camasPaginadas: Cama[] = [];
 
   nuevaCama: Cama =
-  {IdCama: 0,
-    Ubicacion: '',
-    Estado: '',
-    Tipo: '' ,
-    IdHabitacion: 0};
+    { IdCama: 0, Ubicacion: '', Estado: '', Tipo: '', IdHabitacion: 0 };
   camaParaActualizar: Cama | null = null;
 
   paginaActual: number = 1;
   camasPorPagina: number = 7;
   totalPaginas: number = 0;
 
-  //variables para el formulario
+  // Variables para el formulario
   mostrarFormularioAgregarCama: boolean = false;
-  mostrarFormularioActualizarCama : boolean = false;
+  mostrarFormularioActualizarCama: boolean = false;
   mensajeExito: string | null = null;
-  mensajeError :string | null = null;
+  mensajeError: string | null = null;
 
-  //variables para filtros
+  // Variables para filtros
   filtroUbicacion: string = '';
   filtroEstado: string = '';
   filtroTipo: string = '';
 
-  constructor(private apiService: ApiService) {}
+  constructor(private apiService: ApiService) { }
 
   ngOnInit(): void {
     this.obtenerCamas();
   }
 
+  // Obtener las camas desde la API
   obtenerCamas(): void {
     this.apiService.getCamas().subscribe({
       next: (data: Cama[]) => {
         console.log(data);
         this.camas = data;
-        this.totalPaginas = Math.ceil(this.camas.length / this.camasPorPagina); // Calculamos el total de páginas
-        this.filtrarCamas(); // Llamamos a filtrarCamas() para inicializar la lista paginada
+        this.aplicarFiltros(); // Inicializa el filtrado y la paginación
       },
       error: (error: any) => {
         console.error('Error al obtener las camas', error);
@@ -58,7 +55,9 @@ export class CamasComponent implements OnInit {
     });
   }
 
+  // Aplicar filtros
   aplicarFiltros(): void {
+    // Filtra las camas según los filtros seleccionados
     this.camasFiltradas = this.camas.filter(cama => {
       const coincideUbicacion = this.filtroUbicacion
         ? cama.Ubicacion.toLowerCase().includes(this.filtroUbicacion.toLowerCase())
@@ -68,9 +67,25 @@ export class CamasComponent implements OnInit {
 
       return coincideUbicacion && coincideEstado && coincideTipo;
     });
-    this.filtrarCamas(); // Filtramos las camas aplicando también la paginación después de aplicar los filtros
+
+    // Reiniciar a la primera página
+    this.paginaActual = 1;
+
+    // Calcular el total de páginas basado en las camas filtradas
+    this.totalPaginas = Math.ceil(this.camasFiltradas.length / this.camasPorPagina);
+
+    // Aplicar la paginación después de filtrar
+    this.filtrarCamasPaginadas();
   }
 
+  // Filtrar las camas con paginación
+  filtrarCamasPaginadas(): void {
+    const inicio = (this.paginaActual - 1) * this.camasPorPagina;
+    const fin = inicio + this.camasPorPagina;
+    this.camasPaginadas = this.camasFiltradas.slice(inicio, fin);
+  }
+
+  // Métodos de filtrado para cada filtro
   filtrarPorUbicacion(event: Event): void {
     const inputElement = event.target as HTMLInputElement;
     this.filtroUbicacion = inputElement.value;
@@ -89,30 +104,23 @@ export class CamasComponent implements OnInit {
     this.aplicarFiltros();
   }
 
-  // Método para filtrar camas con paginación
-  filtrarCamas(): void {
-    const inicio = (this.paginaActual - 1) * this.camasPorPagina;
-    const fin = inicio + this.camasPorPagina;
-    this.camasFiltradas = this.camas.slice(inicio, fin);
-  }
-
   // Método para ir a la primera página
   irAPrimeraPagina(): void {
     this.paginaActual = 1;
-    this.filtrarCamas();
+    this.filtrarCamasPaginadas();
   }
 
   // Método para ir a la última página
   irALaUltimaPagina(): void {
     this.paginaActual = this.totalPaginas;
-    this.filtrarCamas();
+    this.filtrarCamasPaginadas();
   }
 
   // Método para ir a la página siguiente
   paginaSiguiente(): void {
     if (this.paginaActual < this.totalPaginas) {
       this.paginaActual++;
-      this.filtrarCamas();
+      this.filtrarCamasPaginadas();
     }
   }
 
@@ -120,7 +128,7 @@ export class CamasComponent implements OnInit {
   paginaAnterior(): void {
     if (this.paginaActual > 1) {
       this.paginaActual--;
-      this.filtrarCamas();
+      this.filtrarCamasPaginadas();
     }
   }
 }
