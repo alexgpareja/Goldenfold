@@ -48,6 +48,7 @@ export class RegistrarPacienteComponent {
     });
   }
 
+
   getErrorMessageFromResponse(error: HttpErrorResponse): string {
     if (error.error instanceof Object) {
       if (error.error.errors) {

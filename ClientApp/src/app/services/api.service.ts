@@ -80,6 +80,7 @@ export interface Habitacion {
   Edificio: string;
   Planta: string;
   NumeroHabitacion: string;
+  TipoCama: string;
 }
 
 export interface Rol {

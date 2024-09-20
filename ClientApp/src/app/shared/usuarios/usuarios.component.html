@@ -7,7 +7,6 @@
       type="text"
       id="search"
       placeholder="Escribe para buscar..."
-      [(ngModel)]="searchTerm"
       (ngModelChange)="filtrarUsuarios()"
     />
   </div>
@@ -59,42 +58,36 @@
 
   <div class="form-container" *ngIf="usuarioParaActualizar">
     <h3>Actualizar Usuario</h3>
-    <form (ngSubmit)="actualizarUsuario()">
+    <form [formGroup]="usuarioForm"   (ngSubmit)="actualizarUsuario()">
       <label for="idUsuario">ID Usuario:</label>
       <input
         type="number"
         id="idUsuario"
-        [(ngModel)]="usuarioParaActualizar.IdUsuario"
-        name="idUsuario"
-        disabled
+        formControlName="IdUsuario"
       />
       <label for="nombre">Nombre:</label>
       <input
         type="text"
         id="nombre"
-        [(ngModel)]="usuarioParaActualizar.Nombre"
-        name="nombre"
+        formControlName="Nombre"
       />
       <label for="nombreUsuario">Nombre Usuario:</label>
       <input
         type="text"
         id="nombreUsuario"
-        [(ngModel)]="usuarioParaActualizar.NombreUsuario"
-        name="nombreUsuario"
+        formControlName="NombreUsuario"
       />
       <label for="contrasenya">Contraseña:</label>
       <input
         type="password"
         id="contrasenya"
-        [(ngModel)]="usuarioParaActualizar.Contrasenya"
-        name="contrasenya"
+        formControlName="Contrasenya"
       />
       <label for="idRol">ID Rol:</label>
       <input
         type="number"
         id="idRol"
-        [(ngModel)]="usuarioParaActualizar.IdRol"
-        name="idRol"
+        formControName="IdRol"
       />
       <div class="botones">
         <button type="submit">Guardar</button>
@@ -107,42 +100,55 @@
 
   <div class="form-container">
     <h3>Agregar Usuario</h3>
-    <form (ngSubmit)="agregarUsuario()">
+    <form [formGroup]="usuarioForm" (ngSubmit)="agregarUsuario()">
       <label for="nombre">Nombre completo:</label>
       <input
         type="text"
         id="nombre"
-        [(ngModel)]="nuevoUsuario.Nombre"
-        name="nombre"
+        formControlName="Nombre"
         required
       />
+      <div *ngIf="usuarioForm.get('Nombre')?.invalid && usuarioForm.get('Nombre')?.touched">
+        <small>El nombre es requerido</small>
+      </div>
+  
       <label for="nombreUsuario">Nombre de usuario:</label>
       <input
         type="text"
         id="nombreUsuario"
-        [(ngModel)]="nuevoUsuario.NombreUsuario"
-        name="nombreUsuario"
+        formControlName="NombreUsuario"
         required
       />
+      <div *ngIf="usuarioForm.get('NombreUsuario')?.invalid && usuarioForm.get('NombreUsuario')?.touched">
+        <small>El nombre de usuario es requerido</small>
+      </div>
+  
       <label for="contrasenya">Contraseña:</label>
       <input
         type="password"
         id="contrasenya"
-        [(ngModel)]="nuevoUsuario.Contrasenya"
-        name="contrasenya"
+        formControlName="Contrasenya"
         required
       />
+      <div *ngIf="usuarioForm.get('Contrasenya')?.invalid && usuarioForm.get('Contrasenya')?.touched">
+        <small>La contraseña es requerida</small>
+      </div>
+  
       <label for="idRol">Rol:</label>
-      <select [(ngModel)]="nuevoUsuario.IdRol" name="idRol" required>
+      <select formControlName="IdRol" required>
         <option [value]="0" disabled>Selecciona un rol</option>
         <option *ngFor="let rol of roles" [value]="rol.IdRol">
           {{ rol.NombreRol }}
         </option>
       </select>
+      <div *ngIf="usuarioForm.get('IdRol')?.invalid && usuarioForm.get('IdRol')?.touched">
+        <small>El rol es requerido</small>
+      </div>
+  
       <div class="botones">
-        <button type="submit">Guardar</button>
+        <button type="submit" [disabled]="usuarioForm.invalid">Guardar</button>
         <button type="button" (click)="cancelarNuevoUsuario()">Cancelar</button>
       </div>
     </form>
-  </div>
+  </div>  
 </div>

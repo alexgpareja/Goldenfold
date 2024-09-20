@@ -1,25 +1,19 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService, Rol, Usuario } from '../../services/api.service';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-usuarios',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './usuarios.component.html',
   styleUrls: ['./usuarios.component.css'],
 })
 export class UsuariosComponent implements OnInit {
   usuarios: Usuario[] = [];
   roles: Rol[] = [];
-  nuevoUsuario: Usuario = {
-    IdUsuario: 0,
-    Nombre: '',
-    NombreUsuario: '',
-    Contrasenya: '',
-    IdRol: 0,
-  };
+  usuarioForm!: FormGroup;
   usuarioParaActualizar: Usuario | null = null;
   mostrarContrasenas: { [key: number]: boolean } = {};
 
@@ -31,6 +25,17 @@ export class UsuariosComponent implements OnInit {
   ngOnInit(): void {
     this.obtenerUsuarios();
     this.obtenerRoles();
+    this.crearFormularioUsuario();
+  }
+
+  crearFormularioUsuario(): void {
+    this.usuarioForm = new FormGroup({
+      Nombre: new FormControl('',[Validators.required]),
+      NombreUsuario: new FormControl('',[Validators.required]),
+      Contrasenya: new FormControl('',[Validators.required]),
+      IdRol: new FormControl('',[Validators.required])
+    });
+
   }
 
   obtenerUsuarios(): void {
@@ -72,25 +77,23 @@ export class UsuariosComponent implements OnInit {
   }
 
   agregarUsuario(): void {
-    this.apiService.addUsuario(this.nuevoUsuario).subscribe({
-      next: (usuario: Usuario) => {
-        this.usuarios.push(usuario);
-        this.nuevoUsuario = {
-          IdUsuario: 0,
-          Nombre: '',
-          NombreUsuario: '',
-          Contrasenya: '',
-          IdRol: 0,
-        };
-        alert('Usuario creado con éxito');
-      },
-      error: (error: any) => {
-        // Mostrar directamente el mensaje de error del backend
-        const mensajeError =
-          error.error || 'Error inesperado. Inténtalo de nuevo.';
-        alert(mensajeError);
-      },
-    });
+    if(this.usuarioForm.valid) {
+      const nuevoUsuario: Usuario = this.usuarioForm.value; //obtener los datos del formulario
+      this.apiService.addUsuario(nuevoUsuario).subscribe({
+        next: (usuario: Usuario) => {
+          this.usuarios.push(usuario);
+          this.usuarioForm.reset(); //despues de agregarlo, reseteas el formulario
+          alert('Usuario creado con exito');
+        },
+        error: (error: any) => {
+          const mensajeError =
+            error.error || 'Error inesperado. Inténtalo de nuevo.';
+          alert(mensajeError);
+        },
+      });
+    } else{
+      alert('Por favor, completa todos los campos requeridos.');  
+    }
   }
 
   toggleActualizarUsuario(usuario: Usuario): void {
@@ -101,24 +104,25 @@ export class UsuariosComponent implements OnInit {
       this.usuarioParaActualizar = null;
     } else {
       this.usuarioParaActualizar = { ...usuario };
+      this.usuarioForm.patchValue(this.usuarioParaActualizar); //rellenar el formulario con los datos del usuario
     }
   }
 
   actualizarUsuario(): void {
-    if (this.usuarioParaActualizar) {
-      this.apiService.updateUsuario(this.usuarioParaActualizar).subscribe({
-        next: (usuarioActualizado: Usuario) => {
+    if(this.usuarioParaActualizar && this.usuarioForm.valid) {
+      const usuarioActualizado: Usuario = { ...this.usuarioParaActualizar,...this.usuarioForm.value};
+      this.apiService.updateUsuario(usuarioActualizado).subscribe({
+        next: () => {
           this.obtenerUsuarios();
-
           this.usuarioParaActualizar = null;
-
           alert('Usuario actualizado con éxito.');
         },
-        error: (error: any) => {
-          console.error('Error al actualizar el usuario', error);
+        error: (error: any) =>{
+          console.error('Error al actualizar el usuario',error)
         },
-      });
+      }); 
     }
+      
   }
 
   borrarUsuario(idUsuario: number): void {
@@ -158,10 +162,11 @@ export class UsuariosComponent implements OnInit {
   }
 
   cancelarNuevoUsuario(): void {
-    this.nuevoUsuario = this.resetUsuario(); // Resetea los campos
+    this.usuarioForm.reset(); // Resetea los campos
   }
 
   cancelarActualizarUsuario(): void {
     this.usuarioParaActualizar = null; // Oculta el formulario y resetea los datos
+    this.usuarioForm.reset();
   }
 }

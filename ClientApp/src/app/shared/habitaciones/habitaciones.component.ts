@@ -12,7 +12,7 @@ import { ApiService, Habitacion } from '../../services/api.service';
 })
 export class HabitacionesComponent implements OnInit {
   habitaciones: Habitacion[] = [];
-  nuevaHabitacion: Habitacion = { IdHabitacion: 0, Edificio: '', Planta: '', NumeroHabitacion: '' };
+  nuevaHabitacion: Habitacion = { IdHabitacion: 0, Edificio: '', Planta: '', NumeroHabitacion: '', TipoCama: ''  };
   habitacionParaActualizar: Habitacion | null = null;
 
   constructor(private apiService: ApiService) {}
@@ -28,7 +28,8 @@ export class HabitacionesComponent implements OnInit {
           IdHabitacion: item.IdHabitacion,
           Edificio: item.Edificio,
           Planta: item.Planta,
-          NumeroHabitacion: item.NumeroHabitacion
+          NumeroHabitacion: item.NumeroHabitacion,
+          TipoCama: item.TipoCama
         }));
       },
       error: (error: any) => {
@@ -41,7 +42,7 @@ export class HabitacionesComponent implements OnInit {
     this.apiService.addHabitacion(this.nuevaHabitacion).subscribe({
       next: (nuevaHabitacion: Habitacion) => {
         this.habitaciones.push(nuevaHabitacion);
-        this.nuevaHabitacion = { IdHabitacion: 0, Edificio: '', Planta: '', NumeroHabitacion: '' };
+        this.nuevaHabitacion = { IdHabitacion: 0, Edificio: '', Planta: '', NumeroHabitacion: '', TipoCama: "" };
       },
       error: (error: any) => {
         console.error('Error al agregar la habitación', error);
@@ -57,7 +58,7 @@ export class HabitacionesComponent implements OnInit {
           if (index !== -1) {
             this.habitaciones[index] = habitacionActualizada;
           }
-          this.habitacionParaActualizar = null; // Reset the update form
+          this.habitacionParaActualizar = null;
         },
         error: (error: any) => {
           console.error('Error al actualizar la habitación', error);
