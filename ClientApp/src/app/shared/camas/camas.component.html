@@ -6,7 +6,7 @@
         <label for="searchUbicacion">Buscar por ubicación:</label>
         <input placeholder="Ubicación" name="searchUbicacion" type="text" id="searchUbicacion" (input)="filtrarPorUbicacion($event)">
       </div>
-
+     
       <div class="filter-container">
         <label for="filterEstado">Filtrar por estado:</label>
         <select id="filterEstado" (change)="filtrarPorEstado($event)">
@@ -14,7 +14,7 @@
           <option value="Disponible">Disponible</option>
           <option value="Ocupada">Ocupada</option>
         </select>
-
+     
         <label for="filterTipo">Filtrar por tipo:</label>
         <select id="filterTipo" (change)="filtrarPorTipo($event)">
           <option value="">Todos</option>
@@ -24,8 +24,8 @@
         </select>
       </div>
     </div>
-
-
+ 
+ 
       <div class="table-container">
         <table class="table">
           <thead>
@@ -44,22 +44,10 @@
               <td>{{ cama.Estado }}</td>
               <td>{{ cama.Tipo }}</td>
               <td>{{ cama.IdHabitacion }}</td>
-            </tr>
+            </tr>            
           </tbody>
         </table>
-
-
-      </div> <!-- Navegación de Paginación -->
-<div class="paginacion">
-  <button (click)="irAPrimeraPagina()" [disabled]="paginaActual === 1">Primera</button>
-  <button (click)="paginaAnterior()" [disabled]="paginaActual === 1">Anterior</button>
-
-  <!-- Mostrar la página actual y el total de páginas -->
-  <span>Página {{ paginaActual }} de {{ totalPaginas }}</span>
-
-  <button (click)="paginaSiguiente()" [disabled]="paginaActual === totalPaginas">Siguiente</button>
-  <button (click)="irALaUltimaPagina()" [disabled]="paginaActual === totalPaginas">Última</button>
-</div>
+      </div>
   </main>
   </div>
-
+ 
