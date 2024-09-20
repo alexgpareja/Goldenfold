@@ -6,14 +6,8 @@ import { NgModule } from '@angular/core';
 import { KeycloakAngularModule } from 'keycloak-angular';
 
 @NgModule({
-  declarations: [
-    AppComponent
-  ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    KeycloakAngularModule
-  ],
+  declarations: [AppComponent],
+  imports: [BrowserModule, AppRoutingModule, KeycloakAngularModule],
   providers: [
     /* {
     provide: APP_INITIALIZER,
@@ -21,7 +15,8 @@ import { KeycloakAngularModule } from 'keycloak-angular';
     multi: true,
     deps: [KeycloakService]
   }
-    */],
-  bootstrap: [AppComponent]
+    */
+  ],
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

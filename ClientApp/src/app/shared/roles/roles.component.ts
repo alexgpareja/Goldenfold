@@ -9,11 +9,11 @@ import {
   Validators,
 } from '@angular/forms';
 import { CustomValidators } from '../../validators/whitespace.validator';
-
+import { SharedModule } from '../shared.module';
 @Component({
   selector: 'app-roles',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, SharedModule],
   templateUrl: './roles.component.html',
   styleUrls: ['./roles.component.css'],
 })
@@ -63,15 +63,14 @@ export class RolesComponent implements OnInit {
     });
   }
 
-  filtrarRoles(): void {
-    const searchTerm = this.searchRolForm.get('searchTerm')?.value;
-    const searchType = this.searchRolForm.get('searchType')?.value;
+  filtrarRoles(event: { type: string; term: string }): void {
+    const { term, type } = event;
 
-    if (!searchTerm.trim()) {
+    if (!term.trim()) {
       this.obtenerRoles(); // Si no hay término de búsqueda, obtener todos los roles
     } else {
-      if (searchType === 'id') {
-        const id = Number(searchTerm);
+      if (type === 'id') {
+        const id = Number(term);
         if (!isNaN(id)) {
           this.apiService.getRolById(id).subscribe({
             next: (rol: Rol) => {
@@ -83,8 +82,8 @@ export class RolesComponent implements OnInit {
             },
           });
         }
-      } else if (searchType === 'nombreRol') {
-        this.apiService.getRoles(searchTerm).subscribe({
+      } else if (type === 'nombreRol') {
+        this.apiService.getRoles(term).subscribe({
           next: (roles: Rol[]) => {
             this.roles = roles; // Actualizar los roles filtrados
           },

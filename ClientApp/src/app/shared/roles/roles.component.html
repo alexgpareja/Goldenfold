@@ -1,26 +1,16 @@
 <div class="roles-section">
   <h2>Roles</h2>
 
-  <div class="search-container">
-    <form [formGroup]="searchRolForm" (ngSubmit)="filtrarRoles()">
-      <label for="searchType">Buscar:</label>
-
-      <div class="search-group">
-        <select id="searchType" formControlName="searchType">
-          <option value="nombreRol">Nombre</option>
-          <option value="id">ID</option>
-        </select>
-
-        <input
-          type="text"
-          id="searchTerm"
-          formControlName="searchTerm"
-          placeholder="Escribe para buscar..."
-          (input)="filtrarRoles()"
-        />
-      </div>
-    </form>
-  </div>
+  <app-search-box
+    [searchOptions]="[
+      { label: 'Nombre', value: 'nombreRol' },
+      { label: 'ID', value: 'id' }
+    ]"
+    [defaultSearchType]="'nombreRol'"
+    placeholder="Escribe para buscar..."
+    (search)="filtrarRoles($event)"
+  >
+  </app-search-box>
 
   <div class="table-container">
     <table class="table">
