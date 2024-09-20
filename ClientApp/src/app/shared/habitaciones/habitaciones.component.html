@@ -11,7 +11,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let habitacion of habitaciones">
+        <tr *ngFor="let habitacion of habitacionesFiltradas">
           <td>{{ habitacion.Edificio }}</td>
           <td>{{ habitacion.Planta }}</td>
           <td>{{ habitacion.NumeroHabitacion }}</td>
@@ -39,7 +39,16 @@
       </tbody>
     </table>
   </div>
+  <div class="paginacion">
+    <button (click)="irAPrimeraPagina()" [disabled]="paginaActual === 1">Primera</button>
+    <button (click)="paginaAnterior()" [disabled]="paginaActual === 1">Anterior</button>
 
+    <!-- Mostrar la página actual y el total de páginas -->
+    <span>Página {{ paginaActual }} de {{ totalPaginas }}</span>
+
+    <button (click)="paginaSiguiente()" [disabled]="paginaActual === totalPaginas">Siguiente</button>
+    <button (click)="irALaUltimaPagina()" [disabled]="paginaActual === totalPaginas">Última</button>
+  </div>
   <div class="form-container">
     <h3>Agregar Habitación</h3>
     <form (ngSubmit)="agregarHabitacion()">

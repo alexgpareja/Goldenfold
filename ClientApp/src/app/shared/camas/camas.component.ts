@@ -49,14 +49,14 @@ export class CamasComponent implements OnInit {
       next: (data: Cama[]) => {
         console.log(data);
         this.camas = data;
-        this.camasFiltradas = [...this.camas];
+        this.totalPaginas = Math.ceil(this.camas.length / this.camasPorPagina); // Calculamos el total de páginas
+        this.filtrarCamas(); // Llamamos a filtrarCamas() para inicializar la lista paginada
       },
       error: (error: any) => {
         console.error('Error al obtener las camas', error);
       }
     });
   }
-
 
   aplicarFiltros(): void {
     this.camasFiltradas = this.camas.filter(cama => {
@@ -68,7 +68,7 @@ export class CamasComponent implements OnInit {
 
       return coincideUbicacion && coincideEstado && coincideTipo;
     });
-    
+    this.filtrarCamas(); // Filtramos las camas aplicando también la paginación después de aplicar los filtros
   }
 
   filtrarPorUbicacion(event: Event): void {
@@ -89,5 +89,38 @@ export class CamasComponent implements OnInit {
     this.aplicarFiltros();
   }
 
-}
+  // Método para filtrar camas con paginación
+  filtrarCamas(): void {
+    const inicio = (this.paginaActual - 1) * this.camasPorPagina;
+    const fin = inicio + this.camasPorPagina;
+    this.camasFiltradas = this.camas.slice(inicio, fin);
+  }
 
+  // Método para ir a la primera página
+  irAPrimeraPagina(): void {
+    this.paginaActual = 1;
+    this.filtrarCamas();
+  }
+
+  // Método para ir a la última página
+  irALaUltimaPagina(): void {
+    this.paginaActual = this.totalPaginas;
+    this.filtrarCamas();
+  }
+
+  // Método para ir a la página siguiente
+  paginaSiguiente(): void {
+    if (this.paginaActual < this.totalPaginas) {
+      this.paginaActual++;
+      this.filtrarCamas();
+    }
+  }
+
+  // Método para ir a la página anterior
+  paginaAnterior(): void {
+    if (this.paginaActual > 1) {
+      this.paginaActual--;
+      this.filtrarCamas();
+    }
+  }
+}
