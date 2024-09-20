@@ -35,6 +35,8 @@ namespace HospitalApi.DTO
         [Required(ErrorMessage = "El número de habitación es obligatorio.")]
         [RegularExpression(@"^\d{1,2}$", ErrorMessage = "El número de habitación debe ser un número de 1 o 2 dígitos.")]
         public string NumeroHabitacion { get; set; }
+
+        public string TipoCama {get; set; }
     }
 
     public class HabitacionUpdateDTO

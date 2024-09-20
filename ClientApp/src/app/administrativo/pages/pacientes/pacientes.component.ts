@@ -27,7 +27,7 @@ export class PacientesComponent implements OnInit {
     Email: '',
     HistorialMedico: '',
   };
-  pacienteSeleccionado: Paciente | null = null;  // Paciente seleccionado para ver más detalles
+  pacienteSeleccionado: Paciente | null = null;  
 
   mostrarDetallesPaciente(paciente: Paciente): void {
     this.pacienteSeleccionado = paciente;
@@ -294,25 +294,6 @@ irALaUltimaPagina(): void {
 
   cerrar() {
     window.close();
-  }
-
-  borrarPaciente(id: number): void {
-    const confirmacion = confirm(
-      '¿Estás seguro de que quieres eliminar este paciente?'
-    );
-    if (confirmacion) {
-      this.apiService.deletePaciente(id).subscribe({
-        next: () => {
-          this.pacientes = this.pacientes.filter((p) => p.IdPaciente !== id);
-          this.filtrarPacientes();
-          alert('Paciente eliminado con éxito');
-        },
-        error: (error: any) => {
-          console.error('Error al borrar el paciente', error);
-          alert('Error al borrar el paciente. Por favor, inténtelo de nuevo.');
-        },
-      });
-    }
   }
 
   aplicarFiltro(filtro: string): void {  // Método combinado para nombre y DNI
