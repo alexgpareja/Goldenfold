@@ -91,38 +91,39 @@ namespace HospitalApi.Controllers
         /// <response code="409">Si ya existe una habitación con el mismo número en la planta y edificio especificados.</response>
         /// <response code="500">Si se produce un error en el servidor al procesar la solicitud.</response>
         [HttpPost]
-        public async Task<ActionResult<HabitacionDTO>> CreateHabitacion(HabitacionCreateDTO habitacionDTO)
+public async Task<ActionResult<HabitacionDTO>> CreateHabitacion(HabitacionCreateDTO habitacionDTO)
+{
+    var habitacion = _mapper.Map<Habitacion>(habitacionDTO);
+
+    // Verificar si ya existe una habitación con el número proporcionado
+    if (await _context.Habitaciones.AnyAsync(h => h.NumeroHabitacion == habitacionDTO.NumeroHabitacion && h.Planta == habitacionDTO.Planta && h.Edificio == habitacionDTO.Edificio))
+    {
+        return Conflict("Ya existe una habitación con el número proporcionado en este edificio y planta.");
+    }
+
+    // Añadir la habitación a la base de datos
+    _context.Habitaciones.Add(habitacion);
+    await _context.SaveChangesAsync();
+
+    // Crear automáticamente las camas asociadas a la habitación
+    for (int i = 1; i <= 2; i++) // Se asume que cada habitación tiene 2 camas
+    {
+        var cama = new Cama
         {
-            var habitacion = _mapper.Map<Habitacion>(habitacionDTO);
+            Ubicacion = $"{habitacionDTO.Edificio}{habitacionDTO.Planta}{habitacionDTO.NumeroHabitacion}{i:00}",
+            Estado = (EstadoCama)Enum.Parse(typeof(EstadoCama), "Disponible"),
+            Tipo = (TipoCama)Enum.Parse(typeof(TipoCama), habitacionDTO.TipoCama),  // Ahora usa el tipo de cama seleccionado
+            IdHabitacion = habitacion.IdHabitacion
+        };
+        _context.Camas.Add(cama);
+    }
 
-            // Verificar si ya existe una habitación con el número proporcionado
-            if (await _context.Habitaciones.AnyAsync(h => h.NumeroHabitacion == habitacionDTO.NumeroHabitacion && h.Planta == habitacionDTO.Planta && h.Edificio == habitacionDTO.Edificio))
-            {
-                return Conflict("Ya existe una habitación con el número proporcionado en este edificio y planta.");
-            }
+    await _context.SaveChangesAsync();
 
-            // Añadir la habitación a la base de datos
-            _context.Habitaciones.Add(habitacion);
-            await _context.SaveChangesAsync();
+    var habitacionDTOResult = _mapper.Map<HabitacionDTO>(habitacion);
+    return CreatedAtAction(nameof(GetHabitacion), new { id = habitacionDTOResult.IdHabitacion }, habitacionDTOResult);
+}
 
-            // Crear automáticamente las camas asociadas a la habitación
-            for (int i = 1; i <= 2; i++) // Se asume que cada habitación tiene 2 camas
-            {
-                var cama = new Cama
-                {
-                    Ubicacion = $"{habitacionDTO.Edificio}{habitacionDTO.Planta}{habitacionDTO.NumeroHabitacion}{i:00}",
-                    Estado = (EstadoCama)Enum.Parse(typeof(EstadoCama), "Disponible"),
-                    Tipo = (TipoCama)Enum.Parse(typeof(TipoCama), "General"),  // Se podría hacer más dinámico según el tipo de habitación
-                    IdHabitacion = habitacion.IdHabitacion
-                };
-                _context.Camas.Add(cama);
-            }
-
-            await _context.SaveChangesAsync();
-
-            var habitacionDTOResult = _mapper.Map<HabitacionDTO>(habitacion);
-            return CreatedAtAction(nameof(GetHabitacion), new { id = habitacionDTOResult.IdHabitacion }, habitacionDTOResult);
-        }
 
         /// <summary>
         /// Actualiza una habitación existente.

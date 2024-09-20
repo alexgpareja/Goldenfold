@@ -11,7 +11,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let habitacion of habitaciones">
+        <tr *ngFor="let habitacion of habitacionesFiltradas">
           <td>{{ habitacion.Edificio }}</td>
           <td>{{ habitacion.Planta }}</td>
           <td>{{ habitacion.NumeroHabitacion }}</td>
@@ -39,17 +39,38 @@
       </tbody>
     </table>
   </div>
+  <div class="paginacion">
+    <button (click)="irAPrimeraPagina()" [disabled]="paginaActual === 1">Primera</button>
+    <button (click)="paginaAnterior()" [disabled]="paginaActual === 1">Anterior</button>
 
+    <!-- Mostrar la página actual y el total de páginas -->
+    <span>Página {{ paginaActual }} de {{ totalPaginas }}</span>
+
+    <button (click)="paginaSiguiente()" [disabled]="paginaActual === totalPaginas">Siguiente</button>
+    <button (click)="irALaUltimaPagina()" [disabled]="paginaActual === totalPaginas">Última</button>
+  </div>
   <div class="form-container">
     <h3>Agregar Habitación</h3>
     <form (ngSubmit)="agregarHabitacion()">
       <label for="edificio">Edificio:</label>
       <input type="text" id="edificio" [(ngModel)]="nuevaHabitacion.Edificio" name="edificio">
+      
       <label for="planta">Planta:</label>
       <input type="text" id="planta" [(ngModel)]="nuevaHabitacion.Planta" name="planta">
+      
       <label for="numeroHabitacion">Número de Habitación:</label>
       <input type="text" id="numeroHabitacion" [(ngModel)]="nuevaHabitacion.NumeroHabitacion" name="numeroHabitacion">
+
+      <!-- Selección de Tipo de Cama -->
+      <label for="tipoCama">Tipo de Cama:</label>
+      <select id="tipoCama" [(ngModel)]="nuevaHabitacion.TipoCama" name="tipoCama" required>
+        <option value="General">General</option>
+        <option value="UCI">UCI</option>
+        <option value="Postoperatorio">Postoperatorio</option>
+      </select>
+
       <button type="submit">Agregar</button>
     </form>
-  </div>
+</div>
+
 </div>

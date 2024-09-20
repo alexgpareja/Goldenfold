@@ -6,6 +6,7 @@
 
 .search-container form {
   display: inline-block; /* Alinea los elementos del formulario en una fila */
+  margin-left: 15px;
 }
 
 .search-container label,
@@ -24,32 +25,29 @@
   width: 200px; /* Ancho para el campo de texto */
   padding: 5px;
 }
+.vr {
+  border-left: var(--vr-border-width, 1px) solid black; /* Usa la variable, con un valor por defecto */
+  height: 17px;
+}
 .search-group {
   display: flex;
-  align-items: center; /* Alinea verticalmente los elementos */
-  border: 1px solid #ccc; /* Borde para el recuadro */
-  border-radius: 5px; /* Bordes redondeados */
+  align-items: center;
+  border: 1px solid #ccc;
+  border-radius: 5px;
   padding: 5px;
-  gap: 5px; /* Espacio entre el select y el input */
-  background-color: white; /* Color de fondo */
-}
-.select {
-  border-right: 1px solid black;
-}
+  gap: 5px;
+  }
+
 .search-group select,
 .search-group input {
-  border: none; /* Elimina los bordes de los elementos internos */
-  background-color: transparent; /* Hace que el fondo sea transparente */
+  border: 5px;
+
   padding: 5px;
   font-size: 14px;
 }
 
-.search-group select {
-  width: 150px; /* Ancho fijo del select */
-}
-
 .search-group input {
-  flex-grow: 1; /* Hace que el input ocupe el espacio restante */
+  width: 250px;
 }
 
 /* Contenedor para la tabla */
