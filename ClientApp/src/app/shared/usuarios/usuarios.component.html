@@ -109,7 +109,7 @@
         required
       />
       <div *ngIf="usuarioForm.get('Nombre')?.invalid && usuarioForm.get('Nombre')?.touched">
-        <small>El nombre es requerido.</small>
+        <small class="alert-message">El nombre es requerido.</small>
       </div>
   
       <label for="nombreUsuario">Nombre de usuario:</label>
