@@ -4,6 +4,8 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { NgModule } from '@angular/core';
 import { KeycloakAngularModule } from 'keycloak-angular';
+import { ReactiveFormsModule } from '@angular/forms';
+
 
 @NgModule({
   declarations: [
@@ -11,6 +13,7 @@ import { KeycloakAngularModule } from 'keycloak-angular';
   ],
   imports: [
     BrowserModule,
+    ReactiveFormsModule,
     AppRoutingModule,
     KeycloakAngularModule
   ],
