@@ -10,18 +10,17 @@ import { HistorialAltasComponent } from '../shared/historial-altas/historial-alt
 import { PacientesComponent } from '../shared/pacientes/pacientes.component';
 import { RolesComponent } from '../shared/roles/roles.component';
 import { UsuariosComponent } from '../shared/usuarios/usuarios.component';
+import { IngresosComponent } from '../shared/ingresos/ingresos.component';
+import { ConsultasComponent } from '../shared/consultas/consultas.component';
 // Importamos los otros componentes de administración del sistema
 import { AdministradorSistemaDashboardComponent } from './pages/administrador-sistema-dashboard/administrador-sistema-dashboard.component';
 import { AdministradorSistemaInicioComponent } from './pages/administrador-sistema-inicio/administrador-sistema-inicio.component';
-import { GestionUsuariosComponent } from './pages/gestion-usuarios/gestion-usuarios.component';
-import { GestionRolesComponent } from './pages/gestion-roles/gestion-roles.component';
+
 
 @NgModule({
   declarations: [
     AdministradorSistemaDashboardComponent,
     AdministradorSistemaInicioComponent,
-    GestionUsuariosComponent,
-    GestionRolesComponent,
     
   ],
   imports: [
@@ -34,7 +33,9 @@ import { GestionRolesComponent } from './pages/gestion-roles/gestion-roles.compo
     HistorialAltasComponent,
     PacientesComponent,
     RolesComponent,
-    UsuariosComponent
+    UsuariosComponent,
+    IngresosComponent,
+    ConsultasComponent
   ]
 })
 export class AdministradorSistemaModule { }

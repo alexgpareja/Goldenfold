@@ -36,6 +36,16 @@ const routes: Routes = [
     path: 'roles',
     loadComponent: () => import('./roles/roles.component')
       .then(m => m.RolesComponent)
+  },
+  {
+    path: 'ingresos',
+    loadComponent: () => import('./ingresos/ingresos.component')
+      .then(m => m.IngresosComponent)
+  },
+  {
+    path: 'consultas',
+    loadComponent: () => import('./consultas/consultas.component')
+      .then(m => m.ConsultasComponent)
   }
 ];
 
