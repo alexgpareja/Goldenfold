@@ -25,11 +25,11 @@ export class IngresosComponent implements OnInit {
 
   // Obtener los pacientes ingresados
   obtenerPacientesIngresados() {
-    this.apiService.getIngresos(undefined, undefined, 'Asignado').subscribe({
+    this.apiService.getIngresos(undefined, undefined, 'Ingresado').subscribe({
       next: (ingresos: Ingreso[]) => {
         if (ingresos.length > 0) {
           this.ingresos = ingresos;
-          this.errorMensaje = null; // Limpiar el mensaje de error si hay ingresos
+          this.errorMensaje = null; 
         } else {
           this.ingresos = [];
           this.errorMensaje = 'No hay pacientes ingresados actualmente.';

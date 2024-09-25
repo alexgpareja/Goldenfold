@@ -62,11 +62,6 @@ namespace HospitalApi.Controllers
 
             var camas = await query.ToListAsync();
 
-            if (!camas.Any())
-            {
-                return NotFound("No se han encontrado camas.");
-            }
-
             var camasDTO = _mapper.Map<IEnumerable<CamaDTO>>(camas);
             return Ok(camasDTO);
         }

@@ -37,20 +37,30 @@ namespace HospitalApi.Controllers
         public async Task<ActionResult<IEnumerable<HistorialAltaDTO>>> GetHistorialAltas([FromQuery] int? id_paciente, [FromQuery] DateTime? fecha_alta, [FromQuery] string? diagnostico, [FromQuery] string? tratamiento)
         {
             IQueryable<HistorialAlta> query = _context.HistorialesAltas;
-            if (!(id_paciente == null)) query = query.Where(h => h.IdPaciente == id_paciente);
-            if (!(fecha_alta == null)) query = query.Where(h => h.FechaAlta == fecha_alta);
-            if (!String.IsNullOrEmpty(diagnostico)) query = query.Where(h => h.Diagnostico.Contains(diagnostico!.ToLower()));
-            if (!String.IsNullOrEmpty(tratamiento)) query = query.Where(h => h.Tratamiento.Contains(tratamiento!.ToLower()));
 
+            // Aplicar los filtros opcionales
+            if (id_paciente.HasValue)
+                query = query.Where(h => h.IdPaciente == id_paciente.Value);
+
+            if (fecha_alta.HasValue)
+                query = query.Where(h => h.FechaAlta.Date == fecha_alta.Value.Date); // Comparar solo la fecha, ignorando la hora
+
+            if (!string.IsNullOrEmpty(diagnostico))
+                query = query.Where(h => h.Diagnostico.ToLower().Contains(diagnostico.ToLower()));
+
+            if (!string.IsNullOrEmpty(tratamiento))
+                query = query.Where(h => h.Tratamiento.ToLower().Contains(tratamiento.ToLower()));
+
+            // Ejecutar la consulta y obtener los resultados
             var historialAlta = await query.ToListAsync();
 
-            if (!historialAlta.Any())
-            {
-                return NotFound("No se han encontrado altas.");
-            }
+            // Mapear los resultados a DTOs
             var historialAltasDTO = _mapper.Map<IEnumerable<HistorialAltaDTO>>(historialAlta);
+
+            // Devolver siempre un 200 OK con la lista (aunque esté vacía)
             return Ok(historialAltasDTO);
         }
+
 
         /// <summary>
         /// Obtiene un historial de altas específico de un paciente por su número de seguridad social.

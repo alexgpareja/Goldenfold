@@ -35,11 +35,6 @@ namespace HospitalApi.Controllers
 
             var asignaciones = await query.ToListAsync();
 
-            if (!asignaciones.Any())
-            {
-                return NotFound("No se han encontrado asignaciones.");
-            }
-
             var asignacionesDTO = _mapper.Map<IEnumerable<AsignacionDTO>>(asignaciones);
             return Ok(asignacionesDTO);
         }

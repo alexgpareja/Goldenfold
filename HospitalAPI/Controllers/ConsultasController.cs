@@ -36,36 +36,28 @@ namespace HospitalApi.Controllers
         public async Task<ActionResult<IEnumerable<ConsultaDTO>>> GetConsultas([FromQuery] int? idPaciente, [FromQuery] int? idMedico, [FromQuery] string? estado)
         {
             IQueryable<Consulta> query = _context.Consultas;
-
+            // Filtrar por paciente si se ha proporcionado
             if (idPaciente.HasValue)
                 query = query.Where(c => c.IdPaciente == idPaciente.Value);
-
+            // Filtrar por médico si se ha proporcionado
             if (idMedico.HasValue)
                 query = query.Where(c => c.IdMedico == idMedico.Value);
-
-            // Verificamos si el estado es válido si es un enum
+            // Filtrar por estado si se ha proporcionado
             if (!string.IsNullOrEmpty(estado))
             {
-                if (Enum.TryParse(typeof(EstadoConsulta), estado, true, out var estadoEnum))
-                {
+                if (Enum.TryParse(typeof(EstadoConsulta), estado, true, out var estadoEnum)){
                     query = query.Where(c => c.Estado == (EstadoConsulta)estadoEnum);
                 }
-                else
-                {
+                else{
                     return BadRequest("El valor de estado no es válido.");
                 }
             }
-
+            // Ejecutar la consulta y obtener los resultados
             var consultas = await query.ToListAsync();
-
-            if (!consultas.Any())
-            {
-                return NotFound("No se encontraron consultas con los criterios de búsqueda proporcionados.");
-            }
-
             var consultasDTO = _mapper.Map<IEnumerable<ConsultaDTO>>(consultas);
             return Ok(consultasDTO);
         }
+
 
 
 

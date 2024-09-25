@@ -34,6 +34,7 @@ namespace HospitalApi.Controllers
         {
             IQueryable<Ingreso> query = _context.Ingresos;
 
+            // Filtros opcionales
             if (idPaciente.HasValue)
                 query = query.Where(i => i.IdPaciente == idPaciente.Value);
 
@@ -52,17 +53,14 @@ namespace HospitalApi.Controllers
                 }
             }
 
-
+            // Ejecutar la consulta
             var ingresos = await query.ToListAsync();
 
-            if (!ingresos.Any())
-            {
-                return NotFound("No se encontraron ingresos con los criterios de búsqueda proporcionados.");
-            }
-
+            // Mapeo y devolución de la lista (puede estar vacía)
             var ingresosDTO = _mapper.Map<IEnumerable<IngresoDTO>>(ingresos);
-            return Ok(ingresosDTO);
+            return Ok(ingresosDTO);  // Devolver una lista vacía si no hay ingresos, en lugar de un 404.
         }
+
 
         /// <summary>
         /// Obtiene un ingreso específico por su ID.

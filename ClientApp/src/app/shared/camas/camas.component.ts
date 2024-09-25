@@ -46,7 +46,6 @@ export class CamasComponent implements OnInit {
   obtenerCamas(): void {
     this.apiService.getCamas().subscribe({
       next: (data: Cama[]) => {
-        console.log(data);
         this.camas = data;
         this.camasFiltradas = [...this.camas];
         this.totalPaginas = Math.ceil(this.camasFiltradas.length / this.camasPorPagina);
