@@ -17,7 +17,7 @@ h2 {
 .filter-container {
   padding-left: 20px;
   display: flex;
-  gap:100px;
+  gap:250px;
   margin-bottom: 20px;
 }
 
@@ -46,7 +46,7 @@ input[type="text"] {
 .table-container {
   width: 100%;
   overflow-x: auto; /* Permite el desplazamiento horizontal si es necesario */
-  background-color: rgb(243, 240, 240);
+  background-color: rgb(228, 224, 224);
   padding: 10px;
   margin: 5px;
   border-radius: 7px;
@@ -59,17 +59,17 @@ input[type="text"] {
   width: 100%;
   border-collapse: collapse;
   font-size: 12px; /* Tamaño de texto más pequeño para compactar todo */
-  table-layout: auto; /* Permite ajustar el tamaño de las columnas automáticamente */
+  table-layout: auto;
+
 }
 
 .table th,
 .table td {
-  padding: 6px 8px; /* Reduce el espacio dentro de las celdas */
+  padding: 10px 8px; /* Reduce el espacio dentro de las celdas */
   border: 1px solid #ccc;
   white-space: nowrap; /* Mantiene el texto en una sola línea */
   overflow: hidden; /* Oculta cualquier desbordamiento de contenido */
-  text-overflow: ellipsis; /* Añade puntos suspensivos si el contenido es demasiado largo */
-}
+ }
 
 .table th {
   background-color: #0078d4;
@@ -78,7 +78,7 @@ input[type="text"] {
 }
 
 .table td {
-  background-color: rgb(248, 233, 233);
+  background-color: rgb(228, 224, 224);
 }
 
 .table td button {
@@ -365,7 +365,7 @@ button[type="submit"]:hover {
   border-radius: 8px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
   width: 100%;
-  max-width: 800px;
+  max-width: 500px;
   padding: 15px;
   position: relative;
   display: flex;
@@ -422,10 +422,4 @@ button[type="submit"]:hover {
 
 .detail-value {
   color: #333;
-}
-
-
-.table-container {
-  display: flex;
-  width: 900px;
 }

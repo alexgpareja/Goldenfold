@@ -4,6 +4,7 @@
     <table class="table">
       <thead>
         <tr>
+          <th>ID Asignacion</th>
           <th>ID Paciente</th>
           <th>Ubicación</th>
           <th>Fecha de Asignación</th>
@@ -14,6 +15,7 @@
       </thead>
       <tbody>
         <tr *ngFor="let asignacion of asignaciones">
+          <td>{{ asignacion.IdAsignacion }}</td>
           <td>{{ asignacion.IdPaciente }}</td>
           <td>{{ asignacion.IdCama }}</td>
           <td>{{ asignacion.FechaAsignacion | date:'dd/MM/yyyy HH:mm\'h\'' }}</td>

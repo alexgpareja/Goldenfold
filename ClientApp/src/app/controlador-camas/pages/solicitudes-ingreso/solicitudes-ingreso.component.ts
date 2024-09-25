@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ApiService, Ingreso, Cama, Asignacion } from '../../../services/api.service';
+import { ApiService, Ingreso, HistorialAlta, Cama } from '../../../services/api.service';
 import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
@@ -9,11 +9,15 @@ import { HttpErrorResponse } from '@angular/common/http';
 })
 export class SolicitudesIngresoComponent implements OnInit {
   solicitudesPendientes: Ingreso[] = [];
-  camasDisponibles: Cama[] = [];
   errorMensaje: string | null = null;
   solicitudSeleccionada: Ingreso | null = null;
-  formularioSeleccionado: 'seleccionarCama' | null = null;
-  camaSeleccionada: string | null = null;
+  formularioSeleccionado: 'alta' | 'seleccionarCama' | null = null;
+  camasDisponibles: Cama[] = [];
+  camaSeleccionada: number | null = null;
+
+  // Datos del formulario "Dar de Alta"
+  diagnostico: string = '';
+  tratamiento: string = '';
 
   constructor(private apiService: ApiService) {}
 
@@ -21,95 +25,119 @@ export class SolicitudesIngresoComponent implements OnInit {
     this.obtenerSolicitudesPendientes();
   }
 
-  // Obtener las solicitudes de ingreso con estado pendiente
   obtenerSolicitudesPendientes() {
     this.apiService.getIngresos(undefined, undefined, 'Pendiente').subscribe({
       next: (solicitudes: Ingreso[]) => {
-        this.solicitudesPendientes = solicitudes;
+        if (solicitudes.length > 0) {
+          this.solicitudesPendientes = solicitudes;
+          this.errorMensaje = null; // Limpiar mensaje de error si hay solicitudes
+        } else {
+          this.solicitudesPendientes = [];
+          this.errorMensaje = 'No hay solicitudes de ingreso pendientes.'; // Mostrar mensaje si no hay solicitudes
+        }
       },
-      error: (error) => {
-        this.errorMensaje = 'Error al cargar las solicitudes de ingreso.';
+      error: (error: HttpErrorResponse) => {
+        if (error.status === 404) {
+          this.errorMensaje = 'No hay solicitudes de ingreso pendientes.';
+        } else {
+          this.errorMensaje = 'Error al cargar las solicitudes de ingreso. Por favor, inténtalo de nuevo.';
+        }
+        this.solicitudesPendientes = [];
       }
     });
   }
 
-  // Método para asignar una cama a una solicitud de ingreso
-  asignarCama(solicitud: Ingreso) {
+  // Seleccionar una solicitud para realizar acciones
+  addAsignacion(solicitud: Ingreso) {
     this.solicitudSeleccionada = solicitud;
-    this.obtenerCamasDisponibles();
+    this.formularioSeleccionado = 'seleccionarCama'; // Mostrar el formulario para asignar cama
+    this.obtenerCamasDisponibles(); // Llamar a la API para obtener las camas disponibles
   }
 
-  // Obtener las camas disponibles
-  obtenerCamasDisponibles() {
-    this.apiService.getCamas(undefined, 'Disponible').subscribe({
-      next: (camas: Cama[]) => {
-        this.camasDisponibles = camas;
-      },
-      error: (error) => {
-        this.errorMensaje = 'Error al cargar las camas disponibles.';
-      }
-    });
-  }
-
-  // Mostrar el formulario de selección de cama
-  mostrarFormulario(tipo: 'seleccionarCama') {
+  // Mostrar el formulario de "Dar de Alta" o "Seleccionar Cama"
+  mostrarFormulario(tipo: 'alta' | 'seleccionarCama') {
     this.formularioSeleccionado = tipo;
   }
 
-  // Confirmar la selección de cama y asignarla
+  // Dar de alta al paciente
+  darDeAlta() {
+    if (!this.solicitudSeleccionada) {
+      console.error('No hay solicitud seleccionada');
+      return;
+    }
+
+    // Crear el objeto de historial de alta
+    const historialAlta: HistorialAlta = {
+      IdHistorial: 0,
+      IdPaciente: this.solicitudSeleccionada.IdPaciente,
+      IdMedico: this.solicitudSeleccionada.IdMedico,
+      Diagnostico: this.diagnostico,
+      Tratamiento: this.tratamiento,
+      FechaAlta: new Date()
+    };
+
+    // Crear historial de alta y actualizar el estado de la solicitud
+    this.apiService.addHistorialAlta(historialAlta).subscribe({
+      next: (response) => {
+        console.log('Paciente dado de alta correctamente:', response);
+        window.alert('Paciente dado de alta correctamente');
+        this.resetFormulario();
+        this.obtenerSolicitudesPendientes();
+      },
+      error: (err) => {
+        console.error('Error al dar de alta al paciente:', err);
+        window.alert('Hubo un error al dar de alta al paciente.');
+      }
+    });
+  }
+
+  // Obtener las camas disponibles para la asignación
+  obtenerCamasDisponibles() {
+    this.apiService.getCamas().subscribe({
+      next: (camas: Cama[]) => {
+        this.camasDisponibles = camas.filter(cama => cama.Estado === 'Disponible');
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error('Error al obtener las camas disponibles:', error);
+      }
+    });
+  }
+
+  // Confirmar la asignación de una cama
   confirmarCama() {
-    if (this.solicitudSeleccionada && this.camaSeleccionada) {
-      const asignacion = {
-        IdAsignacion: 0,
-        IdPaciente: this.solicitudSeleccionada.IdPaciente,
-        IdCama: 0,
-        FechaAsignacion: new Date(),
-        FechaLiberacion: new Date(),
-        AsignadoPor: 1
-        
-      };
-
-      this.apiService.addAsignacion(asignacion).subscribe({
-        next: () => {
-          alert('Cama asignada correctamente.');
-          this.actualizarEstadoSolicitud('Asignado');
-        },
-        error: (error) => {
-          this.errorMensaje = 'Error al asignar la cama.';
-        }
-      });
+    if (!this.solicitudSeleccionada || !this.camaSeleccionada) {
+      console.error('No hay solicitud o cama seleccionada');
+      return;
     }
+
+    this.apiService.addAsignacion({
+      IdAsignacion: 0,
+      IdPaciente: this.solicitudSeleccionada!.IdPaciente,
+      IdCama: this.camaSeleccionada!, 
+      FechaAsignacion: new Date(),  
+      FechaLiberacion: null,
+      AsignadoPor: 7 
+    }).subscribe({
+      next: (response) => {
+        console.log('Cama asignada correctamente:', response);
+        window.alert('Cama asignada correctamente');
+        this.resetFormulario();
+        this.obtenerSolicitudesPendientes();  
+      },
+      error: (err) => {
+        console.error('Error al asignar la cama:', err);
+        window.alert('Hubo un error al asignar la cama.');
+      }
+    });
+    
   }
 
-  // Actualizar el estado de la solicitud de ingreso tras la asignación de cama
-  actualizarEstadoSolicitud(nuevoEstado: string) {
-    if (this.solicitudSeleccionada) {
-      const solicitudActualizada = { ...this.solicitudSeleccionada, Estado: nuevoEstado };
-
-      this.apiService.updateIngreso(solicitudActualizada).subscribe({
-        next: () => {
-          alert('Estado de la solicitud actualizado.');
-          this.resetFormulario();
-        },
-        error: (error) => {
-          this.errorMensaje = 'Error al actualizar el estado de la solicitud.';
-        }
-      });
-    }
-  }
-
-  // Rechazar la solicitud de ingreso
-  rechazarSolicitud() {
-    if (this.solicitudSeleccionada) {
-      this.actualizarEstadoSolicitud('Rechazado');
-    }
-  }
-
-  // Método para resetear el formulario
+  // Método para resetear el formulario y volver al estado inicial
   resetFormulario() {
     this.solicitudSeleccionada = null;
     this.formularioSeleccionado = null;
+    this.diagnostico = '';
+    this.tratamiento = '';
     this.camaSeleccionada = null;
-    this.obtenerSolicitudesPendientes(); // Refrescar la lista de solicitudes pendientes
   }
 }

@@ -48,7 +48,7 @@ namespace HospitalApi
     public enum EstadoIngreso
     {
         Pendiente,
-        Asignado,
+        Ingresado,
         Rechazado
     }
 }

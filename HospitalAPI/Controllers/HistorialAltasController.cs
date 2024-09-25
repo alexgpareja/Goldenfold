@@ -106,10 +106,11 @@ namespace HospitalApi.Controllers
 
             // Buscar la consulta relacionada con el paciente
             var consulta = await _context.Consultas
-                .Where(c => c.IdPaciente == historialAltaDTO.IdPaciente && c.Estado == EstadoConsulta.pendiente)
-                .FirstOrDefaultAsync();
+    .Where(c => c.IdPaciente == historialAltaDTO.IdPaciente)
+    .FirstOrDefaultAsync();
 
-            if (consulta == null )
+
+            if (consulta == null)
             {
                 return NotFound("No se encontró una consulta pendiente para este paciente.");
             }
