@@ -12,8 +12,13 @@ import { ApiService, Habitacion } from '../../services/api.service';
 })
 export class HabitacionesComponent implements OnInit {
   habitaciones: Habitacion[] = [];
-  nuevaHabitacion: Habitacion = { IdHabitacion: 0, Edificio: '', Planta: '', NumeroHabitacion: '', TipoCama: ''  };
+  habitacionesPaginas: Habitacion[] = [];
+  nuevaHabitacion: Habitacion = { IdHabitacion: 0, Edificio: '', Planta: '', NumeroHabitacion: '', TipoCama: '' };
   habitacionParaActualizar: Habitacion | null = null;
+
+  itemsPorPagina: number = 5;
+  paginaActual: number = 1;
+  totalPaginas: number = 1;
 
   constructor(private apiService: ApiService) {}
 
@@ -31,6 +36,8 @@ export class HabitacionesComponent implements OnInit {
           NumeroHabitacion: item.NumeroHabitacion,
           TipoCama: item.TipoCama
         }));
+        this.totalPaginas = Math.ceil(this.habitaciones.length / this.itemsPorPagina);
+        this.actualizarPaginas();
       },
       error: (error: any) => {
         console.error('Error al obtener las habitaciones', error);
@@ -38,11 +45,25 @@ export class HabitacionesComponent implements OnInit {
     });
   }
 
+  actualizarPaginas(): void {
+    const inicio = (this.paginaActual - 1) * this.itemsPorPagina;
+    const fin = inicio + this.itemsPorPagina;
+    this.habitacionesPaginas = this.habitaciones.slice(inicio, fin);
+
+    // Si no hay habitaciones en la página actual y hay más páginas, ir a la última página
+    if (this.habitacionesPaginas.length === 0 && this.totalPaginas > 0) {
+      this.paginaActual = this.totalPaginas;
+      this.actualizarPaginas(); // Actualiza nuevamente las habitaciones para la nueva página
+    }
+  }
+
   agregarHabitacion(): void {
     this.apiService.addHabitacion(this.nuevaHabitacion).subscribe({
       next: (nuevaHabitacion: Habitacion) => {
         this.habitaciones.push(nuevaHabitacion);
         this.nuevaHabitacion = { IdHabitacion: 0, Edificio: '', Planta: '', NumeroHabitacion: '', TipoCama: "" };
+        this.totalPaginas = Math.ceil(this.habitaciones.length / this.itemsPorPagina);
+        this.actualizarPaginas();
       },
       error: (error: any) => {
         console.error('Error al agregar la habitación', error);
@@ -59,6 +80,7 @@ export class HabitacionesComponent implements OnInit {
             this.habitaciones[index] = habitacionActualizada;
           }
           this.habitacionParaActualizar = null;
+          this.actualizarPaginas();
         },
         error: (error: any) => {
           console.error('Error al actualizar la habitación', error);
@@ -71,6 +93,14 @@ export class HabitacionesComponent implements OnInit {
     this.apiService.deleteHabitacion(id).subscribe({
       next: () => {
         this.habitaciones = this.habitaciones.filter(h => h.IdHabitacion !== id);
+        this.totalPaginas = Math.ceil(this.habitaciones.length / this.itemsPorPagina);
+
+        // Si después de borrar, la página actual no tiene habitaciones
+        if (this.habitacionesPaginas.length === 0 && this.paginaActual > 1) {
+          this.paginaActual = this.totalPaginas; // Ir a la última página
+        }
+
+        this.actualizarPaginas(); // Actualizar la lista de habitaciones
       },
       error: (error: any) => {
         console.error('Error al borrar la habitación', error);
@@ -80,5 +110,29 @@ export class HabitacionesComponent implements OnInit {
 
   toggleActualizarHabitacion(habitacion: Habitacion): void {
     this.habitacionParaActualizar = habitacion;
+  }
+
+  paginaAnterior(): void {
+    if (this.paginaActual > 1) {
+      this.paginaActual--;
+      this.actualizarPaginas();
+    }
+  }
+
+  paginaSiguiente(): void {
+    if (this.paginaActual < this.totalPaginas) {
+      this.paginaActual++;
+      this.actualizarPaginas();
+    }
+  }
+
+  irAPrimeraPagina(): void {
+    this.paginaActual = 1;
+    this.actualizarPaginas();
+  }
+
+  irALaUltimaPagina(): void {
+    this.paginaActual = this.totalPaginas;
+    this.actualizarPaginas();
   }
 }
