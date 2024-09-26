@@ -46,51 +46,51 @@ input[type="text"] {
 .table-container {
   width: 100%;
   overflow-x: auto; /* Permite el desplazamiento horizontal si es necesario */
-  background-color: rgb(228, 224, 224);
+  background-color:  rgb(240, 239, 239);
   padding: 10px;
   margin: 5px;
   border-radius: 7px;
   box-shadow: 0 0 10px rgba(8, 8, 8, 0.1);
   margin-bottom: 0px;
-  padding-bottom: 0px;
+  padding-bottom: 10px;
 }
 
-.table {
+
+.taula {
   width: 100%;
   border-collapse: collapse;
   font-size: 12px; /* Tamaño de texto más pequeño para compactar todo */
   table-layout: auto;
 
+
 }
 
-.table th,
-.table td {
+.taula th,
+.taula td {
   padding: 10px 8px; /* Reduce el espacio dentro de las celdas */
   border: 1px solid #ccc;
   white-space: nowrap; /* Mantiene el texto en una sola línea */
   overflow: hidden; /* Oculta cualquier desbordamiento de contenido */
+
  }
 
-.table th {
+.taula th {
   background-color: #0078d4;
   color: white;
   font-size: 13px;
 }
 
-.table td {
-  background-color: rgb(228, 224, 224);
+tbody{
+  background-color: #fff;
 }
 
-.table td button {
-  font-size: 11px; /* Reduce el tamaño de los botones */
-  padding: 5px 10px; /* Ajusta el padding de los botones */
-  border-radius: 3px;
-}
+
 
 td button {
+  font-size: 11px;
   margin: 2px;
   padding: 5px 10px;
-  border: none;
+  border: 1px;
   border-radius: 3px;
   cursor: pointer;
 }
@@ -109,19 +109,19 @@ td button:hover{
   transition: 0.3s;
 }
 
-.table td {
-  background-color: rgb(228, 224, 224);
+.taula td {
+  background-color: #fff;
 }
 
-.table tr:nth-child(even) {
+.taula tr:nth-child(even) {
   background-color: #f9f9f9;
 }
 
-.table tr:hover {
+.taula tr:hover {
   background-color: #f1f1f1;
 }
 
-.table th span {
+.taula th span {
   font-size: 12px;
 }
 

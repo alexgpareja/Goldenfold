@@ -12,8 +12,9 @@
             <th>ID Paciente</th>
             <th>ID Médico</th>
             <th>Motivo</th>
-            <th>Fecha de Ingreso</th>
+            <th>Fecha de Solicitud</th>
             <th>Estado</th>
+            <th>Fecha de Ingreso</th>
             <th>Acciones</th>
           </tr>
         </thead>
@@ -24,6 +25,7 @@
             <td>{{ ingreso.Motivo }}</td>
             <td>{{ ingreso.FechaSolicitud | date: 'dd/MM/yyyy' }}</td>
             <td>{{ ingreso.Estado }}</td>
+            <td>{{ ingreso.FechaIngreso | date: 'dd/MM/yyyy' }}</td>
             <td>
               <!-- Botón para dar de alta -->
               <button (click)="darDeAlta(ingreso)">Dar de Alta</button>

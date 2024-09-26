@@ -37,6 +37,7 @@ export interface Ingreso {
   IdMedico: number;
   Motivo: string;
   FechaSolicitud: Date;
+  FechaIngreso: Date;
   Estado: string;
   IdAsignacion: number | null;
 }
