@@ -157,13 +157,30 @@ namespace HospitalApi.Controllers
             }
 
             var ingresoExiste = await _context.Ingresos.FindAsync(id);
+
             if (ingresoExiste == null)
             {
                 return NotFound($"No se encontró ningún ingreso con el ID {id}.");
             }
 
+            // Guardar el estado anterior para comparar cambios
+            var estadoAnterior = ingresoExiste.Estado;
+
             // Mapear los cambios desde DTO al modelo
             _mapper.Map(ingresoDTO, ingresoExiste);
+
+            // Si el estado ha cambiado de "Pendiente" a "Ingresado", actualizamos la FechaIngreso
+            if (estadoAnterior == EstadoIngreso.Pendiente && ingresoDTO.Estado == "Ingresado")
+            {
+                ingresoExiste.FechaIngreso = DateTime.Now; // Establecer la fecha de ingreso
+            }
+
+            // Si el estado es "Rechazado", no es necesario actualizar la FechaIngreso
+            // El estado será actualizado desde el DTO
+            if (ingresoDTO.Estado == "Rechazado")
+            {
+                ingresoExiste.FechaIngreso = null; // Si está rechazado, no hay ingreso
+            }
 
             try
             {
@@ -183,6 +200,12 @@ namespace HospitalApi.Controllers
 
             return NoContent();
         }
+
+        private bool IngresoExists(int id)
+        {
+            return _context.Ingresos.Any(e => e.IdIngreso == id);
+        }
+
 
         /// <summary>
         /// Elimina un ingreso específico de la base de datos por su ID.

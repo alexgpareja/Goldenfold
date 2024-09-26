@@ -30,6 +30,10 @@ namespace HospitalApi
         [Column("fecha_solicitud")]
         public DateTime FechaSolicitud { get; set; } = DateTime.Now;
 
+        [Required(ErrorMessage = "La fecha de ingreso es obligatoria.")]
+        [Column("fecha_ingreso")]
+        public DateTime FechaIngreso { get; set; } 
+
         [Required(ErrorMessage = "El estado del ingreso es obligatorio.")]
         [Column("estado")]
         public EstadoIngreso Estado { get; set; } = EstadoIngreso.Pendiente;
