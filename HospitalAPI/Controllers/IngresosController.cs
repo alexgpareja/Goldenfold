@@ -201,12 +201,6 @@ namespace HospitalApi.Controllers
             return NoContent();
         }
 
-        private bool IngresoExists(int id)
-        {
-            return _context.Ingresos.Any(e => e.IdIngreso == id);
-        }
-
-
         /// <summary>
         /// Elimina un ingreso específico de la base de datos por su ID.
         /// </summary>
