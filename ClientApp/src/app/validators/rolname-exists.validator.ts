@@ -12,22 +12,18 @@ export const asyncRolNameExistsValidator = (
   apiService: ApiService
 ): AsyncValidatorFn => {
   return (control: AbstractControl): Observable<ValidationErrors | null> => {
-    return of(control.value).pipe(
-      debounceTime(300),
+    const nombreRol = control.value?.trim();
+
+    if (!nombreRol) {
+      return of(null); // No hacer validación si el campo está vacío
+    }
+
+    return of(nombreRol).pipe(
+      debounceTime(300), // Evitar múltiples llamadas rápidas
       switchMap((value) =>
         apiService.getRoles(value).pipe(
-          map((roles) => {
-            // Filtrar los roles en el frontend
-            const rolesFiltrados = roles.filter(
-              (rol) => rol.NombreRol == value
-            );
-
-            if (rolesFiltrados.length > 0) {
-              return { asyncFieldExisting: true };
-            }
-            return null;
-          }),
-          catchError(() => of(null))
+          map((roles) => (roles.length > 0 ? { rolExists: true } : null)),
+          catchError(() => of(null)) // Si la API falla, no detener la validación
         )
       )
     );

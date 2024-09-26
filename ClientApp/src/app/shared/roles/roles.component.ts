@@ -2,20 +2,18 @@ import { Component, OnInit } from '@angular/core';
 import { ApiService, Rol } from '../../services/api.service';
 import { CommonModule } from '@angular/common';
 import {
+  FormsModule,
   ReactiveFormsModule,
   FormControl,
   FormGroup,
   Validators,
 } from '@angular/forms';
-import {
-  CustomValidators,
-  asyncRolNameExistsValidator,
-} from '../../validators';
+import { CustomValidators } from '../../validators/whitespace.validator';
 import { SharedModule } from '../shared.module';
 @Component({
   selector: 'app-roles',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, SharedModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, SharedModule],
   templateUrl: './roles.component.html',
   styleUrls: ['./roles.component.css'],
 })
@@ -41,19 +39,16 @@ export class RolesComponent implements OnInit {
     });
 
     this.agregarRolForm = new FormGroup({
-      NombreRol: new FormControl(
-        '',
-        [CustomValidators.noWhitespaceValidator()],
-        [asyncRolNameExistsValidator(this.apiService)]
-      ),
+      NombreRol: new FormControl('', [
+        CustomValidators.noWhitespaceValidator(),
+      ]),
     });
     this.actualizarRolForm = new FormGroup({
       IdRol: new FormControl({ value: '', disabled: true }),
-      NombreRol: new FormControl(
-        '',
-        [CustomValidators.noWhitespaceValidator()],
-        [asyncRolNameExistsValidator(this.apiService)]
-      ),
+      NombreRol: new FormControl('', [
+        Validators.required,
+        CustomValidators.noWhitespaceValidator(),
+      ]),
     });
   }
 

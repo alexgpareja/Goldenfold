@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS `asignaciones` (
   CONSTRAINT `fk_asignaciones_camas` FOREIGN KEY (`id_cama`) REFERENCES `camas` (`id_cama`),
   CONSTRAINT `fk_asignaciones_pacientes` FOREIGN KEY (`id_paciente`) REFERENCES `pacientes` (`id_paciente`),
   CONSTRAINT `fk_asignaciones_usuarios` FOREIGN KEY (`asignado_por`) REFERENCES `usuarios` (`id_usuario`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Volcando datos para la tabla db_goldenfold.asignaciones: ~0 rows (aproximadamente)
 
@@ -53,7 +53,7 @@ CREATE TABLE IF NOT EXISTS `camas` (
 
 -- Volcando datos para la tabla db_goldenfold.camas: ~40 rows (aproximadamente)
 INSERT INTO `camas` (`id_cama`, `ubicacion`, `estado`, `tipo`, `id_habitacion`) VALUES
-	(1, 'F1010101', 'NoDisponible', 'General', 1),
+	(1, 'F1010101', 'Disponible', 'General', 1),
 	(2, 'F1010102', 'Disponible', 'General', 1),
 	(3, 'F1010201', 'Disponible', 'General', 2),
 	(4, 'F1010202', 'Disponible', 'General', 2),
@@ -108,7 +108,7 @@ CREATE TABLE IF NOT EXISTS `consultas` (
   KEY `idx_id_medico` (`id_medico`),
   CONSTRAINT `fk_consultas_medicos` FOREIGN KEY (`id_medico`) REFERENCES `usuarios` (`id_usuario`),
   CONSTRAINT `fk_consultas_pacientes` FOREIGN KEY (`id_paciente`) REFERENCES `pacientes` (`id_paciente`)
-) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Volcando datos para la tabla db_goldenfold.consultas: ~0 rows (aproximadamente)
 
@@ -179,7 +179,7 @@ CREATE TABLE IF NOT EXISTS `ingresos` (
   CONSTRAINT `fk_ingresos_asignaciones` FOREIGN KEY (`id_asignacion`) REFERENCES `asignaciones` (`id_asignacion`),
   CONSTRAINT `fk_ingresos_medicos` FOREIGN KEY (`id_medico`) REFERENCES `usuarios` (`id_usuario`),
   CONSTRAINT `fk_ingresos_pacientes` FOREIGN KEY (`id_paciente`) REFERENCES `pacientes` (`id_paciente`)
-) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Volcando datos para la tabla db_goldenfold.ingresos: ~0 rows (aproximadamente)
 
