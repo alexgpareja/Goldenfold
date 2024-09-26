@@ -3,6 +3,7 @@ import { ApiService, Rol, Usuario } from '../../services/api.service';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 import { CustomValidators } from '../../validators/whitespace.validator';
+import { UserValidators } from '../../validators/usuarios.validators';
 
 @Component({
   selector: 'app-usuarios',
@@ -32,7 +33,7 @@ export class UsuariosComponent implements OnInit {
   crearFormularioUsuario(): void {
     this.usuarioForm = new FormGroup({
       Nombre: new FormControl('',[CustomValidators.noWhitespaceValidator(),Validators.pattern(' *[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ]+( [a-zA-ZáéíóúÁÉÍÓÚüÜñÑ]+)+ *')]), //no puede estar en blanco y tiene que tener minimo 2 palabras
-      NombreUsuario: new FormControl('',[CustomValidators.noWhitespaceValidator()],[CustomValidators.asyncFieldExisting(this.apiService)]),
+      NombreUsuario: new FormControl('',[CustomValidators.noWhitespaceValidator()],[UserValidators.asyncFieldExisting(this.apiService)]),
       Contrasenya: new FormControl('',[Validators.required]),
       IdRol: new FormControl('',[CustomValidators.noWhitespaceValidator()])
     });
