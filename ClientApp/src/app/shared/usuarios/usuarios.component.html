@@ -71,24 +71,40 @@
         id="nombre"
         formControlName="Nombre"
       />
+      <div *ngIf="usuarioForm.get('Nombre')?.invalid && usuarioForm.get('Nombre')?.touched">
+        <small *ngIf="usuarioForm.get('Nombre')?.hasError('whitespace')">El nombre no puede estar en blanco</small>
+        <br *ngIf="usuarioForm.get('Nombre')?.hasError('whitespace') && usuarioForm.get('Nombre')?.hasError('pattern')">
+        <small *ngIf="usuarioForm.get('Nombre')?.hasError('pattern')">Introduzca el nombre completo</small>
+      </div>
       <label for="nombreUsuario">Nombre Usuario:</label>
       <input
         type="text"
         id="nombreUsuario"
         formControlName="NombreUsuario"
       />
+      <div *ngIf="usuarioForm.get('NombreUsuario')?.invalid">
+        <small *ngIf="usuarioForm.get('NombreUsuario')?.hasError('whitespace')&&usuarioForm.get('NombreUsuario')?.touched">El nombre de usuario no puede estar en blanco</small>
+        <small *ngIf="usuarioForm.get('NombreUsuario')?.hasError('asyncFieldExisting')&&usuarioForm.get('NombreUsuario')?.dirty">El nombre de usuario ya existe</small>
+      </div>
       <label for="contrasenya">Contraseña:</label>
       <input
         type="password"
         id="contrasenya"
         formControlName="Contrasenya"
       />
-      <label for="idRol">ID Rol:</label>
-      <input
-        type="number"
-        id="idRol"
-        formControName="IdRol"
-      />
+      <div *ngIf="usuarioForm.get('Contrasenya')?.invalid&&usuarioForm.get('Contrasenya')?.touched">
+        <small *ngIf="usuarioForm.get('Contrasenya')?.hasError('required')">La contraseña es requerida</small>
+      </div>
+      <label for="idRol">Rol:</label>
+      <select formControlName="IdRol" required>
+        <option [value]="0" disabled>Selecciona un rol</option>
+        <option *ngFor="let rol of roles" [value]="rol.IdRol">
+          {{ rol.NombreRol }}
+        </option>
+      </select>
+      <div *ngIf="usuarioForm.get('IdRol')?.invalid && usuarioForm.get('IdRol')?.touched">
+        <small *ngIf="usuarioForm.get('IdRol')?.hasError('required')">El rol es requerido</small>
+      </div>
       <div class="botones">
         <button type="submit">Guardar</button>
         <button type="button" (click)="cancelarActualizarUsuario()">
@@ -147,7 +163,7 @@
         </option>
       </select>
       <div *ngIf="usuarioForm.get('IdRol')?.invalid && usuarioForm.get('IdRol')?.touched">
-        <small *ngIf="usuarioForm.get('IdRol')?.hasError('whitespace')">El rol es requerido</small>
+        <small *ngIf="usuarioForm.get('IdRol')?.hasError('required')">El rol es requerido</small>
       </div>
   
       <div class="botones">

@@ -265,7 +265,7 @@ getPacientes(Nombre?: string, numSS?: string): Observable<Paciente[]> {
   ): Observable<Usuario[]> {
     let params = new HttpParams();
     if (nombre) params = params.set('nombre', nombre);
-    if (nombreUsuario) params = params.set('nombreUsuario', nombreUsuario);
+    if (nombreUsuario) params = params.set('usuario', nombreUsuario);
     if (idRol) params = params.set('idRol', idRol.toString());
     return this.http.get<Usuario[]>(`${this.apiUrl}/Usuarios`, { params });
   }
