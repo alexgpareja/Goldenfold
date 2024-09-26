@@ -32,10 +32,11 @@ export class UsuariosComponent implements OnInit {
 
   crearFormularioUsuario(): void {
     this.usuarioForm = new FormGroup({
-      Nombre: new FormControl('',[CustomValidators.noWhitespaceValidator(),Validators.pattern(' *[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ]+( [a-zA-ZáéíóúÁÉÍÓÚüÜñÑ]+)+ *')]), //no puede estar en blanco y tiene que tener minimo 2 palabras
-      NombreUsuario: new FormControl('',[CustomValidators.noWhitespaceValidator()],[UserValidators.asyncFieldExisting(this.apiService)]),
+      IdUsuario: new FormControl({ value: '', disabled: true }),
+      Nombre: new FormControl('',[UserValidators.noWhitespaceValidator(),Validators.pattern(' *[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ]+( [a-zA-ZáéíóúÁÉÍÓÚüÜñÑ]+)+ *')]), //no puede estar en blanco y tiene que tener minimo 2 palabras
+      NombreUsuario: new FormControl('',[UserValidators.noWhitespaceValidator()],[UserValidators.asyncFieldExisting(this.apiService)]),
       Contrasenya: new FormControl('',[Validators.required]),
-      IdRol: new FormControl('',[CustomValidators.noWhitespaceValidator()])
+      IdRol: new FormControl('',[Validators.required])
     });
 
   }
@@ -104,6 +105,7 @@ export class UsuariosComponent implements OnInit {
       this.usuarioParaActualizar.IdUsuario === usuario.IdUsuario
     ) {
       this.usuarioParaActualizar = null;
+      this.usuarioForm.reset();
     } else {
       this.usuarioParaActualizar = { ...usuario };
       this.usuarioForm.patchValue(this.usuarioParaActualizar); //rellenar el formulario con los datos del usuario
@@ -117,6 +119,7 @@ export class UsuariosComponent implements OnInit {
         next: () => {
           this.obtenerUsuarios();
           this.usuarioParaActualizar = null;
+          this.usuarioForm.reset();
           alert('Usuario actualizado con éxito.');
         },
         error: (error: any) =>{
