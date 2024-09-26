@@ -69,7 +69,7 @@ export class SolicitudesIngresoComponent implements OnInit {
     // Crear el objeto de historial de alta
     const historialAlta: HistorialAlta = {
       IdHistorial: 0,
-      IdPaciente: this.solicitudSeleccionada.IdPaciente,
+      IdPaciente: this.solicitudSeleccionada.IdPaciente, 
       IdMedico: this.solicitudSeleccionada.IdMedico,
       Diagnostico: this.diagnostico,
       Tratamiento: this.tratamiento,
