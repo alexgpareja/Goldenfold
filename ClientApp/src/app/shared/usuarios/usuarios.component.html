@@ -109,7 +109,11 @@
         required
       />
       <div *ngIf="usuarioForm.get('Nombre')?.invalid && usuarioForm.get('Nombre')?.touched">
-        <small>El nombre es requerido</small>
+        <small *ngIf="usuarioForm.get('Nombre')?.hasError('whitespace')">El nombre no puede estar en blanco</small>
+        <!-- Mostrar <br> solo si existen ambos errores -->
+        <br *ngIf="usuarioForm.get('Nombre')?.hasError('whitespace') && usuarioForm.get('Nombre')?.hasError('pattern')">
+
+        <small *ngIf="usuarioForm.get('Nombre')?.hasError('pattern')">Introduzca el nombre completo</small>
       </div>
   
       <label for="nombreUsuario">Nombre de usuario:</label>
@@ -120,7 +124,8 @@
         required
       />
       <div *ngIf="usuarioForm.get('NombreUsuario')?.invalid && usuarioForm.get('NombreUsuario')?.touched">
-        <small>El nombre de usuario es requerido</small>
+        <small *ngIf="usuarioForm.get('NombreUsuario')?.hasError('whitespace')">El nombre de usuario no puede estar en blanco</small>
+        <small *ngIf="usuarioForm.get('NombreUsuario')?.hasError('asyncFieldExisting')">El nombre de usuario ya existe</small>
       </div>
   
       <label for="contrasenya">Contraseña:</label>
@@ -131,7 +136,7 @@
         required
       />
       <div *ngIf="usuarioForm.get('Contrasenya')?.invalid && usuarioForm.get('Contrasenya')?.touched">
-        <small>La contraseña es requerida</small>
+        <small *ngIf="usuarioForm.get('Contrasenya')?.hasError('required')">La contraseña es requerida</small>
       </div>
   
       <label for="idRol">Rol:</label>
@@ -142,7 +147,7 @@
         </option>
       </select>
       <div *ngIf="usuarioForm.get('IdRol')?.invalid && usuarioForm.get('IdRol')?.touched">
-        <small>El rol es requerido</small>
+        <small *ngIf="usuarioForm.get('IdRol')?.hasError('whitespace')">El rol es requerido</small>
       </div>
   
       <div class="botones">
