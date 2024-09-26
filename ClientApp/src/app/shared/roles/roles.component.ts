@@ -1,16 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService, Rol } from '../../services/api.service';
 import { CommonModule } from '@angular/common';
-import {
-  ReactiveFormsModule,
-  FormControl,
-  FormGroup,
-  Validators,
-} from '@angular/forms';
-import {
-  CustomValidators,
-  asyncRolNameExistsValidator,
-} from '../../validators';
+import { ReactiveFormsModule, FormControl, FormGroup } from '@angular/forms';
+import { CustomValidators, asyncRolNameExistsValidator } from '../../validators';
 import { SharedModule } from '../shared.module';
 @Component({
   selector: 'app-roles',
@@ -29,7 +21,7 @@ export class RolesComponent implements OnInit {
 
   rolParaActualizar: Rol | null = null;
 
-  constructor(private apiService: ApiService) {}
+  constructor(private apiService: ApiService) { }
 
   ngOnInit(): void {
     this.obtenerRoles();

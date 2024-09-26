@@ -4,7 +4,11 @@
 
   <!-- Filtro y botón de agregar paciente -->
   <div class="filter-container">
-    <input type="text" placeholder="Buscar Paciente/Dni..." [(ngModel)]="filtro" (ngModelChange)="aplicarFiltro($event)">
+    <app-search-box [searchOptions]="[
+      { label: 'DNI', value: 'nombreRol' },
+      { label: 'ID', value: 'id' }
+    ]" [defaultSearchType]="'nombreRol'" placeholder="Escribe para buscar..." (search)="filtrarRoles($event)">
+  </app-search-box>
 
 
     <button (click)="toggleFormularioAgregar()" class="btn-agregar">

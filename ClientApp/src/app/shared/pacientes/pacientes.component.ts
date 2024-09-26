@@ -3,11 +3,11 @@ import { ApiService, Paciente } from '../../services/api.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
-
+import { SharedModule } from '../shared.module';
 @Component({
   selector: 'app-pacientes',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, SharedModule],
   templateUrl: './pacientes.component.html',
   styleUrls: ['./pacientes.component.css'],
 })
