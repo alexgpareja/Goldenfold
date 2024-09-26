@@ -5,7 +5,7 @@
   <div class="filters-container">
     <div class="search-container">
       <label for="searchNumeroSS">NSS:</label>
-      <input placeholder="NSS" name="searchNumeroSS" type="text" id="searchUbicacion" (input)="filtrarPorNumeroSS($event)">
+      <input placeholder="NSS" name="searchNumeroSS"  [(ngModel)]="numSSFiltro" type="text" id="searchNumeroSS" (input)="filtrarPorNumeroSS()">
     </div>
     
     <div class="filter-container">

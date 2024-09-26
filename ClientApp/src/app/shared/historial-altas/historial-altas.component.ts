@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ApiService, HistorialAlta } from '../../services/api.service';
+import { ApiService, HistorialAlta, Paciente } from '../../services/api.service';
 
 @Component({
   selector: 'app-historial-altas',
@@ -27,11 +27,14 @@ export class HistorialAltasComponent implements OnInit {
 
   historialSeleccionado: HistorialAlta | null = null;
   mostrarFormularioActualizar: boolean = false;
+  numSSFiltro : string = "";
+  pacientes: Paciente[] = []; 
 
   constructor(private apiService: ApiService) {}
 
   ngOnInit(): void {
     this.obtenerHistorialAltas();
+    this.obtenerPacientes();
   }
 
   inicializarHistorialAlta(): HistorialAlta {
@@ -45,6 +48,19 @@ export class HistorialAltasComponent implements OnInit {
     };
   }
 
+  obtenerPacientes() {
+    this.apiService.getPacientes().subscribe({
+        next: (data: Paciente[]) => {
+            this.pacientes = data;
+            console.log('Pacientes:', this.pacientes);
+        },
+        error: (error: any) => {
+            console.error('Error al obtener pacientes', error);
+        }
+    });
+}
+
+
   filtrarPorFecha() {
     if (this.fechaAltaFiltro) {
       this.historialAltasPaginadas = this.historialAltas.filter(historial => {
@@ -57,8 +73,28 @@ export class HistorialAltasComponent implements OnInit {
     }
   }
   
-  filtrarPorNumeroSS(event:Event) {}
+  filtrarPorNumeroSS(): void {
+    const filtroSS = this.numSSFiltro.trim().toLowerCase(); // Normalize input for case insensitive comparison
 
+    if (filtroSS.length > 0) {
+        // Filter historialAltas based on the associated patient's SeguridadSocial
+        this.historialAltasPaginadas = this.historialAltas.filter(historial => {
+            const paciente = this.getPacienteById(historial.IdPaciente);
+            return paciente && paciente.SeguridadSocial && 
+                   paciente.SeguridadSocial.toLowerCase().includes(filtroSS); 
+        }); 
+        console.log(this.historialAltasPaginadas);
+    } else {
+        this.historialAltasPaginadas = [...this.historialAltas];
+    }
+
+    this.calcularTotalPaginasYActualizar();  // Recalculate pagination after filtering
+  }
+
+  getPacienteById(idPaciente: number): Paciente | undefined {
+    // Look for the patient by their ID in the pacientes array
+    return this.pacientes.find(paciente => paciente.IdPaciente === idPaciente);
+  }
   aplicarFiltros(): void {
    //para poder filtrar por varios filtros
   }
@@ -66,6 +102,7 @@ export class HistorialAltasComponent implements OnInit {
     this.apiService.getHistorialAltas().subscribe({
       next: (data: HistorialAlta[]) => {
         this.historialAltas = data;
+        this.historialAltasPaginadas = [...this.historialAltas]
         this.calcularTotalPaginasYActualizar();
       },
       error: (error: any) => {
@@ -142,7 +179,7 @@ export class HistorialAltasComponent implements OnInit {
   }
 
   actualizarHistorialAltasPaginados(): void {
-    let historialAltasFiltrados = this.historialAltas.filter(ha =>
+    /*let historialAltasFiltrados = this.historialAltas.filter(ha =>
       ha.Diagnostico.toLowerCase().includes(this.filtro.toLowerCase()) ||
       ha.Tratamiento.toLowerCase().includes(this.filtro.toLowerCase())
     );
@@ -154,9 +191,9 @@ export class HistorialAltasComponent implements OnInit {
         return (valorA < valorB ? -1 : valorA > valorB ? 1 : 0) * (this.orden === 'asc' ? 1 : -1);
       });
     }
-
+  */
     const inicio = (this.paginaActual - 1) * this.historialAltasPorPagina;
-    this.historialAltasPaginadas = historialAltasFiltrados.slice(inicio, inicio + this.historialAltasPorPagina);
+    this.historialAltasPaginadas = this.historialAltasPaginadas.slice(inicio, inicio + this.historialAltasPorPagina);
   }
 
   cambiarPagina(incremento: number): void {
