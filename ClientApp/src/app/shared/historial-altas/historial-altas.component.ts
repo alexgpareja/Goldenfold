@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ApiService, HistorialAlta } from '../../services/api.service';
+import { ApiService, HistorialAlta, Paciente } from '../../services/api.service';
 
 @Component({
   selector: 'app-historial-altas',
@@ -23,25 +23,43 @@ export class HistorialAltasComponent implements OnInit {
   orden: 'asc' | 'desc' = 'asc';
   filtro: string = ''; 
   fechaAltaFiltro: string | undefined;
+  notificacion: string | null = null;
 
+  historialSeleccionado: HistorialAlta | null = null;
+  mostrarFormularioActualizar: boolean = false;
+  numSSFiltro : string = "";
+  pacientes: Paciente[] = []; 
 
-  
   constructor(private apiService: ApiService) {}
 
   ngOnInit(): void {
     this.obtenerHistorialAltas();
+    this.obtenerPacientes();
   }
 
   inicializarHistorialAlta(): HistorialAlta {
     return {
       IdHistorial: 0,
       IdPaciente: 0,
-      IdMedico: 0,
+      IdMedico: 1,
       FechaAlta: new Date(),
       Diagnostico: '',
       Tratamiento: ''
     };
   }
+
+  obtenerPacientes() {
+    this.apiService.getPacientes().subscribe({
+        next: (data: Paciente[]) => {
+            this.pacientes = data;
+            console.log('Pacientes:', this.pacientes);
+        },
+        error: (error: any) => {
+            console.error('Error al obtener pacientes', error);
+        }
+    });
+}
+
 
   filtrarPorFecha() {
     if (this.fechaAltaFiltro) {
@@ -55,8 +73,28 @@ export class HistorialAltasComponent implements OnInit {
     }
   }
   
-  filtrarPorNumeroSS(event:Event) {}
+  filtrarPorNumeroSS(): void {
+    const filtroSS = this.numSSFiltro.trim().toLowerCase(); // Normalize input for case insensitive comparison
 
+    if (filtroSS.length > 0) {
+        // Filter historialAltas based on the associated patient's SeguridadSocial
+        this.historialAltasPaginadas = this.historialAltas.filter(historial => {
+            const paciente = this.getPacienteById(historial.IdPaciente);
+            return paciente && paciente.SeguridadSocial && 
+                   paciente.SeguridadSocial.toLowerCase().includes(filtroSS); 
+        }); 
+        console.log(this.historialAltasPaginadas);
+    } else {
+        this.historialAltasPaginadas = [...this.historialAltas];
+    }
+
+    this.calcularTotalPaginasYActualizar();  // Recalculate pagination after filtering
+  }
+
+  getPacienteById(idPaciente: number): Paciente | undefined {
+    // Look for the patient by their ID in the pacientes array
+    return this.pacientes.find(paciente => paciente.IdPaciente === idPaciente);
+  }
   aplicarFiltros(): void {
    //para poder filtrar por varios filtros
   }
@@ -64,72 +102,13 @@ export class HistorialAltasComponent implements OnInit {
     this.apiService.getHistorialAltas().subscribe({
       next: (data: HistorialAlta[]) => {
         this.historialAltas = data;
+        this.historialAltasPaginadas = [...this.historialAltas]
         this.calcularTotalPaginasYActualizar();
       },
       error: (error: any) => {
         console.error('Error al obtener el historial de altas', error);
       }
     });
-  }
-
-  calcularTotalPaginasYActualizar(): void {
-    this.totalPaginas = Math.ceil(this.historialAltas.length / this.historialAltasPorPagina);
-    this.actualizarHistorialAltasPaginados();
-  }
-
-  actualizarHistorialAltasPaginados(): void {
-    let historialAltasFiltrados = this.historialAltas.filter(ha =>
-      ha.Diagnostico.toLowerCase().includes(this.filtro.toLowerCase()) ||
-      ha.Tratamiento.toLowerCase().includes(this.filtro.toLowerCase())
-    );
-
-    if (this.columnaOrdenada) {
-      historialAltasFiltrados.sort((a, b) => {
-        const valorA = a[this.columnaOrdenada!];
-        const valorB = b[this.columnaOrdenada!];
-        return (valorA < valorB ? -1 : valorA > valorB ? 1 : 0) * (this.orden === 'asc' ? 1 : -1);
-      });
-    }
-
-    const inicio = (this.paginaActual - 1) * this.historialAltasPorPagina;
-    this.historialAltasPaginadas = historialAltasFiltrados.slice(inicio, inicio + this.historialAltasPorPagina);
-  }
-
-  cambiarPagina(incremento: number): void {
-    const nuevaPagina = this.paginaActual + incremento;
-    if (nuevaPagina > 0 && nuevaPagina <= this.totalPaginas) {
-      this.paginaActual = nuevaPagina;
-      this.actualizarHistorialAltasPaginados();
-    }
-  if(this.historialAltasPaginadas.length === 0 && this.paginaActual > 1){
-    this.paginaActual--;
-    this.obtenerHistorialAltas();
-  }
-  }
-
-  paginaAnterior(): void {
-    if (this.paginaActual > 1) {
-      this.paginaActual--;
-      this.obtenerHistorialAltas();
-    }
-  }
-  // Método para ir a la primera página
-irAPrimeraPagina(): void {
-  this.paginaActual = 1;
-  this.obtenerHistorialAltas();
-}
-
-// Método para ir a la última página
-irALaUltimaPagina(): void {
-  this.paginaActual = this.totalPaginas;
-  this.obtenerHistorialAltas();
-}
-
-  paginaSiguiente(): void {
-    if (this.paginaActual < this.totalPaginas) {
-      this.paginaActual++;
-      this.obtenerHistorialAltas();
-    }
   }
 
   agregarHistorialAlta(): void {
@@ -155,12 +134,10 @@ irALaUltimaPagina(): void {
     if (this.historialAltaParaActualizar) {
       this.apiService.updateHistorialAlta(this.historialAltaParaActualizar).subscribe({
         next: (historialAltaActualizado: HistorialAlta) => {
-          const index = this.historialAltas.findIndex(ha => ha.IdHistorial === historialAltaActualizado.IdHistorial);
-          if (index !== -1) {
-            this.historialAltas[index] = historialAltaActualizado;
-            this.calcularTotalPaginasYActualizar();
-          }
+          this.obtenerHistorialAltas();
           this.historialAltaParaActualizar = null;
+          this.mostrarFormularioActualizar = false;
+          this.notificacion = "Historial Alta actualizado con éxito"
         },
         error: (error: any) => {
           console.error('Error al actualizar el historial de alta', error);
@@ -191,4 +168,67 @@ irALaUltimaPagina(): void {
     this.filtro = filtro;
     this.actualizarHistorialAltasPaginados();
   }
+
+  cerrarPopup(): void {
+    this.historialSeleccionado = null;
+  }
+
+  calcularTotalPaginasYActualizar(): void {
+    this.totalPaginas = Math.ceil(this.historialAltas.length / this.historialAltasPorPagina);
+    this.actualizarHistorialAltasPaginados();
+  }
+
+  actualizarHistorialAltasPaginados(): void {
+    /*let historialAltasFiltrados = this.historialAltas.filter(ha =>
+      ha.Diagnostico.toLowerCase().includes(this.filtro.toLowerCase()) ||
+      ha.Tratamiento.toLowerCase().includes(this.filtro.toLowerCase())
+    );
+
+    if (this.columnaOrdenada) {
+      historialAltasFiltrados.sort((a, b) => {
+        const valorA = a[this.columnaOrdenada!];
+        const valorB = b[this.columnaOrdenada!];
+        return (valorA < valorB ? -1 : valorA > valorB ? 1 : 0) * (this.orden === 'asc' ? 1 : -1);
+      });
+    }
+  */
+    const inicio = (this.paginaActual - 1) * this.historialAltasPorPagina;
+    this.historialAltasPaginadas = this.historialAltasPaginadas.slice(inicio, inicio + this.historialAltasPorPagina);
+  }
+
+  cambiarPagina(incremento: number): void {
+    const nuevaPagina = this.paginaActual + incremento;
+    if (nuevaPagina > 0 && nuevaPagina <= this.totalPaginas) {
+      this.paginaActual = nuevaPagina;
+      this.actualizarHistorialAltasPaginados();
+    }
+  if(this.historialAltasPaginadas.length === 0 && this.paginaActual > 1){
+    this.paginaActual--;
+    this.obtenerHistorialAltas();
+  }
+  }
+
+  paginaAnterior(): void {
+    if (this.paginaActual > 1) {
+      this.paginaActual--;
+      this.obtenerHistorialAltas();
+    }
+  }
+  irAPrimeraPagina(): void {
+    this.paginaActual = 1;
+    this.obtenerHistorialAltas();
+  }
+
+  irALaUltimaPagina(): void {
+    this.paginaActual = this.totalPaginas;
+    this.obtenerHistorialAltas();
+  }
+
+  paginaSiguiente(): void {
+    if (this.paginaActual < this.totalPaginas) {
+      this.paginaActual++;
+      this.obtenerHistorialAltas();
+    }
+  }
+
 }

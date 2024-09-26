@@ -14,7 +14,7 @@
 
   <!-- Tabla de pacientes -->
   <div class="table-container">
-    <table class="table">
+    <table class="taula">
       <thead>
         <tr>
           <th (click)="ordenar('IdPaciente')">ID Paciente <span *ngIf="columnaOrdenada === 'IdPaciente'">{{ orden === 'asc' ? '▲' : '▼' }}</span></th>
@@ -191,32 +191,32 @@
         <div class="form-container">
           <div class="form-column">
             <div class="form-group">
-              <label for="nombre">Nombre*</label>
+              <label for="nombre">Nombre(*)</label>
               <input type="text" id="nombre" [(ngModel)]="nuevoPaciente.Nombre" name="Nombre" required placeholder="Nombre del paciente" />
               <div *ngIf="pacienteForm.submitted && pacienteForm.controls['Nombre']?.invalid" class="error-message">El nombre es requerido.</div>
             </div>
 
             <div class="form-group">
-              <label for="edad">DNI*</label>
+              <label for="edad">DNI(*)</label>
               <input type="text" id="dni" [(ngModel)]="nuevoPaciente.Dni" name="Dni" required placeholder="DNI del paciente" min="0" />
               <div *ngIf="pacienteForm.submitted && pacienteForm.controls['Dni']?.invalid" class="error-message">Por favor, ingresa una edad válida.</div>
             </div>
 
             <div class="form-group">
-              <label for="fecha-nacimiento">Fecha de Nacimiento*</label>
+              <label for="fecha-nacimiento">Fecha de Nacimiento(*)</label>
               <input type="date" id="fecha-nacimiento" [(ngModel)]="nuevoPaciente.FechaNacimiento" name="FechaNacimiento" required />
               <div *ngIf="pacienteForm.submitted && pacienteForm.controls['FechaNacimiento']?.invalid" class="error-message">La fecha de nacimiento es requerida.</div>
             </div>
 
             <div class="form-group">
-              <label for="seguridad-social">Número de Seguridad Social*</label>
+              <label for="seguridad-social">Número de Seguridad Social(*)</label>
               <input type="text" id="seguridad-social" [(ngModel)]="nuevoPaciente.SeguridadSocial" name="SeguridadSocial" required minlength="12" maxlength="12" placeholder="Número de Seguridad Social" />
               <div *ngIf="pacienteForm.submitted && pacienteForm.controls['SeguridadSocial']?.invalid" class="error-message">El número de seguridad social debe tener 12 dígitos.</div>
             </div>
           </div>
           <div class="form-column">
             <div class="form-group">
-              <label for="direccion">Dirección</label>
+              <label for="direccion">Dirección(*)</label>
               <input type="text" id="direccion" [(ngModel)]="nuevoPaciente.Direccion" name="Direccion" required placeholder="Dirección del paciente" />
               <div *ngIf="pacienteForm.submitted && pacienteForm.controls['Direccion']?.invalid" class="error-message">La dirección es requerida.</div>
             </div>
@@ -228,7 +228,7 @@
             </div>
 
             <div class="form-group">
-              <label for="email">Email</label>
+              <label for="email">Email(*)</label>
               <input type="email" id="email" [(ngModel)]="nuevoPaciente.Email" name="Email" required placeholder="Correo electrónico" />
               <div *ngIf="pacienteForm.submitted && pacienteForm.controls['Email']?.invalid" class="error-message">El correo electrónico es inválido.</div>
             </div>

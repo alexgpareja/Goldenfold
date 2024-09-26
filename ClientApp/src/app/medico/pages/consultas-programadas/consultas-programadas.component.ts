@@ -108,7 +108,8 @@ export class ConsultasProgramadasComponent {
       IdMedico: this.consultaSeleccionada!.IdMedico,
       Motivo: `${this.motivoIngreso} INGRESAR EN:  ${this.tipoCama.charAt(0).toUpperCase() + this.tipoCama.slice(1)}`, 
       FechaSolicitud: new Date(),
-      Estado: 'Pendiente', // O el estado inicial que prefieras
+      Estado: 'Pendiente',
+      FechaIngreso: new Date(),
       IdAsignacion: null // Esto será null hasta que se asigne una cama
     };
 

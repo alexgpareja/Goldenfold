@@ -27,15 +27,10 @@ export class PacientesComponent implements OnInit {
     Email: '',
     HistorialMedico: '',
   };
+
   pacienteSeleccionado: Paciente | null = null;  // Paciente seleccionado para ver más detalles
-
-  mostrarDetallesPaciente(paciente: Paciente): void {
-    this.pacienteSeleccionado = paciente;
-  }
-
-  cerrarPopup(): void {
-    this.pacienteSeleccionado = null;
-  }
+  notificacion: string | null = null;
+  mostrarFormularioActualizar: boolean = false;
 
   pacienteParaActualizar: Paciente | null = null;
 
@@ -46,6 +41,17 @@ export class PacientesComponent implements OnInit {
   filtro: string = '';  // Filtro combinado para nombre y DNI
   orden: 'asc' | 'desc' = 'asc';
   columnaOrdenada: keyof Paciente | '' = '';
+
+  mostrarFormularioAgregar: boolean = false;
+  mostrarMas: boolean = false;
+
+  mostrarDetallesPaciente(paciente: Paciente): void {
+    this.pacienteSeleccionado = paciente;
+  }
+
+  cerrarPopup(): void {
+    this.pacienteSeleccionado = null;
+  }
 
   constructor(private apiService: ApiService) {}
 
@@ -111,17 +117,17 @@ export class PacientesComponent implements OnInit {
       this.filtrarPacientes();
     }
   }
-  // Método para ir a la primera página
-irAPrimeraPagina(): void {
-  this.paginaActual = 1;
-  this.filtrarPacientes();
-}
+    // Método para ir a la primera página
+  irAPrimeraPagina(): void {
+    this.paginaActual = 1;
+    this.filtrarPacientes();
+  }
 
-// Método para ir a la última página
-irALaUltimaPagina(): void {
-  this.paginaActual = this.totalPaginas;
-  this.filtrarPacientes();
-}
+  // Método para ir a la última página
+  irALaUltimaPagina(): void {
+    this.paginaActual = this.totalPaginas;
+    this.filtrarPacientes();
+  }
 
   paginaSiguiente(): void {
     if (this.paginaActual < this.totalPaginas) {
@@ -255,7 +261,7 @@ irALaUltimaPagina(): void {
     };
   }
 
-  mostrarFormularioActualizar: boolean = false;
+ 
 
   toggleActualizarPaciente(paciente: Paciente): void {
     if (
@@ -305,7 +311,7 @@ irALaUltimaPagina(): void {
         next: () => {
           this.pacientes = this.pacientes.filter((p) => p.IdPaciente !== id);
           this.filtrarPacientes();
-          alert('Paciente eliminado con éxito');
+          this.notificacion = 'Paciente eliminado con éxito';
         },
         error: (error: any) => {
           console.error('Error al borrar el paciente', error);
@@ -313,6 +319,9 @@ irALaUltimaPagina(): void {
         },
       });
     }
+    setTimeout(() => {
+      this.notificacion = null;
+    }, 2000);
   }
 
   aplicarFiltro(filtro: string): void {  // Método combinado para nombre y DNI
@@ -320,19 +329,19 @@ irALaUltimaPagina(): void {
     this.filtrarPacientes();
   }
 
-  mostrarFormularioAgregar: boolean = false;
+
 
   // Método para alternar la visibilidad del formulario de agregar paciente
   toggleFormularioAgregar(): void {
     this.mostrarFormularioAgregar = !this.mostrarFormularioAgregar;
   }
 
-  mostrarMas: boolean = false;
+ 
 
   // Método para alternar la visibilidad de la información adicional
   toggleMostrarMas(): void {
     this.mostrarMas = !this.mostrarMas;
   }
 
-  notificacion: string | null = null;
+ 
 }

@@ -30,7 +30,7 @@ namespace HospitalApi
         [Column("fecha_solicitud")]
         public DateTime FechaSolicitud { get; set; } = DateTime.Now;
 
-        [Column("fecha_consulta")]
+        [Column("fecha_consulta")] 
         public DateTime? FechaConsulta { get; set; }
 
         [Required(ErrorMessage = "El estado de la consulta es obligatorio.")]

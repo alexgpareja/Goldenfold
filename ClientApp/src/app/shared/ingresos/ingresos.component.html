@@ -9,6 +9,7 @@
             <th>ID Médico</th>
             <th>Motivo de Ingreso</th>
             <th>Fecha de Solicitud</th>
+            <th>Fecha de Ingreso</th>
             <th>Estado</th>
             <th>Acciones</th>
           </tr>
@@ -19,7 +20,8 @@
             <td>{{ ingreso.IdPaciente }}</td>
             <td>{{ ingreso.IdMedico }}</td>
             <td>{{ ingreso.Motivo }}</td>
-            <td>{{ ingreso.FechaSolicitud | date: 'dd/MM/yyyy' }}</td>
+            <td>{{ ingreso.FechaSolicitud | date:'dd/MM/yyyy HH:mm\'h\'' }}</td>
+            <td>{{ ingreso.FechaIngreso | date:'dd/MM/yyyy HH:mm\'h\'' }}</td>
             <td>{{ ingreso.Estado }}</td>
             <td>
               <button (click)="toggleActualizarIngreso(ingreso)">Actualizar</button>
@@ -39,6 +41,8 @@
                   <input type="text" id="motivo" [(ngModel)]="ingresoParaActualizar.Motivo" name="motivo" required>
                   <label for="fechaSolicitud">Fecha de Solicitud:</label>
                   <input type="date" id="fechaSolicitud" [(ngModel)]="ingresoParaActualizar.FechaSolicitud" name="fechaSolicitud" required>
+                  <label for="fechaIngreso">Fecha de FechaIngreso:</label>
+                  <input type="date" id="fechaIngreso" [(ngModel)]="ingresoParaActualizar.FechaIngreso" name="fechaIngreso" required>
                   <label for="estado">Estado:</label>
                   <input type="text" id="estado" [(ngModel)]="ingresoParaActualizar.Estado" name="estado" required>
                   <button type="submit">Guardar</button>
@@ -61,6 +65,8 @@
         <input type="text" id="motivo" [(ngModel)]="nuevoIngreso.Motivo" name="motivo" required>
         <label for="fechaSolicitud">Fecha de Solicitud:</label>
         <input type="date" id="fechaSolicitud" [(ngModel)]="nuevoIngreso.FechaSolicitud" name="fechaSolicitud" required>
+        <label for="fechaIngreso">Fecha de Ingreso:</label>
+        <input type="date" id="fechaIngreso" [(ngModel)]="nuevoIngreso.FechaIngreso" name="fechaIngreso" required>
         <label for="estado">Estado:</label>
         <input type="text" id="estado" [(ngModel)]="nuevoIngreso.Estado" name="estado" required>
         <button type="submit">Agregar</button>
