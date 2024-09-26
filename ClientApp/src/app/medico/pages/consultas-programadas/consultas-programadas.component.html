@@ -19,7 +19,7 @@
         <tr *ngFor="let consulta of consultasPendientes">
           <td>{{ consulta.IdPaciente }}</td>
           <td>{{ consulta.Motivo }}</td>
-          <td>{{ consulta.FechaSolicitud | date: 'dd/MM/yyyy' }}</td>
+          <td>{{ consulta.FechaSolicitud | date:'dd/MM/yyyy HH:mm\'h\'' }}</td>
           <td>
             <!-- Botón para evaluar la consulta -->
             <button (click)="evaluar(consulta)">Evaluar</button>

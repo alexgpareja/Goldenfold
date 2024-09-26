@@ -311,7 +311,7 @@ export class PacientesComponent implements OnInit {
         next: () => {
           this.pacientes = this.pacientes.filter((p) => p.IdPaciente !== id);
           this.filtrarPacientes();
-          alert('Paciente eliminado con éxito');
+          this.notificacion = 'Paciente eliminado con éxito';
         },
         error: (error: any) => {
           console.error('Error al borrar el paciente', error);
@@ -319,6 +319,9 @@ export class PacientesComponent implements OnInit {
         },
       });
     }
+    setTimeout(() => {
+      this.notificacion = null;
+    }, 2000);
   }
 
   aplicarFiltro(filtro: string): void {  // Método combinado para nombre y DNI
