@@ -24,13 +24,14 @@
           <td colspan="4">
             <div class="form-container">
               <h3>Actualizar Habitación</h3>
-              <form (ngSubmit)="actualizarHabitacion()">
+              <form class="formulari" (ngSubmit)="actualizarHabitacion()">
                 <label for="edificio">Edificio:</label>
                 <input type="text" id="edificio" [(ngModel)]="habitacionParaActualizar.Edificio" name="edificio">
                 <label for="planta">Planta:</label>
                 <input type="text" id="planta" [(ngModel)]="habitacionParaActualizar.Planta" name="planta">
                 <label for="numeroHabitacion">Número de Habitación:</label>
                 <input type="text" id="numeroHabitacion" [(ngModel)]="habitacionParaActualizar.NumeroHabitacion" name="numeroHabitacion">
+
                 <button type="submit" (click)="habitacionParaActualizar = null">Guardar</button>
               </form>
             </div>

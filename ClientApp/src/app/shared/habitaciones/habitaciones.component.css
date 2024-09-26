@@ -110,11 +110,14 @@ td button:hover {
   box-sizing: border-box;
   margin-bottom: 15px;
 }
-
+.form-container .formulari{
+  display: grid;
+  grid-template-rows: (7,1fr);
+}
 /* Estilo del botón de envío */
 .form-container button {
-  width: 100%;
-  padding: 10px 20px;
+  width: 7.4%;
+  padding: 10px ;
   border: none;
   border-radius: 5px;
   background-color: #28a745;
@@ -123,6 +126,7 @@ td button:hover {
   font-size: 16px;
   transition: background-color 0.3s ease;
   display: inline-flex;
+
 }
 
 .form-container button:hover {
