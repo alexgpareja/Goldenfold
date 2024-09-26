@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS `asignaciones` (
   CONSTRAINT `fk_asignaciones_camas` FOREIGN KEY (`id_cama`) REFERENCES `camas` (`id_cama`),
   CONSTRAINT `fk_asignaciones_pacientes` FOREIGN KEY (`id_paciente`) REFERENCES `pacientes` (`id_paciente`),
   CONSTRAINT `fk_asignaciones_usuarios` FOREIGN KEY (`asignado_por`) REFERENCES `usuarios` (`id_usuario`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Volcando datos para la tabla db_goldenfold.asignaciones: ~0 rows (aproximadamente)
 
@@ -49,7 +49,7 @@ CREATE TABLE IF NOT EXISTS `camas` (
   UNIQUE KEY `unique_ubicacion` (`ubicacion`),
   KEY `idx_id_habitacion` (`id_habitacion`),
   CONSTRAINT `fk_camas_habitaciones` FOREIGN KEY (`id_habitacion`) REFERENCES `habitaciones` (`id_habitacion`)
-) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=55 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Volcando datos para la tabla db_goldenfold.camas: ~40 rows (aproximadamente)
 INSERT INTO `camas` (`id_cama`, `ubicacion`, `estado`, `tipo`, `id_habitacion`) VALUES
@@ -108,7 +108,7 @@ CREATE TABLE IF NOT EXISTS `consultas` (
   KEY `idx_id_medico` (`id_medico`),
   CONSTRAINT `fk_consultas_medicos` FOREIGN KEY (`id_medico`) REFERENCES `usuarios` (`id_usuario`),
   CONSTRAINT `fk_consultas_pacientes` FOREIGN KEY (`id_paciente`) REFERENCES `pacientes` (`id_paciente`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Volcando datos para la tabla db_goldenfold.consultas: ~0 rows (aproximadamente)
 
@@ -120,7 +120,7 @@ CREATE TABLE IF NOT EXISTS `habitaciones` (
   `numero_habitacion` varchar(5) DEFAULT NULL,
   PRIMARY KEY (`id_habitacion`),
   KEY `idx_numero_habitacion` (`numero_habitacion`)
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Volcando datos para la tabla db_goldenfold.habitaciones: ~20 rows (aproximadamente)
 INSERT INTO `habitaciones` (`id_habitacion`, `edificio`, `planta`, `numero_habitacion`) VALUES
@@ -158,7 +158,7 @@ CREATE TABLE IF NOT EXISTS `historialaltas` (
   KEY `idx_id_medico` (`id_medico`),
   CONSTRAINT `fk_historialaltas_medicos` FOREIGN KEY (`id_medico`) REFERENCES `usuarios` (`id_usuario`),
   CONSTRAINT `fk_historialaltas_pacientes` FOREIGN KEY (`id_paciente`) REFERENCES `pacientes` (`id_paciente`)
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Volcando datos para la tabla db_goldenfold.historialaltas: ~0 rows (aproximadamente)
 
@@ -169,7 +169,8 @@ CREATE TABLE IF NOT EXISTS `ingresos` (
   `id_medico` int(11) DEFAULT NULL,
   `motivo` text DEFAULT NULL,
   `fecha_solicitud` datetime DEFAULT current_timestamp(),
-  `estado` enum('Pendiente','Asignado','Rechazado') DEFAULT 'Pendiente',
+  `estado` enum('Pendiente','Ingresado','Rechazado') DEFAULT 'Pendiente',
+  `fecha_ingreso` datetime DEFAULT NULL,
   `id_asignacion` int(11) DEFAULT NULL,
   PRIMARY KEY (`id_ingreso`),
   KEY `idx_id_paciente` (`id_paciente`),
@@ -178,11 +179,9 @@ CREATE TABLE IF NOT EXISTS `ingresos` (
   CONSTRAINT `fk_ingresos_asignaciones` FOREIGN KEY (`id_asignacion`) REFERENCES `asignaciones` (`id_asignacion`),
   CONSTRAINT `fk_ingresos_medicos` FOREIGN KEY (`id_medico`) REFERENCES `usuarios` (`id_usuario`),
   CONSTRAINT `fk_ingresos_pacientes` FOREIGN KEY (`id_paciente`) REFERENCES `pacientes` (`id_paciente`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Volcando datos para la tabla db_goldenfold.ingresos: ~1 rows (aproximadamente)
-INSERT INTO `ingresos` (`id_ingreso`, `id_paciente`, `id_medico`, `motivo`, `fecha_solicitud`, `estado`, `id_asignacion`) VALUES
-	(1, 37, 6, 'ho,a', '2024-09-18 11:40:22', 'Pendiente', NULL);
+-- Volcando datos para la tabla db_goldenfold.ingresos: ~0 rows (aproximadamente)
 
 -- Volcando estructura para tabla db_goldenfold.pacientes
 CREATE TABLE IF NOT EXISTS `pacientes` (
@@ -200,17 +199,17 @@ CREATE TABLE IF NOT EXISTS `pacientes` (
   PRIMARY KEY (`id_paciente`),
   UNIQUE KEY `unique_dni` (`dni`),
   UNIQUE KEY `unique_seguridad_social` (`seguridad_social`)
-) ENGINE=InnoDB AUTO_INCREMENT=49 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=52 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Volcando datos para la tabla db_goldenfold.pacientes: ~18 rows (aproximadamente)
+-- Volcando datos para la tabla db_goldenfold.pacientes: ~20 rows (aproximadamente)
 INSERT INTO `pacientes` (`id_paciente`, `nombre`, `dni`, `fecha_nacimiento`, `seguridad_social`, `estado`, `fecha_registro`, `direccion`, `telefono`, `email`, `historial_medico`) VALUES
-	(31, 'María Fernández', '12345678A', '1985-05-12', '123456789012', 'Registrado', '2024-09-16 15:50:04', 'Calle Mayor 12, Madrid', '600123456', 'maria.fernandez@example.com', 'Historial médico de María Fernández.'),
+	(31, 'María Fernández Gomez', '12345678A', '1985-05-12', '123456789012', 'Registrado', '2024-09-16 15:50:04', 'Calle Mayor 12, Madrid', '600123456', 'maria.fernandez@example.com', 'Historial médico de María Fernández.'),
 	(32, 'Juan Pérez', '87654321B', '1978-11-23', '987654321098', 'Registrado', '2024-09-16 15:50:04', 'Avenida del Sol 15, Sevilla', '610987654', 'juan.perez@example.com', 'Historial médico de Juan Pérez.'),
 	(33, 'Lucía Martínez', '23456789C', '1992-07-30', '234567890123', 'Registrado', '2024-09-16 15:50:04', 'Calle de la Luna 5, Valencia', '620345678', 'lucia.martinez@example.com', 'Historial médico de Lucía Martínez.'),
 	(34, 'Pedro Sánchez', '34567890D', '1980-09-18', '345678901234', 'Registrado', '2024-09-16 15:50:04', 'Calle del Río 3, Barcelona', '630987654', 'pedro.sanchez@example.com', 'Historial médico de Pedro Sánchez.'),
 	(35, 'Carmen Ramírez', '45678901E', '1965-12-10', '456789012345', 'Registrado', '2024-09-16 15:50:04', 'Avenida de los Pinos 20, Málaga', '640654321', 'carmen.ramirez@example.com', 'Historial médico de Carmen Ramírez.'),
 	(36, 'Luis Torres', '56789012F', '1990-03-22', '567890123456', 'Registrado', '2024-09-16 15:50:04', 'Calle del Olmo 7, Zaragoza', '650321987', 'luis.torres@example.com', 'Historial médico de Luis Torres.'),
-	(37, 'Ana Gutiérrez', '67890123A', '1988-06-05', '678901234567', 'Registrado', '2024-09-16 15:50:04', 'Plaza Mayor 4, Bilbao', '660432567', 'ana.gutierrez@example.com', 'Historial médico de Ana Gutiérrez.'),
+	(37, 'Ana Gutiérrez Sanchez', '67890123A', '1988-06-05', '678901234567', 'Registrado', '2024-09-16 15:50:04', 'Plaza Mayor 4, Bilbao', '660432567', 'ana.gutierrez@example.com', 'Historial médico de Ana Gutiérrez.'),
 	(38, 'Pablo Díaz', '78901234H', '1995-01-13', '789012345678', 'Registrado', '2024-09-16 15:50:04', 'Avenida de la Estrella 11, Valladolid', '670543219', 'pablo.diaz@example.com', 'Historial médico de Pablo Díaz.'),
 	(39, 'Laura Moreno', '89012345I', '1977-04-19', '890123456789', 'Registrado', '2024-09-16 15:50:04', 'Calle de los Cipreses 9, Alicante', '680654321', 'laura.moreno@example.com', 'Historial médico de Laura Moreno.'),
 	(40, 'Sergio Gómez', '90123456J', '1982-09-01', '901234567890', 'Registrado', '2024-09-16 15:50:04', 'Avenida del Parque 6, Murcia', '690765432', 'sergio.gomez@example.com', 'Historial médico de Sergio Gómez.'),
@@ -221,7 +220,9 @@ INSERT INTO `pacientes` (`id_paciente`, `nombre`, `dni`, `fecha_nacimiento`, `se
 	(45, 'Clara Vázquez', '45678901O', '1970-06-14', '456789012355', 'Registrado', '2024-09-16 15:50:04', 'Calle de las Flores 18, León', '644321098', 'clara.vazquez@example.com', 'Historial médico de Clara Vázquez.'),
 	(46, 'Daniel', '63980959W', '2024-09-16', '062271692408', 'Registrado', '2024-09-16 20:59:00', 'string', '175249383', 'user@example.com', 'string'),
 	(47, 'Daniel Nita', '60078906P', '2024-09-02', '123456789011', 'Registrado', '2024-09-17 09:56:59', 'Calle falsa 123', '123456789', 'daniel.nita@hotmail.com', 'hola'),
-	(48, 'maria', '60078906E', '2024-09-09', '123456789885', 'Registrado', '2024-09-18 10:57:20', 'Calle falsa 123', '123456789', 'daniel.nita@hotmail.com', 'asdfs');
+	(48, 'maria', '60078906E', '2024-09-09', '123456789885', 'Registrado', '2024-09-18 10:57:20', 'Calle falsa 123', '123456789', 'daniel.nita@hotmail.com', 'asdfs'),
+	(50, 'Daniel Nita', '60078906Q', '2024-09-19', '123456789010', 'Registrado', '2024-09-20 09:06:24', 'Calle falsa 123', '123456789', 'daniel.nita@hotmail.com', 'dolor de muelas'),
+	(51, 'Alex Gil', '60078908A', '2024-09-02', '123456782343', 'Registrado', '2024-09-20 10:57:35', 'Calle falsa 123', '345678909', 'daniel.nita@hotmail.com', 'historial medico');
 
 -- Volcando estructura para tabla db_goldenfold.roles
 CREATE TABLE IF NOT EXISTS `roles` (
@@ -229,7 +230,7 @@ CREATE TABLE IF NOT EXISTS `roles` (
   `nombre_rol` varchar(50) NOT NULL,
   PRIMARY KEY (`id_rol`),
   UNIQUE KEY `unique_nombre_rol` (`nombre_rol`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Volcando datos para la tabla db_goldenfold.roles: ~4 rows (aproximadamente)
 INSERT INTO `roles` (`id_rol`, `nombre_rol`) VALUES
@@ -249,7 +250,7 @@ CREATE TABLE IF NOT EXISTS `usuarios` (
   UNIQUE KEY `unique_nombre_usuario` (`nombre_usuario`),
   KEY `idx_id_rol` (`id_rol`),
   CONSTRAINT `fk_usuarios_roles` FOREIGN KEY (`id_rol`) REFERENCES `roles` (`id_rol`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Volcando datos para la tabla db_goldenfold.usuarios: ~12 rows (aproximadamente)
 INSERT INTO `usuarios` (`id_usuario`, `nombre`, `nombre_usuario`, `contrasenya`, `id_rol`) VALUES
