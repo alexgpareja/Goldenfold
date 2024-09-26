@@ -1,20 +1,14 @@
-/* Estilo general de la sección de solicitudes de ingreso */
+/* Estilo general de la sección de consultas */
 .solicitudes-ingreso-section {
   font-family: Arial, sans-serif;
   margin: 20px;
-  max-width: 100%;
-  background-color: #f9f9f9;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Estilo para el título de la sección */
-.solicitudes-ingreso-section h2 {
-  font-size: 1.5rem;
+/* Estilo para el título principal */
+h2 {
+  font-size: 1.8rem;
   color: #333;
   margin-bottom: 20px;
-  text-align: center;
   font-weight: bold;
 }
 

@@ -34,6 +34,7 @@ namespace HospitalApi.Controllers
         {
             IQueryable<Ingreso> query = _context.Ingresos;
 
+            // Filtros opcionales
             if (idPaciente.HasValue)
                 query = query.Where(i => i.IdPaciente == idPaciente.Value);
 
@@ -52,17 +53,14 @@ namespace HospitalApi.Controllers
                 }
             }
 
-
+            // Ejecutar la consulta
             var ingresos = await query.ToListAsync();
 
-            if (!ingresos.Any())
-            {
-                return NotFound("No se encontraron ingresos con los criterios de búsqueda proporcionados.");
-            }
-
+            // Mapeo y devolución de la lista (puede estar vacía)
             var ingresosDTO = _mapper.Map<IEnumerable<IngresoDTO>>(ingresos);
-            return Ok(ingresosDTO);
+            return Ok(ingresosDTO);  // Devolver una lista vacía si no hay ingresos, en lugar de un 404.
         }
+
 
         /// <summary>
         /// Obtiene un ingreso específico por su ID.
@@ -95,50 +93,50 @@ namespace HospitalApi.Controllers
         /// <response code="400">Si los datos proporcionados no son válidos.</response>
         /// <response code="500">Si se produce un error en el servidor al procesar la solicitud.</response>
         [HttpPost]
-public async Task<ActionResult<IngresoDTO>> CreateIngreso(IngresoCreateDTO ingresoDTO)
-{
-    // Verificar si el paciente y el médico existen
-    if (!await _context.Pacientes.AnyAsync(p => p.IdPaciente == ingresoDTO.IdPaciente))
-    {
-        return BadRequest("El paciente especificado no existe.");
-    }
+        public async Task<ActionResult<IngresoDTO>> CreateIngreso(IngresoCreateDTO ingresoDTO)
+        {
+            // Verificar si el paciente y el médico existen
+            if (!await _context.Pacientes.AnyAsync(p => p.IdPaciente == ingresoDTO.IdPaciente))
+            {
+                return BadRequest("El paciente especificado no existe.");
+            }
 
-    if (!await _context.Usuarios.AnyAsync(u => u.IdUsuario == ingresoDTO.IdMedico))
-    {
-        return BadRequest("El médico especificado no existe.");
-    }
+            if (!await _context.Usuarios.AnyAsync(u => u.IdUsuario == ingresoDTO.IdMedico))
+            {
+                return BadRequest("El médico especificado no existe.");
+            }
 
-    // Mapea desde DTO a modelo de entidad
-    var ingreso = _mapper.Map<Ingreso>(ingresoDTO);
+            // Mapea desde DTO a modelo de entidad
+            var ingreso = _mapper.Map<Ingreso>(ingresoDTO);
 
-    // Guardar el ingreso en la base de datos
-    _context.Ingresos.Add(ingreso);
-    await _context.SaveChangesAsync();
+            // Guardar el ingreso en la base de datos
+            _context.Ingresos.Add(ingreso);
+            await _context.SaveChangesAsync();
 
-    // Buscar la consulta relacionada con el paciente
-    var consulta = await _context.Consultas
-        .Where(c => c.IdPaciente == ingresoDTO.IdPaciente && c.Estado == EstadoConsulta.pendiente)
-        .FirstOrDefaultAsync();
+            // Buscar la consulta relacionada con el paciente
+            var consulta = await _context.Consultas
+                .Where(c => c.IdPaciente == ingresoDTO.IdPaciente && c.Estado == EstadoConsulta.pendiente)
+                .FirstOrDefaultAsync();
 
-    if (consulta == null)
-    {
-        return NotFound("No se encontró una consulta pendiente para este paciente.");
-    }
+            if (consulta == null)
+            {
+                return NotFound("No se encontró una consulta pendiente para este paciente.");
+            }
 
-    // Cambiar el estado de la consulta a "completada" y asignar la fecha de consulta
-    consulta.Estado = EstadoConsulta.completada;
-    consulta.FechaConsulta = DateTime.Now;
+            // Cambiar el estado de la consulta a "completada" y asignar la fecha de consulta
+            consulta.Estado = EstadoConsulta.completada;
+            consulta.FechaConsulta = DateTime.Now;
 
-    // Guardar los cambios de la consulta
-    _context.Consultas.Update(consulta);
-    await _context.SaveChangesAsync();
+            // Guardar los cambios de la consulta
+            _context.Consultas.Update(consulta);
+            await _context.SaveChangesAsync();
 
-    // Mapea la entidad de vuelta a DTO para la respuesta
-    var ingresoDTOResult = _mapper.Map<IngresoDTO>(ingreso);
+            // Mapea la entidad de vuelta a DTO para la respuesta
+            var ingresoDTOResult = _mapper.Map<IngresoDTO>(ingreso);
 
-    // Devuelve la respuesta
-    return CreatedAtAction(nameof(GetIngreso), new { id = ingresoDTOResult.IdIngreso }, ingresoDTOResult);
-}
+            // Devuelve la respuesta
+            return CreatedAtAction(nameof(GetIngreso), new { id = ingresoDTOResult.IdIngreso }, ingresoDTOResult);
+        }
 
         /// <summary>
         /// Actualiza un ingreso existente en la base de datos.
@@ -197,17 +195,40 @@ public async Task<ActionResult<IngresoDTO>> CreateIngreso(IngresoCreateDTO ingre
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteIngreso(int id)
         {
+            // Buscar el ingreso que se va a eliminar
             var ingreso = await _context.Ingresos.FindAsync(id);
-
             if (ingreso == null)
             {
                 return NotFound($"No se encontró ningún ingreso con el ID {id}.");
             }
 
+            // Verificar si el ingreso tiene una asignación relacionada
+            if (ingreso.IdAsignacion.HasValue)
+            {
+                // Buscar la asignación relacionada
+                var asignacion = await _context.Asignaciones.FindAsync(ingreso.IdAsignacion.Value);
+                if (asignacion != null)
+                {
+                    // Actualizar el estado de la cama a "Disponible"
+                    var cama = await _context.Camas.FindAsync(asignacion.IdCama);
+                    if (cama != null)
+                    {
+                        cama.Estado = EstadoCama.Disponible;
+                        _context.Camas.Update(cama); // Actualizar el estado de la cama
+                    }
+
+                    // Eliminar la asignación relacionada
+                    _context.Asignaciones.Remove(asignacion);
+                }
+            }
+
+            // Eliminar el ingreso
             _context.Ingresos.Remove(ingreso);
+
+            // Guardar los cambios en la base de datos
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return NoContent(); // Devolver un código 204 (sin contenido) como respuesta
         }
 
         private bool IngresoExists(int id)

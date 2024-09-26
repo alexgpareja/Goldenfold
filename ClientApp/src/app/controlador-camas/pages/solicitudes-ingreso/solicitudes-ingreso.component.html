@@ -26,7 +26,7 @@
           <td>{{ solicitud.Estado }}</td>
           <td>
             <!-- Botón para asignar cama -->
-            <button (click)="asignarCama(solicitud)">Asignar Cama</button>
+            <button (click)="addAsignacion(solicitud)">Asignar Cama</button>
           </td>
         </tr>
       </tbody>
@@ -35,7 +35,7 @@
 
   <!-- Mensaje si no hay solicitudes pendientes -->
   <ng-template #noSolicitudes>
-    <p>No hay solicitudes de ingreso pendientes en este momento.</p>
+    <p></p>
   </ng-template>
 
   <!-- Opciones de acciones para la solicitud seleccionada -->
@@ -43,8 +43,22 @@
     <h3>Acciones para la solicitud de ingreso del paciente: {{ solicitudSeleccionada.IdPaciente }}</h3>
     
     <!-- Botones para "Rechazar" o "Seleccionar Cama" -->
-    <button (click)="rechazarSolicitud()">Rechazar</button> 
+    <button (click)="mostrarFormulario('alta')">Dar de Alta</button> 
     <button (click)="mostrarFormulario('seleccionarCama')">Seleccionar Cama</button>
+
+    <!-- Formulario para "Dar de Alta" -->
+    <div *ngIf="formularioSeleccionado === 'alta'">
+      <h4>Formulario de Alta</h4>
+      <form (ngSubmit)="darDeAlta()">
+        <label for="diagnostico">Diagnóstico:</label>
+        <input id="diagnostico" [(ngModel)]="diagnostico" name="diagnostico" required />
+
+        <label for="tratamiento">Tratamiento:</label>
+        <input id="tratamiento" [(ngModel)]="tratamiento" name="tratamiento" required />
+
+        <button type="submit">Confirmar Alta</button>
+      </form>
+    </div>
 
     <!-- Formulario para seleccionar cama -->
     <div *ngIf="formularioSeleccionado === 'seleccionarCama'">
