@@ -23,9 +23,11 @@ export class HistorialAltasComponent implements OnInit {
   orden: 'asc' | 'desc' = 'asc';
   filtro: string = ''; 
   fechaAltaFiltro: string | undefined;
+  notificacion: string | null = null;
 
+  historialSeleccionado: HistorialAlta | null = null;
+  mostrarFormularioActualizar: boolean = false;
 
-  
   constructor(private apiService: ApiService) {}
 
   ngOnInit(): void {
@@ -36,7 +38,7 @@ export class HistorialAltasComponent implements OnInit {
     return {
       IdHistorial: 0,
       IdPaciente: 0,
-      IdMedico: 0,
+      IdMedico: 1,
       FechaAlta: new Date(),
       Diagnostico: '',
       Tratamiento: ''
@@ -70,6 +72,68 @@ export class HistorialAltasComponent implements OnInit {
         console.error('Error al obtener el historial de altas', error);
       }
     });
+  }
+
+  agregarHistorialAlta(): void {
+    this.apiService.addHistorialAlta(this.nuevoHistorialAlta).subscribe({
+      next: (nuevoHistorialAlta: HistorialAlta) => {
+        this.historialAltas.push(nuevoHistorialAlta);
+        this.calcularTotalPaginasYActualizar();
+        this.nuevoHistorialAlta = this.inicializarHistorialAlta();
+      },
+      error: (error: any) => {
+        console.error('Error al agregar el historial de alta', error);
+      }
+    });
+  }
+
+  toggleActualizarHistorialAlta(historialAlta: HistorialAlta): void {
+    this.historialAltaParaActualizar = this.historialAltaParaActualizar?.IdHistorial === historialAlta.IdHistorial
+      ? null
+      : { ...historialAlta };
+  }
+
+  actualizarHistorialAlta(): void {
+    if (this.historialAltaParaActualizar) {
+      this.apiService.updateHistorialAlta(this.historialAltaParaActualizar).subscribe({
+        next: (historialAltaActualizado: HistorialAlta) => {
+          this.obtenerHistorialAltas();
+          this.historialAltaParaActualizar = null;
+          this.mostrarFormularioActualizar = false;
+          this.notificacion = "Historial Alta actualizado con éxito"
+        },
+        error: (error: any) => {
+          console.error('Error al actualizar el historial de alta', error);
+        }
+      });
+    }
+  }
+
+  borrarHistorialAlta(id: number): void {
+    this.apiService.deleteHistorialAlta(id).subscribe({
+      next: () => {
+        this.historialAltas = this.historialAltas.filter(historialAlta => historialAlta.IdHistorial !== id);
+        this.calcularTotalPaginasYActualizar();
+      },
+      error: (error: any) => {
+        console.error('Error al borrar el historial de alta', error);
+      }
+    });
+  }
+
+  ordenar(columna: keyof HistorialAlta): void {
+    this.columnaOrdenada = this.columnaOrdenada === columna ? columna : columna;
+    this.orden = this.columnaOrdenada === columna && this.orden === 'asc' ? 'desc' : 'asc';
+    this.actualizarHistorialAltasPaginados();
+  }
+
+  aplicarFiltro(filtro: string): void {
+    this.filtro = filtro;
+    this.actualizarHistorialAltasPaginados();
+  }
+
+  cerrarPopup(): void {
+    this.historialSeleccionado = null;
   }
 
   calcularTotalPaginasYActualizar(): void {
@@ -113,17 +177,15 @@ export class HistorialAltasComponent implements OnInit {
       this.obtenerHistorialAltas();
     }
   }
-  // Método para ir a la primera página
-irAPrimeraPagina(): void {
-  this.paginaActual = 1;
-  this.obtenerHistorialAltas();
-}
+  irAPrimeraPagina(): void {
+    this.paginaActual = 1;
+    this.obtenerHistorialAltas();
+  }
 
-// Método para ir a la última página
-irALaUltimaPagina(): void {
-  this.paginaActual = this.totalPaginas;
-  this.obtenerHistorialAltas();
-}
+  irALaUltimaPagina(): void {
+    this.paginaActual = this.totalPaginas;
+    this.obtenerHistorialAltas();
+  }
 
   paginaSiguiente(): void {
     if (this.paginaActual < this.totalPaginas) {
@@ -132,63 +194,4 @@ irALaUltimaPagina(): void {
     }
   }
 
-  agregarHistorialAlta(): void {
-    this.apiService.addHistorialAlta(this.nuevoHistorialAlta).subscribe({
-      next: (nuevoHistorialAlta: HistorialAlta) => {
-        this.historialAltas.push(nuevoHistorialAlta);
-        this.calcularTotalPaginasYActualizar();
-        this.nuevoHistorialAlta = this.inicializarHistorialAlta();
-      },
-      error: (error: any) => {
-        console.error('Error al agregar el historial de alta', error);
-      }
-    });
-  }
-
-  toggleActualizarHistorialAlta(historialAlta: HistorialAlta): void {
-    this.historialAltaParaActualizar = this.historialAltaParaActualizar?.IdHistorial === historialAlta.IdHistorial
-      ? null
-      : { ...historialAlta };
-  }
-
-  actualizarHistorialAlta(): void {
-    if (this.historialAltaParaActualizar) {
-      this.apiService.updateHistorialAlta(this.historialAltaParaActualizar).subscribe({
-        next: (historialAltaActualizado: HistorialAlta) => {
-          const index = this.historialAltas.findIndex(ha => ha.IdHistorial === historialAltaActualizado.IdHistorial);
-          if (index !== -1) {
-            this.historialAltas[index] = historialAltaActualizado;
-            this.calcularTotalPaginasYActualizar();
-          }
-          this.historialAltaParaActualizar = null;
-        },
-        error: (error: any) => {
-          console.error('Error al actualizar el historial de alta', error);
-        }
-      });
-    }
-  }
-
-  borrarHistorialAlta(id: number): void {
-    this.apiService.deleteHistorialAlta(id).subscribe({
-      next: () => {
-        this.historialAltas = this.historialAltas.filter(historialAlta => historialAlta.IdHistorial !== id);
-        this.calcularTotalPaginasYActualizar();
-      },
-      error: (error: any) => {
-        console.error('Error al borrar el historial de alta', error);
-      }
-    });
-  }
-
-  ordenar(columna: keyof HistorialAlta): void {
-    this.columnaOrdenada = this.columnaOrdenada === columna ? columna : columna;
-    this.orden = this.columnaOrdenada === columna && this.orden === 'asc' ? 'desc' : 'asc';
-    this.actualizarHistorialAltasPaginados();
-  }
-
-  aplicarFiltro(filtro: string): void {
-    this.filtro = filtro;
-    this.actualizarHistorialAltasPaginados();
-  }
 }
