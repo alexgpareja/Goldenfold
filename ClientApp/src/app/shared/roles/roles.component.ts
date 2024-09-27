@@ -2,56 +2,61 @@ import { Component, OnInit } from '@angular/core';
 import { ApiService, Rol } from '../../services/api.service';
 import { CommonModule } from '@angular/common';
 import {
-  FormsModule,
   ReactiveFormsModule,
   FormControl,
   FormGroup,
   Validators,
 } from '@angular/forms';
-import { CustomValidators } from '../../validators/whitespace.validator';
+import {
+  CustomValidators,
+  asyncRolNameExistsValidator,
+} from '../../validators';
 import { SharedModule } from '../shared.module';
 @Component({
   selector: 'app-roles',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, SharedModule],
+  imports: [CommonModule, ReactiveFormsModule, SharedModule],
   templateUrl: './roles.component.html',
   styleUrls: ['./roles.component.css'],
 })
 export class RolesComponent implements OnInit {
   roles: Rol[] = [];
-
+ 
   // Formularios Reactivos
   agregarRolForm!: FormGroup;
   actualizarRolForm!: FormGroup;
   searchRolForm!: FormGroup;
-
+ 
   rolParaActualizar: Rol | null = null;
-
-  constructor(private apiService: ApiService) { }
-
+ 
+  constructor(private apiService: ApiService) {}
+ 
   ngOnInit(): void {
     this.obtenerRoles();
-
+ 
     // Inicializamos los formularios reactivos
     this.searchRolForm = new FormGroup({
       searchTerm: new FormControl(''),
       searchType: new FormControl('nombreRol'), // Valor por defecto pa buscar
     });
-
+ 
     this.agregarRolForm = new FormGroup({
-      NombreRol: new FormControl('', [
-        CustomValidators.noWhitespaceValidator(),
-      ]),
+      NombreRol: new FormControl(
+        '',
+        [CustomValidators.noWhitespaceValidator()],
+        [asyncRolNameExistsValidator(this.apiService)]
+      ),
     });
     this.actualizarRolForm = new FormGroup({
       IdRol: new FormControl({ value: '', disabled: true }),
-      NombreRol: new FormControl('', [
-        Validators.required,
-        CustomValidators.noWhitespaceValidator(),
-      ]),
+      NombreRol: new FormControl(
+        '',
+        [CustomValidators.noWhitespaceValidator()],
+        [asyncRolNameExistsValidator(this.apiService)]
+      ),
     });
   }
-
+ 
   obtenerRoles(): void {
     this.apiService.getRoles().subscribe({
       next: (data: Rol[]) => {
@@ -62,10 +67,10 @@ export class RolesComponent implements OnInit {
       },
     });
   }
-
+ 
   filtrarRoles(event: { type: string; term: string }): void {
     const { term, type } = event;
-
+ 
     if (!term.trim()) {
       this.obtenerRoles(); // Si no hay término de búsqueda, obtener todos los roles
     } else {
@@ -94,15 +99,15 @@ export class RolesComponent implements OnInit {
       }
     }
   }
-
+ 
   agregarRol(): void {
     if (this.agregarRolForm.invalid) {
       this.agregarRolForm.markAllAsTouched();
       return;
     }
-
+ 
     const nombreRolAdd = this.agregarRolForm.get('NombreRol')?.value.trim();
-
+ 
     // Comprobar si el nombre del rol ya existe
     this.apiService.getRoles(nombreRolAdd).subscribe({
       next: (roles: Rol[]) => {
@@ -115,7 +120,7 @@ export class RolesComponent implements OnInit {
             IdRol: 0,
             NombreRol: nombreRolAdd,
           };
-
+ 
           this.apiService.addRol(nuevoRol).subscribe({
             next: (rol: Rol) => {
               this.roles.push(rol);
@@ -134,7 +139,7 @@ export class RolesComponent implements OnInit {
       },
     });
   }
-
+ 
   toggleActualizarRol(rol: Rol): void {
     if (this.rolParaActualizar && this.rolParaActualizar.IdRol === rol.IdRol) {
       this.rolParaActualizar = null;
@@ -147,17 +152,17 @@ export class RolesComponent implements OnInit {
       });
     }
   }
-
+ 
   actualizarRol(): void {
     if (this.actualizarRolForm.invalid) {
       this.agregarRolForm.markAllAsTouched();
       return;
     }
-
+ 
     const nombreRolActualizar = this.actualizarRolForm
       .get('NombreRol')
       ?.value.trim();
-
+ 
     this.apiService.getRoles(nombreRolActualizar).subscribe({
       next: (roles: Rol[]) => {
         if (
@@ -172,7 +177,7 @@ export class RolesComponent implements OnInit {
             IdRol: this.rolParaActualizar?.IdRol ?? 0,
             NombreRol: nombreRolActualizar,
           };
-
+ 
           this.apiService.updateRol(rolActualizado).subscribe({
             next: () => {
               this.obtenerRoles();
@@ -192,7 +197,7 @@ export class RolesComponent implements OnInit {
       },
     });
   }
-
+ 
   borrarRol(id: number): void {
     const confirmacion = confirm(
       '¿Estás seguro de que quieres eliminar este rol?'
@@ -209,7 +214,7 @@ export class RolesComponent implements OnInit {
       });
     }
   }
-
+ 
   descartarCambios(tipo: 'agregar' | 'actualizar' = 'actualizar'): void {
     if (tipo === 'actualizar') {
       this.actualizarRolForm.reset();
@@ -219,3 +224,5 @@ export class RolesComponent implements OnInit {
     }
   }
 }
+ 
+ 

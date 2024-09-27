@@ -37,7 +37,7 @@ export interface Ingreso {
   IdMedico: number;
   Motivo: string;
   FechaSolicitud: Date;
-  FechaIngreso: Date;
+  FechaIngreso: Date | null;
   Estado: string;
   TipoCama: string;
   IdAsignacion: number | null;
@@ -348,7 +348,7 @@ getPacientes(Nombre?: string, numSS?: string): Observable<Paciente[]> {
   getRoles(NombreRol?: string): Observable<Rol[]> {
     let params = new HttpParams();
     if (NombreRol) {
-      params = params.set('NombreRol', NombreRol);
+      params = params.set('nombreRol', NombreRol);
     }
     return this.http.get<Rol[]>(`${this.apiUrl}/Roles`, { params });
   }
