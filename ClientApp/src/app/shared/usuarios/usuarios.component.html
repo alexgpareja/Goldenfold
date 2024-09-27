@@ -114,7 +114,7 @@
     </form>
   </div>
 
-  <div class="form-container">
+  <div class="form-container" *ngIf="!usuarioParaActualizar">
     <h3>Agregar Usuario</h3>
     <form [formGroup]="usuarioForm" (ngSubmit)="agregarUsuario()">
       <label for="nombre">Nombre completo:</label>
