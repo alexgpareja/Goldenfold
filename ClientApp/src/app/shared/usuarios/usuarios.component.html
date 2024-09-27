@@ -106,7 +106,7 @@
         <small *ngIf="usuarioForm.get('IdRol')?.hasError('required')">El rol es requerido</small>
       </div>
       <div class="botones">
-        <button type="submit">Guardar</button>
+        <button type="submit" [disabled]="usuarioForm.invalid">Guardar</button>
         <button type="button" (click)="cancelarActualizarUsuario()">
           Cancelar
         </button>
