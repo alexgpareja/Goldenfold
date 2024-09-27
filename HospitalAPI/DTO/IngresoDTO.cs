@@ -78,6 +78,7 @@ namespace HospitalApi.DTO
         [Required(ErrorMessage = "La fecha de solicitud es obligatoria.")]
         public DateTime FechaSolicitud { get; set; }
 
+        [Required(ErrorMessage = "La fecha de ingreso es obligatoria.")]
         public DateTime? FechaIngreso { get; set; }
 
         [Required(ErrorMessage = "El estado es obligatorio.")]

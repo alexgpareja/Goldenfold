@@ -20,8 +20,8 @@
             <td>{{ consulta.IdPaciente }}</td>
             <td>{{ consulta.IdMedico }}</td>
             <td>{{ consulta.Motivo }}</td>
-            <td>{{ consulta.FechaSolicitud | date:'dd/MM/yyyy HH:mm\'h\'' }}</td>
-            <td>{{ consulta.FechaConsulta ? (consulta.FechaConsulta | date:'dd/MM/yyyy HH:mm\'h\'') : 'Pendiente' }}</td>
+            <td>{{ consulta.FechaSolicitud | date: 'dd/MM/yyyy' }}</td>
+            <td>{{ consulta.FechaConsulta ? (consulta.FechaConsulta | date: 'dd/MM/yyyy') : 'Pendiente' }}</td>
             <td>{{ consulta.Estado }}</td>
             <td>
               <button (click)="toggleActualizarConsulta(consulta)">Actualizar</button>

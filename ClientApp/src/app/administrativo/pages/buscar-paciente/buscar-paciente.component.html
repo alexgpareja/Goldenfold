@@ -1,27 +1,28 @@
 <div class="search-section">
   <h2>Buscar Paciente</h2>
-
+  <div *ngIf="notificacion" class="notification">{{ notificacion }}</div>
+  <div *ngIf="notificacionMid" class="notificationMid">{{ notificacionMid }}</div>
   <form (submit)="buscarPaciente($event)" class="search-form">
     <div class="form-group">
       <label for="search-name">Nombre</label>
-      <input 
-        type="text" 
-        id="search-name" 
-        [(ngModel)]="searchName" 
-        name="searchName" 
-        placeholder="Nombre del paciente" 
-        required 
+      <input
+        type="text"
+        id="search-name"
+        [(ngModel)]="searchName"
+        name="searchName"
+        placeholder="Nombre del paciente"
+        required
       />
     </div>
 
     <div class="form-group">
       <label for="search-ss">Número de Seguridad Social</label>
-      <input 
-        type="text" 
-        id="search-ss" 
-        [(ngModel)]="searchSS" 
-        name="searchSS" 
-        placeholder="Número de Seguridad Social" 
+      <input
+        type="text"
+        id="search-ss"
+        [(ngModel)]="searchSS"
+        name="searchSS"
+        placeholder="Número de Seguridad Social"
       />
     </div>
 

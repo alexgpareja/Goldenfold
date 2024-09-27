@@ -37,7 +37,7 @@ export interface Ingreso {
   IdMedico: number;
   Motivo: string;
   FechaSolicitud: Date;
-  FechaIngreso: Date | null;
+  FechaIngreso: Date;
   Estado: string;
   TipoCama: string;
   IdAsignacion: number | null;
@@ -98,13 +98,14 @@ export class ApiService {
 
   constructor(private http: HttpClient) { }
 
-  // CRUD para Pacientes
-  getPacientes(Nombre?: string, numSS?: string): Observable<Paciente[]> {
-    let params = new HttpParams();
-    if (Nombre) params = params.set('nombre', Nombre);
-    if (numSS) params = params.set('numSS', numSS);
-    return this.http.get<Paciente[]>(`${this.apiUrl}/Pacientes`, { params });
-  }
+ // CRUD para Pacientes
+getPacientes(Nombre?: string, numSS?: string): Observable<Paciente[]> {
+  let params = new HttpParams();
+  if (Nombre) params = params.set('nombre', Nombre);
+  if (numSS) params = params.set('numSS', numSS);
+  return this.http.get<Paciente[]>(`${this.apiUrl}/Pacientes`, { params });
+}
+
 
   addPaciente(paciente: Paciente): Observable<Paciente> {
     return this.http.post<Paciente>(`${this.apiUrl}/Pacientes`, paciente);
@@ -268,7 +269,7 @@ export class ApiService {
   ): Observable<Usuario[]> {
     let params = new HttpParams();
     if (nombre) params = params.set('nombre', nombre);
-    if (nombreUsuario) params = params.set('nombreUsuario', nombreUsuario);
+    if (nombreUsuario) params = params.set('usuario', nombreUsuario);
     if (idRol) params = params.set('idRol', idRol.toString());
     return this.http.get<Usuario[]>(`${this.apiUrl}/Usuarios`, { params });
   }
@@ -347,7 +348,7 @@ export class ApiService {
   getRoles(NombreRol?: string): Observable<Rol[]> {
     let params = new HttpParams();
     if (NombreRol) {
-      params = params.set('nombreRol', NombreRol);
+      params = params.set('NombreRol', NombreRol);
     }
     return this.http.get<Rol[]>(`${this.apiUrl}/Roles`, { params });
   }

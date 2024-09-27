@@ -18,7 +18,7 @@ export class IngresosComponent implements OnInit {
     IdMedico: 0,
     Motivo: '',
     FechaSolicitud: new Date(),
-    FechaIngreso: null,
+    FechaIngreso: new Date(),
     Estado: '',
     TipoCama: '',
     IdAsignacion: null
@@ -52,7 +52,7 @@ export class IngresosComponent implements OnInit {
           IdMedico: 0,
           Motivo: '',
           FechaSolicitud: new Date(),
-          FechaIngreso: null,
+          FechaIngreso: new Date(),
           Estado: '',
           TipoCama: '',
           IdAsignacion: null

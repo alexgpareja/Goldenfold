@@ -1,10 +1,15 @@
 <div class="roles-section">
   <h2>Roles</h2>
 
-  <app-search-box [searchOptions]="[
+  <app-search-box
+    [searchOptions]="[
       { label: 'Nombre', value: 'nombreRol' },
       { label: 'ID', value: 'id' }
-    ]" [defaultSearchType]="'nombreRol'" placeholder="Escribe para buscar..." (search)="filtrarRoles($event)">
+    ]"
+    [defaultSearchType]="'nombreRol'"
+    placeholder="Escribe para buscar..."
+    (search)="filtrarRoles($event)"
+  >
   </app-search-box>
 
   <div class="table-container">
@@ -40,18 +45,24 @@
       <input type="text" id="nombreRol" formControlName="NombreRol" />
 
       <!-- Mensajes de error de actualización -->
-      <div *ngIf="
+      <div
+        *ngIf="
           actualizarRolForm.get('NombreRol')?.invalid &&
           (actualizarRolForm.get('NombreRol')?.touched ||
             actualizarRolForm.get('NombreRol')?.dirty)
-        ">
+        "
+      >
         <!-- Mostrar error si el campo está vacío o solo tiene espacios en blanco -->
-        <span *ngIf="actualizarRolForm.get('NombreRol')?.errors?.['whitespace']">
+        <span
+          *ngIf="actualizarRolForm.get('NombreRol')?.errors?.['whitespace']"
+        >
           El campo no puede estar vacío o contener solo espacios.
         </span>
 
         <!-- Mostrar error si el rol ya existe -->
-        <span *ngIf="actualizarRolForm.get('NombreRol')?.errors?.['asyncFieldExisting']">
+        <span
+          *ngIf="actualizarRolForm.get('NombreRol')?.errors?.['nombreRolExiste']"
+        >
           Este rol ya existe.
         </span>
       </div>
@@ -73,20 +84,24 @@
       <input type="text" id="nombreRol" formControlName="NombreRol" />
 
       <!-- Mensajes de error de agregar -->
-      <div *ngIf="
+      <div
+        *ngIf="
           agregarRolForm.get('NombreRol')?.invalid &&
           (agregarRolForm.get('NombreRol')?.touched ||
             agregarRolForm.get('NombreRol')?.dirty)
-        ">
+        "
+      >
         <!-- Mostrar error si el campo está vacío o solo tiene espacios en blanco -->
         <span *ngIf="agregarRolForm.get('NombreRol')?.errors?.['whitespace']">
           El campo no puede estar vacío o contener solo espacios.
         </span>
 
         <!-- Mostrar error si el rol ya existe -->
-        <span *ngIf="
-            agregarRolForm.get('NombreRol')?.hasError('asyncFieldExisting')
-          ">El rol ya existe</span>
+        <span
+          *ngIf="agregarRolForm.get('NombreRol')?.errors?.['nombreRolExiste']"
+        >
+          Este rol ya existe.
+        </span>
       </div>
 
       <div class="botones">
