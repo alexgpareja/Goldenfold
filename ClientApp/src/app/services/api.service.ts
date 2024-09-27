@@ -39,6 +39,7 @@ export interface Ingreso {
   FechaSolicitud: Date;
   FechaIngreso: Date | null;
   Estado: string;
+  TipoCama: string;
   IdAsignacion: number | null;
 }
 
@@ -95,7 +96,7 @@ export interface Rol {
 export class ApiService {
   private apiUrl = 'http://localhost:5076/api';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   // CRUD para Pacientes
   getPacientes(Nombre?: string, numSS?: string): Observable<Paciente[]> {
@@ -161,12 +162,14 @@ export class ApiService {
   getIngresos(
     idPaciente?: number,
     idMedico?: number,
-    estado?: string
+    estado?: string,
+    tipoCama?: string // Añadir el filtro por tipo de cama
   ): Observable<Ingreso[]> {
     let params = new HttpParams();
     if (idPaciente) params = params.set('idPaciente', idPaciente.toString());
     if (idMedico) params = params.set('idMedico', idMedico.toString());
     if (estado) params = params.set('estado', estado);
+    if (tipoCama) params = params.set('tipoCama', tipoCama); // Añadir el parámetro tipoCama
     return this.http.get<Ingreso[]>(`${this.apiUrl}/Ingresos`, { params });
   }
 
@@ -184,6 +187,7 @@ export class ApiService {
   deleteIngreso(idIngreso: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/Ingresos/${idIngreso}`);
   }
+
 
   // CRUD para Asignaciones con parámetros
   getAsignaciones(

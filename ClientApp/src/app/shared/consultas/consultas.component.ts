@@ -26,7 +26,7 @@ export class ConsultasComponent implements OnInit {
   constructor(private apiService: ApiService) {}
 
   ngOnInit(): void {
-    this.obtenerConsultas();
+    this.obtenerConsultas(); 
   }
 
   obtenerConsultas(): void {

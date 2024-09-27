@@ -3,7 +3,6 @@ using System.ComponentModel.DataAnnotations;
 
 namespace HospitalApi.DTO
 {
-
     // DTO para lectura y listado de Ingresos
     public class IngresoDTO
     {
@@ -23,9 +22,11 @@ namespace HospitalApi.DTO
 
         public DateTime? FechaIngreso { get; set; }
 
-
         [Required(ErrorMessage = "El estado es obligatorio.")]
         public string Estado { get; set; }
+
+        [Required(ErrorMessage = "El tipo de cama es obligatorio.")]
+        public string TipoCama { get; set; }
 
         public int? IdAsignacion { get; set; }
     }
@@ -46,16 +47,17 @@ namespace HospitalApi.DTO
         public string Motivo { get; set; }
 
         [Required(ErrorMessage = "El estado es obligatorio.")]
-        public EstadoIngreso Estado { get; set; } 
+        public EstadoIngreso Estado { get; set; }
+
+        [Required(ErrorMessage = "El tipo de cama es obligatorio.")]
+        public TipoCama TipoCama { get; set; }
 
         public DateTime FechaSolicitud { get; set; }
 
         public DateTime? FechaIngreso { get; set; }
 
-
         public int? IdAsignacion { get; set; }
     }
-
 
     // DTO para actualizar un ingreso
     public class IngresoUpdateDTO
@@ -79,7 +81,10 @@ namespace HospitalApi.DTO
         public DateTime? FechaIngreso { get; set; }
 
         [Required(ErrorMessage = "El estado es obligatorio.")]
-        public string Estado { get; set; } 
+        public string Estado { get; set; }
+
+        [Required(ErrorMessage = "El tipo de cama es obligatorio.")]
+        public TipoCama TipoCama { get; set; }
 
         public int? IdAsignacion { get; set; }
     }

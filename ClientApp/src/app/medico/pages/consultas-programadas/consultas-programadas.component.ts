@@ -98,21 +98,20 @@ export class ConsultasProgramadasComponent {
   }
   
 
-  // Lógica para "Solicitar Ingreso" del paciente
-  // Método para "Solicitar Ingreso"
   solicitarIngreso() {
     // Crear el objeto "Ingreso"
     const nuevoIngreso: Ingreso = {
       IdIngreso: 0, // Este campo se asignará en la base de datos
       IdPaciente: this.consultaSeleccionada!.IdPaciente,
       IdMedico: this.consultaSeleccionada!.IdMedico,
-      Motivo: `${this.motivoIngreso} INGRESAR EN:  ${this.tipoCama.charAt(0).toUpperCase() + this.tipoCama.slice(1)}`, 
+      Motivo: this.motivoIngreso,  // El motivo sin el tipo de cama
       FechaSolicitud: new Date(),
       Estado: 'Pendiente',
-      FechaIngreso: new Date(),
+      TipoCama: this.tipoCama,  // Asignar el valor correcto del TipoCama
+      FechaIngreso: null,
       IdAsignacion: null // Esto será null hasta que se asigne una cama
     };
-
+  
     // Llamar al servicio API para crear el ingreso
     this.apiService.addIngreso(nuevoIngreso).subscribe({
       next: (response) => {
@@ -128,6 +127,8 @@ export class ConsultasProgramadasComponent {
       }
     });
   }
+  
+  
 
   // Método para resetear el formulario y volver al estado inicial
   resetFormulario() {

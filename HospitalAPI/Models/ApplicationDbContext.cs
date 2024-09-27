@@ -193,6 +193,11 @@ public class ApplicationDbContext : DbContext
             .HasMaxLength(20);
 
         modelBuilder.Entity<Ingreso>()
+            .Property(i => i.TipoCama)
+            .HasConversion<string>()
+            .HasMaxLength(20);
+
+        modelBuilder.Entity<Ingreso>()
             .HasOne(i => i.Paciente)
             .WithMany(p => p.Ingresos)
             .HasForeignKey(i => i.IdPaciente);
@@ -207,6 +212,7 @@ public class ApplicationDbContext : DbContext
             .WithMany(a => a.Ingresos)
             .HasForeignKey(i => i.IdAsignacion)
             .OnDelete(DeleteBehavior.Restrict);
+
 
         // Precarga de roles
         modelBuilder.Entity<Rol>().HasData(

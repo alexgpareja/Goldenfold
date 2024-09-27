@@ -11,6 +11,7 @@
             <th>Fecha de Solicitud</th>
             <th>Fecha de Ingreso</th>
             <th>Estado</th>
+             
             <th>Acciones</th>
           </tr>
         </thead>
@@ -21,7 +22,7 @@
             <td>{{ ingreso.IdMedico }}</td>
             <td>{{ ingreso.Motivo }}</td>
             <td>{{ ingreso.FechaSolicitud | date:'dd/MM/yyyy HH:mm\'h\'' }}</td>
-            <td>{{ ingreso.FechaIngreso | date:'dd/MM/yyyy HH:mm\'h\'' }}</td>
+            <td>{{ ingreso.FechaIngreso ? (ingreso.FechaIngreso | date:'dd/MM/yyyy HH:mm\'h\'') : 'Pendiente' }}</td>
             <td>{{ ingreso.Estado }}</td>
             <td>
               <button (click)="toggleActualizarIngreso(ingreso)">Actualizar</button>

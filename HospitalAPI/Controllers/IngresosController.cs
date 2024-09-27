@@ -30,17 +30,25 @@ namespace HospitalApi.Controllers
         /// <response code="404">Si no se encuentran ingresos que coincidan con los criterios proporcionados.</response>
         /// <response code="500">Si ocurre un error en el servidor al procesar la solicitud.</response>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<IngresoDTO>>> GetIngresos([FromQuery] int? idPaciente, [FromQuery] int? idMedico, [FromQuery] string? estado)
+        public async Task<ActionResult<IEnumerable<IngresoDTO>>> GetIngresos(
+    [FromQuery] int? idPaciente,
+    [FromQuery] int? idMedico,
+    [FromQuery] string? estado,
+    [FromQuery] string? tipoCama,
+    [FromQuery] DateTime? fechaSolicitudDesde,
+    [FromQuery] DateTime? fechaSolicitudHasta)
         {
             IQueryable<Ingreso> query = _context.Ingresos;
 
-            // Filtros opcionales
+            // Filtro por paciente
             if (idPaciente.HasValue)
                 query = query.Where(i => i.IdPaciente == idPaciente.Value);
 
+            // Filtro por médico
             if (idMedico.HasValue)
                 query = query.Where(i => i.IdMedico == idMedico.Value);
 
+            // Filtro por estado
             if (!string.IsNullOrEmpty(estado))
             {
                 if (Enum.TryParse(typeof(EstadoIngreso), estado, true, out var estadoEnum))
@@ -53,12 +61,32 @@ namespace HospitalApi.Controllers
                 }
             }
 
+            // Filtro por tipo de cama
+            if (!string.IsNullOrEmpty(tipoCama))
+            {
+                if (Enum.TryParse(typeof(TipoCama), tipoCama, true, out var tipoCamaEnum))
+                {
+                    query = query.Where(i => i.TipoCama == (TipoCama)tipoCamaEnum);
+                }
+                else
+                {
+                    return BadRequest("El valor de tipo de cama no es válido.");
+                }
+            }
+
+            // Filtro por rango de fecha de solicitud (opcional)
+            if (fechaSolicitudDesde.HasValue)
+                query = query.Where(i => i.FechaSolicitud >= fechaSolicitudDesde.Value);
+
+            if (fechaSolicitudHasta.HasValue)
+                query = query.Where(i => i.FechaSolicitud <= fechaSolicitudHasta.Value);
+
             // Ejecutar la consulta
             var ingresos = await query.ToListAsync();
 
-            // Mapeo y devolución de la lista (puede estar vacía)
+            // Mapeo a DTO y devolución de la lista (puede estar vacía)
             var ingresosDTO = _mapper.Map<IEnumerable<IngresoDTO>>(ingresos);
-            return Ok(ingresosDTO);  // Devolver una lista vacía si no hay ingresos, en lugar de un 404.
+            return Ok(ingresosDTO); // Devolver una lista vacía si no hay ingresos.
         }
 
 
@@ -73,16 +101,21 @@ namespace HospitalApi.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<IngresoDTO>> GetIngreso(int id)
         {
-            var ingreso = await _context.Ingresos.FindAsync(id);
+            // Buscar el ingreso específico usando FirstOrDefaultAsync en lugar de FindAsync
+            var ingreso = await _context.Ingresos
+                .Where(i => i.IdIngreso == id)
+                .FirstOrDefaultAsync();
 
             if (ingreso == null)
             {
                 return NotFound($"No se encontró ningún ingreso con el ID {id}.");
             }
 
+            // Mapear a DTO
             var ingresoDTO = _mapper.Map<IngresoDTO>(ingreso);
             return Ok(ingresoDTO);
         }
+
 
         /// <summary>
         /// Crea un nuevo ingreso en la base de datos. 
@@ -108,6 +141,12 @@ namespace HospitalApi.Controllers
 
             // Mapea desde DTO a modelo de entidad
             var ingreso = _mapper.Map<Ingreso>(ingresoDTO);
+
+            // Validar TipoCama
+            if (!Enum.IsDefined(typeof(TipoCama), ingresoDTO.TipoCama))
+            {
+                return BadRequest("El tipo de cama proporcionado no es válido.");
+            }
 
             // Guardar el ingreso en la base de datos
             _context.Ingresos.Add(ingreso);
@@ -138,6 +177,7 @@ namespace HospitalApi.Controllers
             return CreatedAtAction(nameof(GetIngreso), new { id = ingresoDTOResult.IdIngreso }, ingresoDTOResult);
         }
 
+
         /// <summary>
         /// Actualiza un ingreso existente en la base de datos.
         /// </summary>
@@ -163,6 +203,12 @@ namespace HospitalApi.Controllers
                 return NotFound($"No se encontró ningún ingreso con el ID {id}.");
             }
 
+            // Validar TipoCama
+            if (!Enum.IsDefined(typeof(TipoCama), ingresoDTO.TipoCama))
+            {
+                return BadRequest("El tipo de cama proporcionado no es válido.");
+            }
+
             // Guardar el estado anterior para comparar cambios
             var estadoAnterior = ingresoExiste.Estado;
 
@@ -176,7 +222,6 @@ namespace HospitalApi.Controllers
             }
 
             // Si el estado es "Rechazado", no es necesario actualizar la FechaIngreso
-            // El estado será actualizado desde el DTO
             if (ingresoDTO.Estado == "Rechazado")
             {
                 ingresoExiste.FechaIngreso = null; // Si está rechazado, no hay ingreso
@@ -200,6 +245,7 @@ namespace HospitalApi.Controllers
 
             return NoContent();
         }
+
 
         /// <summary>
         /// Elimina un ingreso específico de la base de datos por su ID.
@@ -231,7 +277,7 @@ namespace HospitalApi.Controllers
                     if (cama != null)
                     {
                         cama.Estado = EstadoCama.Disponible;
-                        _context.Camas.Update(cama); // Actualizar el estado de la cama
+                        _context.Camas.Update(cama); 
                     }
 
                     // Eliminar la asignación relacionada
