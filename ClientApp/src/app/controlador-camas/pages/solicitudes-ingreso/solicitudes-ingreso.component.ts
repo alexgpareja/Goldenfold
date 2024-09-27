@@ -48,11 +48,14 @@ export class SolicitudesIngresoComponent implements OnInit {
   }
 
   // Seleccionar una solicitud para realizar acciones
-  addAsignacion(solicitud: Ingreso) {
-    this.solicitudSeleccionada = solicitud;
-    this.formularioSeleccionado = 'seleccionarCama'; // Mostrar el formulario para asignar cama
-    this.obtenerCamasDisponibles(); // Llamar a la API para obtener las camas disponibles
-  }
+addAsignacion(solicitud: Ingreso) {
+  this.solicitudSeleccionada = solicitud;
+  this.formularioSeleccionado = 'seleccionarCama'; // Mostrar el formulario para asignar cama
+
+  // Llamar a la API para obtener las camas disponibles filtradas por el tipo de cama solicitado
+  this.obtenerCamasDisponibles(solicitud.TipoCama); 
+}
+
 
   // Mostrar el formulario de "Dar de Alta" o "Seleccionar Cama"
   mostrarFormulario(tipo: 'alta' | 'seleccionarCama') {
@@ -91,46 +94,49 @@ export class SolicitudesIngresoComponent implements OnInit {
     });
   }
 
-  // Obtener las camas disponibles para la asignación
-  obtenerCamasDisponibles() {
-    this.apiService.getCamas().subscribe({
-      next: (camas: Cama[]) => {
-        this.camasDisponibles = camas.filter(cama => cama.Estado === 'Disponible');
-      },
-      error: (error: HttpErrorResponse) => {
-        console.error('Error al obtener las camas disponibles:', error);
-      }
-    });
-  }
-
-  // Confirmar la asignación de una cama
-  confirmarCama() {
-    if (!this.solicitudSeleccionada || !this.camaSeleccionada) {
-      console.error('No hay solicitud o cama seleccionada');
-      return;
+// Obtener las camas disponibles para la asignación, filtradas por el tipo de cama
+obtenerCamasDisponibles(tipoCama: string) {
+  this.apiService.getCamas().subscribe({
+    next: (camas: Cama[]) => {
+      // Filtrar camas por el tipo solicitado
+      this.camasDisponibles = camas.filter(cama => cama.Estado === 'Disponible' && cama.Tipo === tipoCama);
+    },
+    error: (error: HttpErrorResponse) => {
+      console.error('Error al obtener las camas disponibles:', error);
     }
+  });
+}
 
-    this.apiService.addAsignacion({
-      IdAsignacion: 0,
-      IdPaciente: this.solicitudSeleccionada!.IdPaciente,
-      IdCama: this.camaSeleccionada!, 
-      FechaAsignacion: new Date(),  
-      FechaLiberacion: null,
-      AsignadoPor: 7 
-    }).subscribe({
-      next: (response) => {
-        console.log('Cama asignada correctamente:', response);
-        window.alert('Cama asignada correctamente');
-        this.resetFormulario();
-        this.obtenerSolicitudesPendientes();  
-      },
-      error: (err) => {
-        console.error('Error al asignar la cama:', err);
-        window.alert('Hubo un error al asignar la cama.');
-      }
-    });
-    
+// Confirmar la asignación de una cama
+confirmarCama() {
+  if (!this.solicitudSeleccionada || !this.camaSeleccionada) {
+    console.error('No hay solicitud o cama seleccionada');
+    return;
   }
+
+  this.apiService.addAsignacion({
+    IdAsignacion: 0,
+    IdPaciente: this.solicitudSeleccionada!.IdPaciente,
+    IdCama: this.camaSeleccionada!, 
+    FechaAsignacion: new Date(),  
+    FechaLiberacion: null,
+    AsignadoPor: 7 
+  }).subscribe({
+    next: (response) => {
+      console.log('Cama asignada correctamente:', response);
+      window.alert('Cama asignada correctamente');
+      this.resetFormulario();
+      this.obtenerSolicitudesPendientes();  
+    },
+    error: (err) => {
+      console.error('Error al asignar la cama:', err);
+      window.alert('Hubo un error al asignar la cama.');
+    }
+  });
+}
+
+
+
 
   // Método para resetear el formulario y volver al estado inicial
   resetFormulario() {

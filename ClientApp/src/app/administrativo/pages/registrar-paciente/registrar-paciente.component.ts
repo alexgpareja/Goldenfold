@@ -37,7 +37,7 @@ export class RegistrarPacienteComponent {
     // Llamada al API para registrar el paciente
     this.apiService.addPaciente(this.nuevoPaciente).subscribe({
       next: () => {
-        alert('Paciente registrado exitosamente');
+        this.notificacion = 'Paciente registrado con éxito';
         this.resetForm();
         pacienteForm.resetForm(); // Resetea el formulario después del registro
       },
@@ -46,6 +46,9 @@ export class RegistrarPacienteComponent {
         alert('Error: ' + errorMessage);
       }
     });
+    setTimeout(() => {
+      this.notificacion = null;
+    }, 2000);
   }
 
 
@@ -84,4 +87,5 @@ export class RegistrarPacienteComponent {
       HistorialMedico: ''
     };
   }
+  notificacion: string | null = null;
 }

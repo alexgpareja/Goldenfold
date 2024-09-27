@@ -31,17 +31,17 @@ export class BuscarPacienteComponent {
 
   buscarPaciente(event: Event) {
     event.preventDefault();
-  
+
     // Si ya hay resultados de pacientes y se vuelve a ejecutar la búsqueda, ocultar el formulario
     if (this.pacientesEncontrados.length > 0) {
       this.pacientesEncontrados = [];
       this.errorMensaje = null;
       return;
     }
-  
+
     this.errorMensaje = null;
     this.pacientesEncontrados = [];
-  
+
     // Verificar si al menos uno de los campos de búsqueda está lleno
     if (this.searchName.trim() !== '' || this.searchSS.trim() !== '') {
       this.apiService.getPacientes(this.searchName, this.searchSS).subscribe({
@@ -57,7 +57,7 @@ export class BuscarPacienteComponent {
               // Si solo uno de los campos está lleno, mostrar todos los resultados
               this.pacientesEncontrados = pacientes;
             }
-  
+
             // Si no se encontraron coincidencias después del filtrado
             if (this.pacientesEncontrados.length === 0) {
               this.errorMensaje = 'No se encontraron pacientes que coincidan con el nombre y número de seguridad social proporcionados.';
@@ -98,17 +98,21 @@ export class BuscarPacienteComponent {
           this.buscarPaciente(new Event('')); // Rehacer la búsqueda para actualizar los datos
           this.pacienteSeleccionado = null; // Limpiar el paciente seleccionado
           this.mostrarFormularioEdicion = false; // Ocultar el formulario de edición
-          alert('Paciente actualizado con éxito.');
+          this.notificacion = 'Paciente actualizado con éxito';
         },
         error: (error: HttpErrorResponse) => {
           this.errorMensaje = 'Error al actualizar el paciente. Por favor, inténtalo de nuevo.';
         }
       });
     }
+    setTimeout(() => {
+      this.notificacion = null;
+    }, 2000);
   }
   // Método para cancelar la edición del paciente
   cancelarEdicion() {
     this.pacienteSeleccionado = null; // Limpiar el paciente seleccionado
     this.mostrarFormularioEdicion = false; // Ocultar el formulario de edición
   }
+  notificacion: string | null = null;
 }

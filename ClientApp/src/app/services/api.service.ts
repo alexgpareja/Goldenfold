@@ -39,6 +39,7 @@ export interface Ingreso {
   FechaSolicitud: Date;
   FechaIngreso: Date;
   Estado: string;
+  TipoCama: string;
   IdAsignacion: number | null;
 }
 
@@ -95,15 +96,16 @@ export interface Rol {
 export class ApiService {
   private apiUrl = 'http://localhost:5076/api';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
-  // CRUD para Pacientes
-  getPacientes(Nombre?: string, numSS?: string): Observable<Paciente[]> {
-    let params = new HttpParams();
-    if (Nombre) params = params.set('nombre', Nombre);
-    if (numSS) params = params.set('numSS', numSS);
-    return this.http.get<Paciente[]>(`${this.apiUrl}/Pacientes`, { params });
-  }
+ // CRUD para Pacientes
+getPacientes(Nombre?: string, numSS?: string): Observable<Paciente[]> {
+  let params = new HttpParams();
+  if (Nombre) params = params.set('nombre', Nombre);
+  if (numSS) params = params.set('numSS', numSS);
+  return this.http.get<Paciente[]>(`${this.apiUrl}/Pacientes`, { params });
+}
+
 
   addPaciente(paciente: Paciente): Observable<Paciente> {
     return this.http.post<Paciente>(`${this.apiUrl}/Pacientes`, paciente);
@@ -161,12 +163,14 @@ export class ApiService {
   getIngresos(
     idPaciente?: number,
     idMedico?: number,
-    estado?: string
+    estado?: string,
+    tipoCama?: string // Añadir el filtro por tipo de cama
   ): Observable<Ingreso[]> {
     let params = new HttpParams();
     if (idPaciente) params = params.set('idPaciente', idPaciente.toString());
     if (idMedico) params = params.set('idMedico', idMedico.toString());
     if (estado) params = params.set('estado', estado);
+    if (tipoCama) params = params.set('tipoCama', tipoCama); // Añadir el parámetro tipoCama
     return this.http.get<Ingreso[]>(`${this.apiUrl}/Ingresos`, { params });
   }
 
@@ -184,6 +188,7 @@ export class ApiService {
   deleteIngreso(idIngreso: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/Ingresos/${idIngreso}`);
   }
+
 
   // CRUD para Asignaciones con parámetros
   getAsignaciones(
@@ -264,7 +269,7 @@ export class ApiService {
   ): Observable<Usuario[]> {
     let params = new HttpParams();
     if (nombre) params = params.set('nombre', nombre);
-    if (nombreUsuario) params = params.set('nombreUsuario', nombreUsuario);
+    if (nombreUsuario) params = params.set('usuario', nombreUsuario);
     if (idRol) params = params.set('idRol', idRol.toString());
     return this.http.get<Usuario[]>(`${this.apiUrl}/Usuarios`, { params });
   }
@@ -343,7 +348,7 @@ export class ApiService {
   getRoles(NombreRol?: string): Observable<Rol[]> {
     let params = new HttpParams();
     if (NombreRol) {
-      params = params.set('nombreRol', NombreRol);
+      params = params.set('NombreRol', NombreRol);
     }
     return this.http.get<Rol[]>(`${this.apiUrl}/Roles`, { params });
   }

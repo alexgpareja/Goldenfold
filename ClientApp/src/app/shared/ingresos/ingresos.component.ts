@@ -20,6 +20,7 @@ export class IngresosComponent implements OnInit {
     FechaSolicitud: new Date(),
     FechaIngreso: new Date(),
     Estado: '',
+    TipoCama: '',
     IdAsignacion: null
   };
   ingresoParaActualizar: Ingreso | null = null;
@@ -53,6 +54,7 @@ export class IngresosComponent implements OnInit {
           FechaSolicitud: new Date(),
           FechaIngreso: new Date(),
           Estado: '',
+          TipoCama: '',
           IdAsignacion: null
         };
       },

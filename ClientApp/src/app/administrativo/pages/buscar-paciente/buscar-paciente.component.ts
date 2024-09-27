@@ -20,7 +20,7 @@ export class BuscarPacienteComponent {
   consulta: Consulta = {
     IdConsulta: 0,
     IdPaciente: 0,
-    IdMedico: 0, 
+    IdMedico: 0,
     Motivo: '',
     FechaSolicitud: new Date(),
     FechaConsulta: null,
@@ -31,7 +31,7 @@ export class BuscarPacienteComponent {
 
   buscarPaciente(event: Event) {
     event.preventDefault();
-  
+
     // Resetea los resultados anteriores
     this.errorMensaje = null;
     this.pacientesEncontrados = [];
@@ -55,8 +55,8 @@ export class BuscarPacienteComponent {
     }
 }
 
-  
-  
+
+
 
   // Seleccionar un paciente para editar
 editarPaciente(paciente: Paciente) {
@@ -81,7 +81,7 @@ editarPaciente(paciente: Paciente) {
           this.buscarPaciente(new Event('')); // Rehacer la búsqueda para actualizar los datos
           this.pacienteSeleccionado = null; // Limpiar el paciente seleccionado
           this.mostrarFormularioEdicion = false; // Ocultar el formulario de edición
-          alert('Paciente actualizado con éxito.');
+          this.notificacion = 'Paciente registrado con éxito';
         },
         error: (error: HttpErrorResponse) => {
           this.errorMensaje = 'Error al actualizar el paciente. Por favor, inténtalo de nuevo.';
@@ -94,8 +94,12 @@ editarPaciente(paciente: Paciente) {
 abrirFormularioConsulta(paciente: Paciente) {
   if (paciente.Estado === 'EnConsulta') {
     // Si el paciente ya está en consulta, mostrar un mensaje y no permitir abrir el formulario
-    alert('Este paciente ya está en consulta.');
+    this.notificacionMid = 'Este paciente ya esta en consulta';
+setTimeout(() => {
+    this.notificacionMid = null;
+  }, 2000);
     return;
+
   }
 
   if (this.pacienteSeleccionado && this.pacienteSeleccionado.IdPaciente === paciente.IdPaciente && this.mostrarFormularioConsulta) {
@@ -113,17 +117,20 @@ abrirFormularioConsulta(paciente: Paciente) {
     this.consulta.FechaSolicitud = new Date(); // Fecha actual
     this.consulta.Estado = 'pendiente';
   }
+  setTimeout(() => {
+      this.notificacion = null;
+    }, 2000);
 }
 
 
-  
+
 
   // Método para registrar la consulta
   registrarConsulta() {
     if (this.consulta.IdMedico && this.consulta.Motivo) {
       this.apiService.addConsulta(this.consulta).subscribe({
         next: () => {
-          alert('Consulta registrada con éxito.');
+          this.notificacion = 'Consulta registrada con éxito';
           this.mostrarFormularioConsulta = false;
           this.pacienteSeleccionado = null; // Limpiar el paciente seleccionado después de registrar la consulta
           this.resetConsulta(); // Reiniciar el formulario de consulta
@@ -135,6 +142,9 @@ abrirFormularioConsulta(paciente: Paciente) {
     } else {
       alert('Por favor, ingrese todos los datos requeridos.');
     }
+    setTimeout(() => {
+      this.notificacion = null;
+    }, 2000);
   }
 
   // Método para cancelar la edición del paciente
@@ -161,4 +171,6 @@ abrirFormularioConsulta(paciente: Paciente) {
       Estado: 'pendiente'
     };
   }
+  notificacion: string | null = null;
+  notificacionMid: string | null = null;
 }

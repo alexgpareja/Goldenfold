@@ -38,8 +38,8 @@ h3 {
   color: #333;
 }
 
-.form-group input, 
-.form-group select, 
+.form-group input,
+.form-group select,
 .form-group textarea {
   width: 100%;
   padding: 8px;
@@ -167,4 +167,22 @@ textarea {
   .consulta-section, .edit-section {
     margin-top: 15px;
   }
+}
+/* Estilo para notificaciones */
+.notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 15px;
+  border-radius: 5px;
+  background-color: #28a745; /* Verde para éxito */
+  color: #fff;
+  font-size: 16px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  transition: opacity 0.5s ease-in-out;
+  opacity: 1;
+}
+
+.notification.hidden {
+  opacity: 0;
 }

@@ -32,7 +32,7 @@ namespace HospitalApi
 
         [Required(ErrorMessage = "La fecha de ingreso es obligatoria.")]
         [Column("fecha_ingreso")]
-        public DateTime? FechaIngreso { get; set; } 
+        public DateTime? FechaIngreso { get; set; }
 
         [Required(ErrorMessage = "El estado del ingreso es obligatorio.")]
         [Column("estado")]
@@ -41,6 +41,10 @@ namespace HospitalApi
         [ForeignKey("Asignacion")] 
         [Column("id_asignacion")]
         public int? IdAsignacion { get; set; }
+
+        [Required(ErrorMessage = "El tipo de cama es obligatorio.")]
+        [Column("tipo_cama")]
+        public TipoCama TipoCama { get; set; } = TipoCama.General;
 
         // Propiedades de navegación
         public virtual Paciente Paciente { get; set; }

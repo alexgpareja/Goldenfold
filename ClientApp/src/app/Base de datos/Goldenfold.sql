@@ -34,7 +34,11 @@ CREATE TABLE IF NOT EXISTS `asignaciones` (
   CONSTRAINT `fk_asignaciones_camas` FOREIGN KEY (`id_cama`) REFERENCES `camas` (`id_cama`),
   CONSTRAINT `fk_asignaciones_pacientes` FOREIGN KEY (`id_paciente`) REFERENCES `pacientes` (`id_paciente`),
   CONSTRAINT `fk_asignaciones_usuarios` FOREIGN KEY (`asignado_por`) REFERENCES `usuarios` (`id_usuario`)
+<<<<<<< HEAD
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+=======
 ) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+>>>>>>> 60419fb5e7fbba694b0ce3c6889f03e5f1d8f1b5
 
 -- Volcando datos para la tabla db_goldenfold.asignaciones: ~0 rows (aproximadamente)
 
@@ -49,7 +53,7 @@ CREATE TABLE IF NOT EXISTS `camas` (
   UNIQUE KEY `unique_ubicacion` (`ubicacion`),
   KEY `idx_id_habitacion` (`id_habitacion`),
   CONSTRAINT `fk_camas_habitaciones` FOREIGN KEY (`id_habitacion`) REFERENCES `habitaciones` (`id_habitacion`)
-) ENGINE=InnoDB AUTO_INCREMENT=55 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=56 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Volcando datos para la tabla db_goldenfold.camas: ~40 rows (aproximadamente)
 INSERT INTO `camas` (`id_cama`, `ubicacion`, `estado`, `tipo`, `id_habitacion`) VALUES
@@ -108,7 +112,11 @@ CREATE TABLE IF NOT EXISTS `consultas` (
   KEY `idx_id_medico` (`id_medico`),
   CONSTRAINT `fk_consultas_medicos` FOREIGN KEY (`id_medico`) REFERENCES `usuarios` (`id_usuario`),
   CONSTRAINT `fk_consultas_pacientes` FOREIGN KEY (`id_paciente`) REFERENCES `pacientes` (`id_paciente`)
+<<<<<<< HEAD
+) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+=======
 ) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+>>>>>>> 60419fb5e7fbba694b0ce3c6889f03e5f1d8f1b5
 
 -- Volcando datos para la tabla db_goldenfold.consultas: ~0 rows (aproximadamente)
 
@@ -158,7 +166,7 @@ CREATE TABLE IF NOT EXISTS `historialaltas` (
   KEY `idx_id_medico` (`id_medico`),
   CONSTRAINT `fk_historialaltas_medicos` FOREIGN KEY (`id_medico`) REFERENCES `usuarios` (`id_usuario`),
   CONSTRAINT `fk_historialaltas_pacientes` FOREIGN KEY (`id_paciente`) REFERENCES `pacientes` (`id_paciente`)
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Volcando datos para la tabla db_goldenfold.historialaltas: ~0 rows (aproximadamente)
 
@@ -170,6 +178,7 @@ CREATE TABLE IF NOT EXISTS `ingresos` (
   `motivo` text DEFAULT NULL,
   `fecha_solicitud` datetime DEFAULT current_timestamp(),
   `estado` enum('Pendiente','Ingresado','Rechazado') DEFAULT 'Pendiente',
+  `tipo_cama` enum('General','UCI','Postoperatorio') DEFAULT 'General',
   `fecha_ingreso` datetime DEFAULT NULL,
   `id_asignacion` int(11) DEFAULT NULL,
   PRIMARY KEY (`id_ingreso`),
@@ -179,7 +188,11 @@ CREATE TABLE IF NOT EXISTS `ingresos` (
   CONSTRAINT `fk_ingresos_asignaciones` FOREIGN KEY (`id_asignacion`) REFERENCES `asignaciones` (`id_asignacion`),
   CONSTRAINT `fk_ingresos_medicos` FOREIGN KEY (`id_medico`) REFERENCES `usuarios` (`id_usuario`),
   CONSTRAINT `fk_ingresos_pacientes` FOREIGN KEY (`id_paciente`) REFERENCES `pacientes` (`id_paciente`)
+<<<<<<< HEAD
+) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+=======
 ) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+>>>>>>> 60419fb5e7fbba694b0ce3c6889f03e5f1d8f1b5
 
 -- Volcando datos para la tabla db_goldenfold.ingresos: ~0 rows (aproximadamente)
 
@@ -209,7 +222,7 @@ INSERT INTO `pacientes` (`id_paciente`, `nombre`, `dni`, `fecha_nacimiento`, `se
 	(34, 'Pedro Sánchez', '34567890D', '1980-09-18', '345678901234', 'Registrado', '2024-09-16 15:50:04', 'Calle del Río 3, Barcelona', '630987654', 'pedro.sanchez@example.com', 'Historial médico de Pedro Sánchez.'),
 	(35, 'Carmen Ramírez', '45678901E', '1965-12-10', '456789012345', 'Registrado', '2024-09-16 15:50:04', 'Avenida de los Pinos 20, Málaga', '640654321', 'carmen.ramirez@example.com', 'Historial médico de Carmen Ramírez.'),
 	(36, 'Luis Torres', '56789012F', '1990-03-22', '567890123456', 'Registrado', '2024-09-16 15:50:04', 'Calle del Olmo 7, Zaragoza', '650321987', 'luis.torres@example.com', 'Historial médico de Luis Torres.'),
-	(37, 'Ana Gutiérrez Sanchez', '67890123A', '1988-06-05', '678901234567', 'Registrado', '2024-09-16 15:50:04', 'Plaza Mayor 4, Bilbao', '660432567', 'ana.gutierrez@example.com', 'Historial médico de Ana Gutiérrez.'),
+	(37, 'Ana Gutiérrez Sanchez', '67890123A', '1988-06-05', '678901234567', 'Ingresado', '2024-09-16 15:50:04', 'Plaza Mayor 4, Bilbao', '660432567', 'ana.gutierrez@example.com', 'Historial médico de Ana Gutiérrez.'),
 	(38, 'Pablo Díaz', '78901234H', '1995-01-13', '789012345678', 'Registrado', '2024-09-16 15:50:04', 'Avenida de la Estrella 11, Valladolid', '670543219', 'pablo.diaz@example.com', 'Historial médico de Pablo Díaz.'),
 	(39, 'Laura Moreno', '89012345I', '1977-04-19', '890123456789', 'Registrado', '2024-09-16 15:50:04', 'Calle de los Cipreses 9, Alicante', '680654321', 'laura.moreno@example.com', 'Historial médico de Laura Moreno.'),
 	(40, 'Sergio Gómez', '90123456J', '1982-09-01', '901234567890', 'Registrado', '2024-09-16 15:50:04', 'Avenida del Parque 6, Murcia', '690765432', 'sergio.gomez@example.com', 'Historial médico de Sergio Gómez.'),
