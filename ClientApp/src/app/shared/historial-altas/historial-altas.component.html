@@ -81,6 +81,9 @@
       @if (historialAltaForm.get("IdPaciente")?.hasError("required") && historialAltaForm.get("IdPaciente")?.touched) {
         <span class="error"> El Id de paciente es obligatorio.</span>
       }
+      @if (historialAltaForm.get("IdPaciente")?.hasError("patientIdNotFound")) {
+        <span class="error"> El Id de paciente no existe.</span>
+      }
       <div class="label-container"><label for="fechaAlta">Fecha alta </label><span class="required">*</span></div>
       <input type="date" id="fechaAlta" formControlName="FechaAlta" name="fechaAlta">
       @if (historialAltaForm.get("FechaAlta")?.hasError("required") && historialAltaForm.get("FechaAlta")?.touched) {

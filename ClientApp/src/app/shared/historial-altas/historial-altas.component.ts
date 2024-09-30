@@ -2,6 +2,7 @@ import { Component, NgModule, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';;
 import { ApiService, HistorialAlta, Paciente } from '../../services/api.service';
+import { asyncPatientIdExistsValidator } from '../../validators/patientIdExistsValidator';
 
 @Component({
   selector: 'app-historial-altas',
@@ -38,6 +39,7 @@ export class HistorialAltasComponent implements OnInit {
     this.obtenerHistorialAltas();
     this.obtenerPacientes();
     this.crearFormularioHistorialAlta();
+    this.configurarValidaciones();
   }
 
   inicializarHistorialAlta(): HistorialAlta {
@@ -54,7 +56,7 @@ export class HistorialAltasComponent implements OnInit {
   crearFormularioHistorialAlta(): void {
     this.historialAltaForm = new FormGroup({
       IdHistorial: new FormControl({ value: '', disabled: true }),
-      IdPaciente: new FormControl('',[Validators.required]  ),
+      IdPaciente: new FormControl('',[Validators.required]),
       FechaAlta: new FormControl('',[Validators.required],[]),
       Diagnostico: new FormControl('',[Validators.required]),
       Tratamiento: new FormControl('',[Validators.required])
@@ -62,6 +64,16 @@ export class HistorialAltasComponent implements OnInit {
 
   }
 
+  
+  configurarValidaciones(): void{
+    if(!this.historialAltaParaActualizar){
+      this.historialAltaForm.get('IdPaciente')?.setAsyncValidators(asyncPatientIdExistsValidator(this.apiService));
+    }
+    else{
+      this.historialAltaForm.get('IdPaciente')?.clearAsyncValidators();
+    }
+    this.historialAltaForm.get('IdPaciente')?.updateValueAndValidity();
+  }
 
   obtenerPacientes() {
     this.apiService.getPacientes().subscribe({
@@ -140,9 +152,14 @@ export class HistorialAltasComponent implements OnInit {
   }
 
   toggleActualizarHistorialAlta(historialAlta: HistorialAlta): void {
-    this.historialAltaParaActualizar = this.historialAltaParaActualizar?.IdHistorial === historialAlta.IdHistorial
-      ? null
-      : { ...historialAlta };
+    if (this.historialAltaParaActualizar?.IdHistorial === historialAlta.IdHistorial) {
+      this.historialAltaParaActualizar = null;
+      this.historialAltaForm.reset();
+    } else {
+      this.historialAltaParaActualizar = { ...historialAlta };
+      this.configurarValidaciones();
+      this.historialAltaForm.patchValue(this.historialAltaParaActualizar);
+    }
   }
 
   actualizarHistorialAlta(): void {
