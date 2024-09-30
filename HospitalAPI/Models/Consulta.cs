@@ -41,8 +41,6 @@ namespace HospitalApi
         public virtual Paciente Paciente { get; set; }
         public virtual Usuario Medico { get; set; }
     }
-
-    // Enum para el estado de la consulta
     public enum EstadoConsulta
     {
         pendiente,

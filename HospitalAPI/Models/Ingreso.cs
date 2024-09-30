@@ -56,6 +56,7 @@ namespace HospitalApi
     {
         Pendiente,
         Ingresado,
-        Rechazado
+        Rechazado,
+        Alta
     }
 }
