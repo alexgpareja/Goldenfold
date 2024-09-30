@@ -21,39 +21,22 @@ namespace HospitalApi.Controllers
             _mapper = mapper;
         }
 
-        /// <summary>
-        /// Obtiene una lista de todos los roles disponibles.
-        /// </summary>
-        /// <returns>Una lista de objetos <see cref="RolDTO"/> que representan los roles.</returns>
-        /// <response code="200">Retorna una lista de roles en formato DTO.</response>
-        /// <response code="500">Retorna un código HTTP 500 si ocurre un error al recuperar los roles.</response>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<RolDTO>>> GetRoles([FromQuery] string? nombreRol)
+        public async Task<ActionResult<IEnumerable<RolDTO>>> GetRoles(
+            [FromQuery] string? nombreRol)
         {
             IQueryable<Rol> query = _context.Roles;
 
-            // Filtrar por el nombre del rol si se proporciona
             if (!string.IsNullOrEmpty(nombreRol))
                 query = query.Where(r => r.NombreRol.ToLower().Contains(nombreRol.ToLower()));
 
-            // Obtener la lista de roles
             var roles = await query.ToListAsync();
 
-            // Mapear la lista de roles (puede estar vacía) a DTOs
             var rolesDTO = _mapper.Map<IEnumerable<RolDTO>>(roles);
 
             return Ok(rolesDTO);
         }
 
-
-        /// <summary>
-        /// Obtiene un rol específico por su identificador.
-        /// </summary>
-        /// <param name="id" example="5">El identificador único del rol a recuperar.</param>
-        /// <returns>Un objeto <see cref="RolDTO"/> que representa el rol con el identificador especificado.</returns>
-        /// <response code="200">Retorna el rol en formato DTO si el rol es encontrado.</response>
-        /// <response code="404">Retorna un código HTTP 404 si no se encuentra el rol con el identificador especificado.</response>
-        /// <response code="500">Retorna un código HTTP 500 si ocurre un error al recuperar el rol.</response>
         [HttpGet("{id}")]
         public async Task<ActionResult<RolDTO>> GetRol(int id)
         {
@@ -68,17 +51,6 @@ namespace HospitalApi.Controllers
             return Ok(rolDTO);
         }
 
-        /// <summary>
-        /// Crea un nuevo rol en el sistema.
-        /// </summary>
-        /// <param name="rolDTO">El objeto <see cref="RolCreateDTO"/> que contiene los datos del rol a crear.</param>
-        /// <returns>
-        /// Un <see cref="ActionResult{RolDTO}"/> que contiene el rol creado.
-        /// </returns>
-        /// <response code="201">Indica que el rol se ha creado correctamente.</response>
-        /// <response code="400">Indica que la solicitud es incorrecta.</response>
-        /// <response code="409">Indica que ya existe un rol con el mismo nombre.</response>
-        /// <response code="500">Si se produce un error en el servidor al procesar la solicitud.</response>
         [HttpPost]
         [ProducesResponseType(typeof(RolDTO), 201)]
         [ProducesResponseType(400)]
@@ -105,18 +77,6 @@ namespace HospitalApi.Controllers
             return CreatedAtAction(nameof(GetRol), new { id = rolDTOResult.IdRol }, rolDTOResult);
         }
 
-        /// <summary>
-        /// Actualiza un rol existente en el sistema.
-        /// </summary>
-        /// <param name="id">El ID del rol que se va a actualizar.</param>
-        /// <param name="rolDTO">El objeto <see cref="RolUpdateDTO"/> que contiene los datos actualizados del rol.</param>
-        /// <returns>
-        /// Un <see cref="IActionResult"/> que indica el resultado de la operación de actualización.
-        /// </returns>
-        /// <response code="204">Indica que la actualización se realizó correctamente.</response>
-        /// <response code="404">Indica que no se encontró ningún rol con el ID proporcionado.</response>
-        /// <response code="409">Indica que ya existe otro rol con el mismo nombre.</response>
-        /// <response code="500">Indica que ocurrió un error al actualizar el rol en la base de datos.</response>
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateRol(int id, RolUpdateDTO rolDTO)
         {
@@ -157,16 +117,6 @@ namespace HospitalApi.Controllers
             return NoContent();
         }
 
-        /// <summary>
-        /// Elimina un rol existente en el sistema.
-        /// </summary>
-        /// <param name="id">El ID del rol que se va a eliminar.</param>
-        /// <returns>
-        /// Un <see cref="IActionResult"/> que indica el resultado de la operación de eliminación.
-        /// </returns>
-        /// <response code="204">Indica que la eliminación se realizó correctamente.</response>
-        /// <response code="404">Indica que no se encontró ningún rol con el ID proporcionado.</response>
-        /// <response code="500">Indica que ocurrió un error al actualizar el rol en la base de datos.</response>
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteRol(int id)
         {
@@ -177,7 +127,6 @@ namespace HospitalApi.Controllers
                 return NotFound("No se encontró el rol con el ID proporcionado.");
             }
 
-            // Verificación de referencias de usuarios a roles
             if (await _context.Usuarios.AnyAsync(u => u.IdRol == id))
             {
                 return Conflict("Este rol está asignado a usuarios y no puede ser eliminado.");

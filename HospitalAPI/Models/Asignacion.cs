@@ -36,9 +36,8 @@ namespace HospitalApi
         [Column("asignado_por")]
         public int AsignadoPor { get; set; }
 
-        // Propiedades de navegación
         public Paciente Paciente { get; set; }
-        public Cama Cama { get; set; } // Ahora se usa IdCama en lugar de Ubicacion
+        public Cama Cama { get; set; } 
         public Usuario Usuario { get; set; }
         public ICollection<Ingreso> Ingresos { get; set; } = new List<Ingreso>();
 
@@ -48,7 +47,6 @@ namespace HospitalApi
             Ingresos = new List<Ingreso>();
         }
 
-        // Validación personalizada para la fecha de liberación
         public static ValidationResult ValidarFechaLiberacion(DateTime? fechaLiberacion, ValidationContext context)
         {
             var instance = context.ObjectInstance as Asignacion;

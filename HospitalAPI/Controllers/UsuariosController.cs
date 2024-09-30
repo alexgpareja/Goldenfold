@@ -20,18 +20,6 @@ namespace HospitalApi.Controllers
             _mapper = mapper;
         }
 
-        /// <summary>
-        /// Obtiene una lista de usuarios basada en los parámetros de búsqueda opcionales.
-        /// </summary>
-        /// <param name="nombre">El nombre o parte del nombre del usuario a buscar. Este parámetro es opcional.</param>
-        /// <param name="usuario">El nombre de usuario o parte del nombre de usuario a buscar. Este parámetro es opcional.</param>
-        /// <returns>
-        /// Una lista de objetos <see cref="UsuarioDTO"/> que representan los usuarios encontrados.
-        /// </returns>
-        /// <response code="200">Devuelve una lista de usuarios que coinciden con los parámetros de búsqueda.</response>
-        /// <response code="404">Si no se encuentran usuarios que coincidan con los criterios de búsqueda proporcionados.</response>
-        /// <response code="500">Si se produce un error en el servidor al procesar la solicitud.</response>
-        // GET: api/Usuarios
         [HttpGet]
         public async Task<ActionResult<IEnumerable<UsuarioDTO>>> GetUsuarios([FromQuery] string? nombre, [FromQuery] string? usuario)
         {
@@ -49,17 +37,6 @@ namespace HospitalApi.Controllers
             return Ok(usuariosDTO);
         }
 
-        /// <summary>
-        /// Obtiene un usuario específico por su ID.
-        /// </summary>
-        /// <param name="id">El ID del usuario que se desea obtener.</param>
-        /// <returns>
-        /// Un objeto <see cref="UsuarioDTO"/> que representa el usuario solicitado.
-        /// </returns>
-        /// <response code="200">Devuelve el usuario solicitado.</response>
-        /// <response code="404">Si no se encuentra un usuario con el ID proporcionado.</response>
-        /// <response code="500">Si se produce un error en el servidor al procesar la solicitud.</response>
-        // GET: api/Usuarios/{id}
         [HttpGet("{id}")]
         public async Task<ActionResult<UsuarioDTO>> GetUsuario(int id)
         {
@@ -72,51 +49,34 @@ namespace HospitalApi.Controllers
             return Ok(usuarioDTO);
         }
 
-        /// <summary>
-        /// Crea un nuevo usuario en la base de datos.
-        /// </summary>
-        /// <param name="usuarioDTO">El objeto <see cref="UsuarioCreateDTO"/> que contiene los datos del usuario a crear.</param>
-        /// <returns>
-        /// Un objeto <see cref="UsuarioDTO"/> que representa el usuario recién creado.
-        /// </returns>
-        /// <response code="201">El usuario ha sido creado exitosamente.</response>
-        /// <response code="400">Si los datos proporcionados no son válidos.</response>
-        /// <response code="409">Si el nombre de usuario ya está en uso o el rol no existe.</response>
-        /// <response code="500">Si se produce un error en el servidor al procesar la solicitud.</response>
         [HttpPost]
         public async Task<ActionResult<UsuarioDTO>> CreateUser(UsuarioCreateDTO usuarioDTO)
         {
-            // Validar que el nombre no esté en blanco y tenga al menos dos palabras
             if (string.IsNullOrWhiteSpace(usuarioDTO.Nombre) || usuarioDTO.Nombre.Split(' ').Length < 2)
             {
                 return BadRequest("Mínimo nombre y un apellido.");
             }
 
-            // Validar que el nombre de usuario no esté en blanco
             if (string.IsNullOrWhiteSpace(usuarioDTO.NombreUsuario))
             {
                 return BadRequest("El nombre de usuario no puede estar en blanco.");
             }
 
-            // Validar que la contraseña no esté en blanco
             if (string.IsNullOrWhiteSpace(usuarioDTO.Contrasenya))
             {
                 return BadRequest("La contraseña no puede estar en blanco.");
             }
 
-            // Verificar si el nombre de usuario ya está en uso
             if (await _context.Usuarios.AnyAsync(u => u.NombreUsuario == usuarioDTO.NombreUsuario))
             {
                 return Conflict("El nombre de usuario ya está en uso. Por favor, elige un nombre de usuario diferente.");
             }
 
-            // Verificar si el rol existe
             if (!await _context.Roles.AnyAsync(r => r.IdRol == usuarioDTO.IdRol))
             {
                 return Conflict("El rol proporcionado no existe. Por favor, selecciona un rol válido.");
             }
 
-            // Crear el usuario si todas las validaciones pasaron
             var usuario = _mapper.Map<Usuario>(usuarioDTO);
             _context.Usuarios.Add(usuario);
             await _context.SaveChangesAsync();
@@ -125,20 +85,6 @@ namespace HospitalApi.Controllers
             return CreatedAtAction(nameof(GetUsuario), new { id = usuarioDTOResult.IdUsuario }, usuarioDTOResult);
         }
 
-        /// <summary>
-        /// Actualiza un usuario existente en la base de datos.
-        /// </summary>
-        /// <param name="id">El ID del usuario que se va a actualizar.</param>
-        /// <param name="usuarioDTO">El objeto <see cref="UsuarioDTO"/> que contiene los datos actualizados del usuario.</param>
-        /// <returns>
-        /// Un código de estado HTTP que indica el resultado de la operación de actualización.
-        /// </returns>
-        /// <response code="204">Indica que la actualización fue exitosa y no hay contenido que devolver.</response>
-        /// <response code="400">Si los datos proporcionados no son válidos.</response>
-        /// <response code="404">Si no se encuentra el usuario con el ID proporcionado.</response>
-        /// <response code="409">Si el nombre de usuario proporcionado ya está en uso por otro usuario o si el rol no existe.</response>
-        /// <response code="500">Si ocurre un error en el servidor al procesar la solicitud.</response>
-        // PUT: api/Usuarios/{id}
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateUsuario(int id, UsuarioUpdateDTO usuarioDTO)
         {
@@ -148,19 +94,16 @@ namespace HospitalApi.Controllers
                 return NotFound("No se encontró ningun usuario con el ID proporcionado.");
             }
 
-            // Validar que el nombre no esté en blanco y tenga al menos dos palabras
             if (string.IsNullOrWhiteSpace(usuarioDTO.Nombre) || usuarioDTO.Nombre.Split(' ').Length < 2)
             {
                 return BadRequest("Mínimo nombre y un apellido.");
             }
 
-            // Validar que el nombre de usuario no esté en blanco
             if (string.IsNullOrWhiteSpace(usuarioDTO.NombreUsuario))
             {
                 return BadRequest("El nombre de usuario no puede estar en blanco.");
             }
 
-            // Validar que la contraseña no esté en blanco
             if (string.IsNullOrWhiteSpace(usuarioDTO.Contrasenya))
             {
                 return BadRequest("La contraseña no puede estar en blanco.");
@@ -196,16 +139,6 @@ namespace HospitalApi.Controllers
             return NoContent();
         }
 
-        /// <summary>
-        /// Elimina un usuario específico de la base de datos por su ID.
-        /// </summary>
-        /// <param name="id">El ID del usuario que se desea eliminar.</param>
-        /// <returns>
-        /// Un código de estado HTTP que indica el resultado de la operación de eliminación.
-        /// </returns>
-        /// <response code="204">Indica que la eliminación fue exitosa y no hay contenido que devolver.</response>
-        /// <response code="404">Si no se encuentra el usuario con el ID proporcionado.</response>
-        /// <response code="500">Si ocurre un error en el servidor al procesar la solicitud.</response>
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(int id)
         {

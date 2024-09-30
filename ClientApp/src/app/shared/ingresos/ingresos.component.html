@@ -11,6 +11,7 @@
             <th>Fecha de Solicitud</th>
             <th>Fecha de Ingreso</th>
             <th>Estado</th>
+            <th>Cama</th>
              
             <th>Acciones</th>
           </tr>
@@ -21,9 +22,10 @@
             <td>{{ ingreso.IdPaciente }}</td>
             <td>{{ ingreso.IdMedico }}</td>
             <td>{{ ingreso.Motivo }}</td>
-            <td>{{ ingreso.FechaSolicitud | date: 'dd/MM/yyyy' }}</td>
-            <td>{{ ingreso.FechaIngreso | date: 'dd/MM/yyyy' }}</td>
+            <td>{{ ingreso.FechaSolicitud | date:'dd/MM/yyyy HH:mm\'h\'' }}</td>
+            <td>{{ ingreso.FechaIngreso | date:'dd/MM/yyyy HH:mm\'h\'' }}</td>
             <td>{{ ingreso.Estado }}</td>
+            <td>{{ ingreso.TipoCama }}</td>
             <td>
               <button (click)="toggleActualizarIngreso(ingreso)">Actualizar</button>
               <button (click)="borrarIngreso(ingreso.IdIngreso)">Borrar</button>
