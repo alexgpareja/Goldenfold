@@ -114,6 +114,17 @@ namespace HospitalApi.Controllers
             if (!Enum.TryParse(ingresoDTO.Estado, out EstadoIngreso nuevoEstado))
                 return BadRequest("El estado proporcionado no es válido.");
 
+            // Verificar si la cama está ocupada por otra asignación activa
+            var camaAsignada = await _context.Asignaciones
+                .Where(a => a.IdCama == ingresoDTO.IdAsignacion && a.FechaLiberacion == null && a.IdPaciente != ingresoDTO.IdPaciente)
+                .FirstOrDefaultAsync();
+
+            if (camaAsignada != null)
+            {
+                return BadRequest("La cama está ocupada por otro paciente.");
+            }
+
+            // Mapear los cambios desde el DTO a la entidad de ingreso
             _mapper.Map(ingresoDTO, ingresoExiste);
             ingresoExiste.Estado = nuevoEstado;
 
@@ -132,6 +143,7 @@ namespace HospitalApi.Controllers
             return NoContent();
         }
 
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteIngreso(int id)
         {
@@ -139,25 +151,27 @@ namespace HospitalApi.Controllers
             if (ingreso == null)
                 return NotFound($"No se encontró ningún ingreso con el ID {id}.");
 
+            // Si el ingreso tiene una asignación relacionada
             if (ingreso.IdAsignacion.HasValue)
             {
+                // Buscar la asignación relacionada
                 var asignacion = await _context.Asignaciones.FindAsync(ingreso.IdAsignacion.Value);
                 if (asignacion != null)
                 {
-                    var cama = await _context.Camas.FindAsync(asignacion.IdCama);
-                    if (cama != null)
-                    {
-                        cama.Estado = EstadoCama.Disponible;
-                        _context.Camas.Update(cama);
-                    }
+                    // Eliminar la asignación relacionada
                     _context.Asignaciones.Remove(asignacion);
                 }
             }
+
+            // Eliminar el ingreso
             _context.Ingresos.Remove(ingreso);
+
+            // Guardar los cambios en la base de datos
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
+
         private bool IngresoExists(int id)
         {
             return _context.Ingresos.Any(e => e.IdIngreso == id);

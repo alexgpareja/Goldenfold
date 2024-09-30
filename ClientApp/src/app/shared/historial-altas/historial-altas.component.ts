@@ -1,12 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, NgModule, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';;
 import { ApiService, HistorialAlta, Paciente } from '../../services/api.service';
 
 @Component({
   selector: 'app-historial-altas',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule],
   templateUrl: './historial-altas.component.html',
   styleUrls: ['./historial-altas.component.css']
 })
@@ -15,6 +15,8 @@ export class HistorialAltasComponent implements OnInit {
   historialAltasPaginadas: HistorialAlta[] = [];
   nuevoHistorialAlta: HistorialAlta = this.inicializarHistorialAlta();
   historialAltaParaActualizar: HistorialAlta | null = null;
+  
+  historialAltaForm!: FormGroup;
 
   paginaActual: number = 1;
   historialAltasPorPagina: number = 5;
@@ -35,6 +37,7 @@ export class HistorialAltasComponent implements OnInit {
   ngOnInit(): void {
     this.obtenerHistorialAltas();
     this.obtenerPacientes();
+    this.crearFormularioHistorialAlta();
   }
 
   inicializarHistorialAlta(): HistorialAlta {
@@ -47,6 +50,18 @@ export class HistorialAltasComponent implements OnInit {
       Tratamiento: ''
     };
   }
+
+  crearFormularioHistorialAlta(): void {
+    this.historialAltaForm = new FormGroup({
+      IdHistorial: new FormControl({ value: '', disabled: true }),
+      IdPaciente: new FormControl('',[Validators.required]  ),
+      FechaAlta: new FormControl('',[Validators.required],[]),
+      Diagnostico: new FormControl('',[Validators.required]),
+      Tratamiento: new FormControl('',[Validators.required])
+    });
+
+  }
+
 
   obtenerPacientes() {
     this.apiService.getPacientes().subscribe({

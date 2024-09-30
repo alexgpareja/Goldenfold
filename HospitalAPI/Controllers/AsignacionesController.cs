@@ -68,8 +68,6 @@ namespace HospitalApi.Controllers
 
             var asignacion = _mapper.Map<Asignacion>(asignacionDTO);
             var cama = await _context.Camas.FindAsync(asignacion.IdCama);
-            cama.Estado = EstadoCama.NoDisponible;
-            _context.Camas.Update(cama);
             _context.Asignaciones.Add(asignacion);
             await _context.SaveChangesAsync();
 
@@ -149,13 +147,6 @@ namespace HospitalApi.Controllers
             if (asignacion == null)
             {
                 return NotFound("No se encontró la asignación especificada.");
-            }
-
-            var cama = await _context.Camas.FindAsync(asignacion.IdCama);
-            if (cama != null)
-            {
-                cama.Estado = EstadoCama.Disponible;
-                _context.Camas.Update(cama);
             }
 
             _context.Asignaciones.Remove(asignacion);
