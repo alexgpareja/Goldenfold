@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS `asignaciones` (
   CONSTRAINT `fk_asignaciones_camas` FOREIGN KEY (`id_cama`) REFERENCES `camas` (`id_cama`),
   CONSTRAINT `fk_asignaciones_pacientes` FOREIGN KEY (`id_paciente`) REFERENCES `pacientes` (`id_paciente`),
   CONSTRAINT `fk_asignaciones_usuarios` FOREIGN KEY (`asignado_por`) REFERENCES `usuarios` (`id_usuario`)
-) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Volcando datos para la tabla db_goldenfold.asignaciones: ~0 rows (aproximadamente)
 
@@ -108,7 +108,7 @@ CREATE TABLE IF NOT EXISTS `consultas` (
   KEY `idx_id_medico` (`id_medico`),
   CONSTRAINT `fk_consultas_medicos` FOREIGN KEY (`id_medico`) REFERENCES `usuarios` (`id_usuario`),
   CONSTRAINT `fk_consultas_pacientes` FOREIGN KEY (`id_paciente`) REFERENCES `pacientes` (`id_paciente`)
-) ENGINE=InnoDB AUTO_INCREMENT=55 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Volcando datos para la tabla db_goldenfold.consultas: ~0 rows (aproximadamente)
 
@@ -180,7 +180,7 @@ CREATE TABLE IF NOT EXISTS `ingresos` (
   CONSTRAINT `fk_ingresos_asignaciones` FOREIGN KEY (`id_asignacion`) REFERENCES `asignaciones` (`id_asignacion`),
   CONSTRAINT `fk_ingresos_medicos` FOREIGN KEY (`id_medico`) REFERENCES `usuarios` (`id_usuario`),
   CONSTRAINT `fk_ingresos_pacientes` FOREIGN KEY (`id_paciente`) REFERENCES `pacientes` (`id_paciente`)
-) ENGINE=InnoDB AUTO_INCREMENT=46 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Volcando datos para la tabla db_goldenfold.ingresos: ~0 rows (aproximadamente)
 
