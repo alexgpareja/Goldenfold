@@ -34,7 +34,7 @@ export class UsuariosComponent implements OnInit {
   crearFormularioUsuario(): void {
     this.usuarioForm = new FormGroup({
       IdUsuario: new FormControl({ value: '', disabled: true }),
-      Nombre: new FormControl('',[UserValidators.noWhitespaceValidator(),Validators.pattern(' *[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ]+( [a-zA-ZáéíóúÁÉÍÓÚüÜñÑ]+)+ *')]), //no puede estar en blanco y tiene que tener minimo 2 palabras
+      Nombre: new FormControl('',[UserValidators.noWhitespaceValidator(),Validators.pattern(' *[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ.]+( [a-zA-ZáéíóúÁÉÍÓÚüÜñÑ.]+)+ *')]), //no puede estar en blanco y tiene que tener minimo 2 palabras
       NombreUsuario: new FormControl('',[UserValidators.noWhitespaceValidator()]),
       Contrasenya: new FormControl('',[Validators.required]),
       IdRol: new FormControl('',[Validators.required])
