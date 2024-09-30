@@ -1,4 +1,3 @@
-using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -30,14 +29,10 @@ namespace HospitalApi
         [Column("tratamiento")]
         public string Tratamiento { get; set; }
 
-        // Relación con Medico
         [ForeignKey("Medico")]
         [Column("id_medico")]
         public int IdMedico { get; set; }
-
-        public Usuario Medico { get; set; } // Medico es un Usuario con rol de Medico
-
-        // Propiedad de navegación
+        public Usuario Medico { get; set; }
         public virtual Paciente Paciente { get; set; }
     }
 }
