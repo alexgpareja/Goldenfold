@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { ApiService, Rol, Usuario } from '../../services/api.service';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
-import { CustomValidators } from '../../validators/whitespace.validator';
 import { UserValidators } from '../../validators/usuarios.validators';
 
 @Component({
@@ -96,6 +95,7 @@ export class UsuariosComponent implements OnInit {
       this.apiService.addUsuario(nuevoUsuario).subscribe({
         next: (usuario: Usuario) => {
           this.usuarios.push(usuario);
+          console.log(usuario);
           this.usuarioForm.reset(); //despues de agregarlo, reseteas el formulario
           alert('Usuario creado con exito');
         },

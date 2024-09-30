@@ -17,7 +17,6 @@
           <th>ID Usuario</th>
           <th>Nombre</th>
           <th>Nombre Usuario</th>
-          <th>Contraseña</th>
           <th>ID Rol</th>
           <th>Acciones</th>
         </tr>
@@ -27,23 +26,6 @@
           <td>{{ usuario.IdUsuario }}</td>
           <td>{{ usuario.Nombre }}</td>
           <td>{{ usuario.NombreUsuario }}</td>
-          <td>
-            <span
-              [ngClass]="{
-                'hidden-text': !mostrarContrasenas[usuario.IdUsuario]
-              }"
-            >
-              {{ usuario.Contrasenya }}
-            </span>
-            <button
-              class="password"
-              (mousedown)="mostrarContrasena(usuario.IdUsuario)"
-              (mouseup)="ocultarContrasena(usuario.IdUsuario)"
-              (mouseleave)="ocultarContrasena(usuario.IdUsuario)"
-            >
-              👁️
-            </button>
-          </td>
           <td>{{ usuario.IdRol }}</td>
           <td>
             <button (click)="toggleActualizarUsuario(usuario)">
