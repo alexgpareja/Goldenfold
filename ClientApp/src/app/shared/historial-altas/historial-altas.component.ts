@@ -179,7 +179,7 @@ export class HistorialAltasComponent implements OnInit {
             }
         });
     } else {
-        console.warn('Form is invalid, please check your inputs');
+        console.warn('El formulario es inválido.');
     }
 }
 
@@ -202,7 +202,8 @@ export class HistorialAltasComponent implements OnInit {
           this.obtenerHistorialAltas();
           this.historialAltaParaActualizar = null;
           this.mostrarFormularioActualizar = false;
-          this.notificacion = "Historial Alta actualizado con éxito"
+          this.notificacion = "Historial Alta actualizado con éxito";
+          this.cd.detectChanges();
         },
         error: (error: any) => {
           console.error('Error al actualizar el historial de alta', error);
@@ -215,7 +216,10 @@ export class HistorialAltasComponent implements OnInit {
     this.apiService.deleteHistorialAlta(id).subscribe({
       next: () => {
         this.historialAltas = this.historialAltas.filter(historialAlta => historialAlta.IdHistorial !== id);
+        this.historialAltasPaginadas = this.historialAltasPaginadas.filter(historialAlta => historialAlta.IdHistorial !== id);
         this.calcularTotalPaginasYActualizar();
+        this.notificacion = "Historial Alta eliminado con éxito.";
+        this.cd.detectChanges();
       },
       error: (error: any) => {
         console.error('Error al borrar el historial de alta', error);
