@@ -84,7 +84,7 @@
         <select formControlName="Estado" required>
           <option [value]="0" disabled>Escoge un estado</option>
           @for (estado of estados; track estado.value) {
-            <option [value]="estado.value">{{estado.label}}</option>
+            <option [value]="estado.label">{{estado.label}}</option>
           }
         </select>
         <button type="submit">Agregar</button>
