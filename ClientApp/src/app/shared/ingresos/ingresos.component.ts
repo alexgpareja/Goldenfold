@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
-import { ApiService, Ingreso } from '../../services/api.service';
+import { ApiService, Ingreso, Paciente, Usuario } from '../../services/api.service';
 
 @Component({
   selector: 'app-ingresos',
@@ -12,6 +12,8 @@ import { ApiService, Ingreso } from '../../services/api.service';
 })
 export class IngresosComponent implements OnInit {
   ingresos: Ingreso[] = [];
+  pacientes: Paciente[] = [];
+  medicos: Usuario[] = [];
   ingresoForm!: FormGroup;
   ingresoParaActualizar: Ingreso | null = null;
 
@@ -20,6 +22,8 @@ export class IngresosComponent implements OnInit {
   ngOnInit(): void {
     this.obtenerIngresos();
     this.crearFormularioIngreso();
+    this.obtenerPacientes();
+    this.obtenerMedicos();
   }
 
   crearFormularioIngreso(): void{
@@ -34,6 +38,31 @@ export class IngresosComponent implements OnInit {
       TipoCama: new FormControl(''),
       IdAsignacion: new FormControl(null)
     });
+  }
+
+  obtenerPacientes(): void{
+    this.apiService.getPacientes().subscribe({
+      next: (data: Paciente[]) => {
+        this.pacientes = data;
+      },
+      error: (error : any) =>{
+        console.error('Error al cargar los pacientes',error);
+      }
+    })
+  }
+
+  obtenerMedicos(): void{
+    this.apiService.getUsuarios().subscribe({
+      next: (data:Usuario[]) =>{
+        const medicosApi = data.filter(medico =>
+          medico.IdRol == 2
+        );
+        this.medicos = medicosApi;
+      },
+      error: (error: any)=>{
+        console.error('Error al cargar los medicos',error);
+      }
+    })
   }
 
   obtenerIngresos(): void {

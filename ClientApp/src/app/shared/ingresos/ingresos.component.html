@@ -60,10 +60,20 @@
     <div class="form-container">
       <h3>Agregar Ingreso</h3>
       <form [formGroup]="ingresoForm"  (ngSubmit)="agregarIngreso()">
-        <label for="idPaciente">ID Paciente:</label>
-        <input type="number" id="idPaciente" formControlName="IdPaciente" name="idPaciente" required>
-        <label for="idMedico">ID Médico:</label>
-        <input type="number" id="idMedico" formControlName="IdMedico" name="idMedico" required>
+        <label for="idPaciente">Paciente:</label>
+        <select formControlName="IdPaciente" required>
+          <option [value]="0" disabled>Selecciona un paciente</option>
+          @for (paciente of pacientes; track paciente.IdPaciente) {
+            <option [value]="paciente.IdPaciente">{{paciente.Nombre}}</option>
+          }
+        </select>
+        <label for="idMedico">Médico:</label>
+        <select formControlName="IdMedico" required>
+          <option [value]="0" disabled>Selecciona un médico</option>
+          @for (medico of medicos; track medico.IdUsuario) {
+            <option [value]="medico.IdUsuario">{{medico.Nombre}}</option>
+          }
+        </select>
         <label for="motivo">Motivo de Ingreso:</label>
         <input type="text" id="motivo" formControlName="Motivo" name="motivo" required>
         <label for="fechaSolicitud">Fecha de Solicitud:</label>
