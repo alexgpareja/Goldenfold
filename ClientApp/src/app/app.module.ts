@@ -1,21 +1,21 @@
 import { BrowserModule } from '@angular/platform-browser';
-
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { NgModule } from '@angular/core';
 import { KeycloakAngularModule } from 'keycloak-angular';
 import { ReactiveFormsModule } from '@angular/forms';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 
 
 @NgModule({
-  declarations: [
-    AppComponent
-  ],
+  declarations: [],
   imports: [
+    AppComponent,
     BrowserModule,
     ReactiveFormsModule,
     AppRoutingModule,
     KeycloakAngularModule,
+    BrowserAnimationsModule,
   ],
   providers: [
     /* {
@@ -26,6 +26,6 @@ import { ReactiveFormsModule } from '@angular/forms';
   }
     */
   ],
-  bootstrap: [AppComponent],
+  bootstrap: [],
 })
 export class AppModule { }
