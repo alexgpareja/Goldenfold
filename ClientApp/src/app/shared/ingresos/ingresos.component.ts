@@ -14,12 +14,16 @@ export class IngresosComponent implements OnInit {
   ingresos: Ingreso[] = [];
   pacientes: Paciente[] = [];
   estados = [
-    { value: 0, label: 'Selecciona un estado' },
     { value: 1, label: 'Pendiente' },
     { value: 2, label: 'Ingresado' },
     { value: 3, label: 'Rechazado' },
     { value: 4, label: 'Alta' }
   ];
+  tipos = [
+    { value:1, label: 'General'},
+    { value:2, label: 'UCI'},
+    { value:3, label: 'Postoperatorio'},
+  ]
   medicos: Usuario[] = [];
   ingresoForm!: FormGroup;
   ingresoParaActualizar: Ingreso | null = null;
@@ -42,7 +46,7 @@ export class IngresosComponent implements OnInit {
       FechaSolicitud: new FormControl(new Date()),
       FechaIngreso: new FormControl (null),
       Estado: new FormControl(0),
-      TipoCama: new FormControl(''),
+      TipoCama: new FormControl(0),
       IdAsignacion: new FormControl(null)
     });
   }
@@ -89,7 +93,7 @@ export class IngresosComponent implements OnInit {
       this.apiService.addIngreso(nuevoIngreso).subscribe({
         next: (ingreso: Ingreso) => {
           this.ingresos.push(ingreso);
-          this.ingresoForm.reset(); //despues de agregarlo, reseteas el formulario
+          this.crearFormularioIngreso(); //despues de agregarlo, reseteas el formulario
           alert('Ingreso creado con exito');
         },
         error: (error: any) => {

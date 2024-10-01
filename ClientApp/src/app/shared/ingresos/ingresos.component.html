@@ -78,13 +78,18 @@
         <input type="text" id="motivo" formControlName="Motivo" name="motivo" required>
         <label for="fechaSolicitud">Fecha de Solicitud:</label>
         <input type="date" id="fechaSolicitud" formControlName="FechaSolicitud" name="fechaSolicitud" required>
-        <label for="fechaIngreso">Fecha de Ingreso:</label>
-        <input type="date" id="fechaIngreso" formControlName="FechaIngreso" name="fechaIngreso" required>
         <label for="estado">Estado:</label>
         <select formControlName="Estado" required>
           <option [value]="0" disabled>Escoge un estado</option>
           @for (estado of estados; track estado.value) {
             <option [value]="estado.label">{{estado.label}}</option>
+          }
+        </select>
+        <label for="tipoCama">Tipo cama:</label>
+        <select formControlName="TipoCama" required>
+          <option [value]="0" disabled>Escoge un tipo de cama</option>
+          @for (tipo of tipos; track tipo.value) {
+            <option [value]="tipo.label">{{tipo.label}}</option>
           }
         </select>
         <button type="submit">Agregar</button>
