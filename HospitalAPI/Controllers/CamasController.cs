@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using HospitalApi.Models;
 using HospitalApi.DTO;
-using AutoMapper;
+using HospitalApi.Services;
 
 namespace HospitalApi.Controllers
 {
@@ -10,13 +8,11 @@ namespace HospitalApi.Controllers
     [Route("api/[controller]")]
     public class CamasController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
-        private readonly IMapper _mapper;
+        private readonly CamaService _camaService;
 
-        public CamasController(ApplicationDbContext context, IMapper mapper)
+        public CamasController(CamaService camaService)
         {
-            _context = context;
-            _mapper = mapper;
+            _camaService = camaService;
         }
 
         [HttpGet]
@@ -25,69 +21,62 @@ namespace HospitalApi.Controllers
             [FromQuery] string? estado, 
             [FromQuery] string? tipo)
         {
-            IQueryable<Cama> query = _context.Camas;
+            var camas = await _camaService.GetCamasAsync(ubicacion, estado, tipo);
+            
+            if (!camas.Any())
+                return NotFound("No se han encontrado camas con los criterios proporcionados.");
 
-            if (!string.IsNullOrEmpty(ubicacion))
-                query = query.Where(c => c.Ubicacion.ToLower().Contains(ubicacion.ToLower()));
-
-            if (!string.IsNullOrEmpty(estado))
-            {
-                if (Enum.TryParse(typeof(EstadoCama), estado, true, out var estadoEnum))
-                {
-                    query = query.Where(c => c.Estado == (EstadoCama)estadoEnum);
-                }
-                else
-                {
-                    return BadRequest("El valor de estado no es válido.");
-                }
-            }
-
-            if (!string.IsNullOrEmpty(tipo))
-            {
-                if (Enum.TryParse(typeof(TipoCama), tipo, true, out var tipoEnum))
-                {
-                    query = query.Where(c => c.Tipo == (TipoCama)tipoEnum);
-                }
-                else
-                {
-                    return BadRequest("El valor de tipo no es válido.");
-                }
-            }
-
-            var camas = await query.ToListAsync();
-
-            var camasDTO = _mapper.Map<IEnumerable<CamaDTO>>(camas);
-            return Ok(camasDTO);
+            return Ok(camas);
         }
 
-        [HttpGet("{idCama}")]
-        public async Task<ActionResult<CamaDTO>> GetCamaById(int idCama)
+        [HttpGet("{id}")]
+        public async Task<ActionResult<CamaDTO>> GetCamaById(int id)
         {
-            var cama = await _context.Camas.FindAsync(idCama);
+            var cama = await _camaService.GetCamaByIdAsync(id);
 
             if (cama == null)
-            {
-                return NotFound("No se ha encontrado ninguna cama con este ID.");
-            }
+                return NotFound("No se ha encontrado ninguna cama con el ID proporcionado.");
 
-            var camaDTO = _mapper.Map<CamaDTO>(cama);
-            return Ok(camaDTO);
+            return Ok(cama);
         }
 
         [HttpPost]
         public async Task<ActionResult<CamaDTO>> CreateCama(CamaCreateDTO camaDTO)
         {
-            if (await _context.Camas.AnyAsync(c => c.Ubicacion == camaDTO.Ubicacion))
+            try
             {
-                return Conflict("La ubicación de la cama ya está en uso.");
+                var nuevaCama = await _camaService.CreateCamaAsync(camaDTO);
+                return CreatedAtAction(nameof(GetCamaById), new { idCama = nuevaCama.IdCama }, nuevaCama);
             }
+            catch (ArgumentException ex)
+            {
+                return Conflict(ex.Message);
+            }
+        }
 
-            var cama = _mapper.Map<Cama>(camaDTO);
-            _context.Camas.Add(cama);
-            await _context.SaveChangesAsync();
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateCama(int id, CamaUpdateDTO camaDTO)
+        {
+            try
+            {
+                var result = await _camaService.UpdateCamaAsync(id, camaDTO);
+                if (!result)
+                    return NotFound("No se ha encontrado la cama con el ID proporcionado.");
+                return NoContent();
+            }
+            catch (ArgumentException ex)
+            {
+                return Conflict(ex.Message);
+            }
+        }
 
-            var camaDTOResult = _mapper.Map<CamaDTO>(cama);
-            return CreatedAtAction(nameof(GetCamaById), new { idCama = camaDTOResult.IdCama }, camaDTOResult);
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteCama(int id)
+        {
+            var result = await _camaService.DeleteCamaAsync(id);
+            if (!result)
+                return NotFound("No se ha encontrado la cama con el ID proporcionado.");
+            return NoContent();
         }
     }
 }

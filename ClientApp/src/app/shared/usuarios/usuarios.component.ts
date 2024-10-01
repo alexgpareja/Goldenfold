@@ -95,7 +95,6 @@ export class UsuariosComponent implements OnInit {
       this.apiService.addUsuario(nuevoUsuario).subscribe({
         next: (usuario: Usuario) => {
           this.usuarios.push(usuario);
-          console.log(usuario);
           this.usuarioForm.reset(); //despues de agregarlo, reseteas el formulario
           alert('Usuario creado con exito');
         },

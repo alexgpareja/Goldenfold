@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace HospitalApi.DTO
 {
@@ -13,18 +13,33 @@ namespace HospitalApi.DTO
 
     public class CamaCreateDTO
     {
+        [Required(ErrorMessage = "La ubicación es obligatoria.")]
+        [StringLength(10, MinimumLength = 10, ErrorMessage = "La ubicación debe tener exactamente 10 caracteres.")]
         public string Ubicacion { get; set; }
-        public EstadoCama Estado { get; set; }
-        public TipoCama Tipo { get; set; }
+
+        [Required(ErrorMessage = "El estado de la cama es obligatorio.")]
+        public string Estado { get; set; }  // Validado en el controlador o servicio como Enum
+
+        [Required(ErrorMessage = "El tipo de cama es obligatorio.")]
+        public string Tipo { get; set; }  // Validado en el controlador o servicio como Enum
+
+        [Required(ErrorMessage = "El ID de la habitación es obligatorio.")]
         public int IdHabitacion { get; set; }
     }
 
     public class CamaUpdateDTO
     {
-        public int IdCama { get; set; }
+        [Required(ErrorMessage = "La ubicación es obligatoria.")]
+        [StringLength(10, MinimumLength = 10, ErrorMessage = "La ubicación debe tener exactamente 10 caracteres.")]
         public string Ubicacion { get; set; }
-        public string Estado { get; set; }
-        public string Tipo { get; set; }
+
+        [Required(ErrorMessage = "El estado de la cama es obligatorio.")]
+        public string Estado { get; set; }  // Validado en el controlador o servicio como Enum
+
+        [Required(ErrorMessage = "El tipo de cama es obligatorio.")]
+        public string Tipo { get; set; }  // Validado en el controlador o servicio como Enum
+
+        [Required(ErrorMessage = "El ID de la habitación es obligatorio.")]
         public int IdHabitacion { get; set; }
     }
 }

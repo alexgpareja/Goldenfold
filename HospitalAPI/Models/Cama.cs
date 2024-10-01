@@ -10,22 +10,17 @@ namespace HospitalApi
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("id_cama")]
-        public int IdCama { get; set; } // Corregido para usar IdCama como la clave primaria
+        public int IdCama { get; set; } 
 
-        [Required(ErrorMessage = "La ubicación es obligatoria.")]
-        [StringLength(10, MinimumLength = 10, ErrorMessage = "La ubicación debe tener entre 1 y 10 caracteres.")]
         [Column("ubicacion")]
         public string Ubicacion { get; set; }
 
-        [Required(ErrorMessage = "El estado de la cama es obligatorio.")]
         [Column("estado")]
         public EstadoCama Estado { get; set; } = EstadoCama.Disponible;
 
-        [Required(ErrorMessage = "El tipo de cama es obligatorio.")]
         [Column("tipo")]
         public TipoCama Tipo { get; set; } = TipoCama.General;
 
-        // Relación con la clase Habitacion
         [ForeignKey("Habitacion")]
         [Column("id_habitacion")]
         public int IdHabitacion { get; set; }
