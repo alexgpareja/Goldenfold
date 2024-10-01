@@ -15,7 +15,7 @@ import { ReactiveFormsModule } from '@angular/forms';
     BrowserModule,
     ReactiveFormsModule,
     AppRoutingModule,
-    KeycloakAngularModule
+    KeycloakAngularModule,
   ],
   providers: [
     /* {
@@ -28,4 +28,4 @@ import { ReactiveFormsModule } from '@angular/forms';
   ],
   bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule { }

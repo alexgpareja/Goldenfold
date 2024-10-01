@@ -12,6 +12,6 @@ import { SearchBoxComponent } from './search-box/search-box.component';
     SharedRoutingModule,
   ],
   declarations: [SearchBoxComponent],
-  exports: [SearchBoxComponent],
+  exports: [CommonModule, SearchBoxComponent]
 })
-export class SharedModule {}
+export class SharedModule { }
