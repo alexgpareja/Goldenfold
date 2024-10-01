@@ -1,3 +1,4 @@
+using HospitalApi.Services;
 using HospitalApi.Mapping;
 using HospitalApi.Models;
 using HospitalApi.SwaggerExamples;
@@ -55,6 +56,17 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 // Add AutoMapper
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile).Assembly);
+
+builder.Services.AddScoped<RolService>();
+builder.Services.AddScoped<UsuarioService>();
+builder.Services.AddScoped<HabitacionService>();
+builder.Services.AddScoped<CamaService>();
+builder.Services.AddScoped<HistorialAltaService>();
+builder.Services.AddScoped<PacienteService>();
+builder.Services.AddScoped<ConsultaService>();
+builder.Services.AddScoped<IngresoService>();
+builder.Services.AddScoped<AsignacionService>();
+
 
 // Add Swagger
 builder.Services.AddEndpointsApiExplorer();

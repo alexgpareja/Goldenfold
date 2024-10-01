@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using HospitalApi.Models;
 using HospitalApi.DTO;
-using AutoMapper;
+using HospitalApi.Services;
 
 namespace HospitalApi.Controllers
 {
@@ -10,153 +8,90 @@ namespace HospitalApi.Controllers
     [Route("api/[controller]")]
     public class AsignacionesController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
-        private readonly IMapper _mapper;
-        public AsignacionesController(ApplicationDbContext context, IMapper mapper)
+        private readonly AsignacionService _asignacionService;
+
+        public AsignacionesController(AsignacionService asignacionService)
         {
-            _context = context;
-            _mapper = mapper;
+            _asignacionService = asignacionService;
         }
 
+        // Obtener todas las asignaciones con filtros opcionales
         [HttpGet]
         public async Task<ActionResult<IEnumerable<AsignacionDTO>>> GetAsignaciones(
-        [FromQuery] int? id_paciente, 
-        [FromQuery] int? id_cama, 
-        [FromQuery] DateTime? fecha_asignacion, 
-        [FromQuery] DateTime? fecha_liberacion, 
-        [FromQuery] int? asignado_por)
+            [FromQuery] int? idPaciente,
+            [FromQuery] int? idCama,
+            [FromQuery] DateTime? fechaAsignacion,
+            [FromQuery] DateTime? fechaLiberacion,
+            [FromQuery] int? asignadoPor)
         {
-            IQueryable<Asignacion> query = _context.Asignaciones;
+            var asignaciones = await _asignacionService.GetAsignacionesAsync(idPaciente, idCama, fechaAsignacion, fechaLiberacion, asignadoPor);
 
-            if (id_paciente.HasValue) query = query.Where(a => a.IdPaciente == id_paciente);
-            if (id_cama.HasValue) query = query.Where(a => a.IdCama == id_cama);
-            if (fecha_asignacion.HasValue) query = query.Where(a => a.FechaAsignacion.Date == fecha_asignacion.Value.Date);
-            if (fecha_liberacion.HasValue) query = query.Where(a => a.FechaLiberacion.Value.Date == fecha_liberacion.Value.Date);
-            if (asignado_por.HasValue) query = query.Where(a => a.AsignadoPor == asignado_por);
+            if (!asignaciones.Any())
+            {
+                return NotFound("No se han encontrado asignaciones.");
+            }
 
-            var asignaciones = await query.ToListAsync();
-
-            var asignacionesDTO = _mapper.Map<IEnumerable<AsignacionDTO>>(asignaciones);
-            return Ok(asignacionesDTO);
+            return Ok(asignaciones);
         }
 
+        // Obtener una asignación por ID
         [HttpGet("{id}")]
         public async Task<ActionResult<AsignacionDTO>> GetAsignacion(int id)
         {
-            var asignacion = await _context.Asignaciones.FindAsync(id);
+            var asignacion = await _asignacionService.GetAsignacionByIdAsync(id);
             if (asignacion == null)
             {
                 return NotFound("No se ha encontrado ninguna asignación con el ID proporcionado.");
             }
-            var asignacionDTO = _mapper.Map<AsignacionDTO>(asignacion);
-            return Ok(asignacionDTO);
+
+            return Ok(asignacion);
         }
-        
+
+        // Crear una nueva asignación
         [HttpPost]
         public async Task<ActionResult<AsignacionDTO>> CreateAsignacion(AsignacionCreateDTO asignacionDTO)
         {
-
-            if (!await _context.Usuarios.AnyAsync(u => u.IdUsuario == asignacionDTO.AsignadoPor))
+            try
             {
-                return Conflict("El usuario proporcionado no existe. Por favor, selecciona un usuario válido para la asignación.");
+                var asignacion = await _asignacionService.CreateAsignacionAsync(asignacionDTO);
+                return CreatedAtAction(nameof(GetAsignacion), new { id = asignacion.IdAsignacion }, asignacion);
             }
-
-            if (!await _context.Camas.AnyAsync(c => c.IdCama == asignacionDTO.IdCama))
+            catch (ArgumentException ex)
             {
-                return BadRequest("La cama especificada no existe.");
+                return BadRequest(ex.Message);
             }
-
-            var asignacion = _mapper.Map<Asignacion>(asignacionDTO);
-            var cama = await _context.Camas.FindAsync(asignacion.IdCama);
-            _context.Asignaciones.Add(asignacion);
-            await _context.SaveChangesAsync();
-
-            var ingreso = await _context.Ingresos
-                .FirstOrDefaultAsync(i => i.IdPaciente == asignacion.IdPaciente && i.Estado == EstadoIngreso.Pendiente);
-            if (ingreso != null)
-            {
-                ingreso.Estado = EstadoIngreso.Ingresado;
-                ingreso.IdAsignacion = asignacion.IdAsignacion;
-                ingreso.FechaIngreso = DateTime.Now;
-                _context.Ingresos.Update(ingreso);
-            }
-            await _context.SaveChangesAsync();
-
-            var asignacionDTOResult = _mapper.Map<AsignacionDTO>(asignacion);
-            return CreatedAtAction(nameof(GetAsignacion), new { id = asignacionDTOResult.IdAsignacion }, asignacionDTOResult);
         }
 
+        // Actualizar una asignación existente
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateAsignacion(int id, AsignacionUpdateDTO asignacionDTO)
         {
-            var asignacionExiste = await _context.Asignaciones.FindAsync(id);
-            if (asignacionExiste == null)
-            {
-                return NotFound("No se ha encontrado ninguna asignación con el ID proporcionado.");
-            }
-
-            if (!await _context.Usuarios.AnyAsync(u => u.IdUsuario == asignacionDTO.AsignadoPor))
-            {
-                return Conflict("El usuario proporcionado para esta asignación no existe.");
-            }
-
-            if (!await _context.Camas.AnyAsync(c => c.IdCama == asignacionDTO.IdCama))
-            {
-                return BadRequest("La cama especificada no existe.");
-            }
-            _mapper.Map(asignacionDTO, asignacionExiste);
-
-            if (asignacionDTO.FechaLiberacion.HasValue)
-            {
-                var cama = await _context.Camas.FindAsync(asignacionDTO.IdCama);
-                if (cama != null)
-                {
-                    cama.Estado = EstadoCama.Disponible;
-                    _context.Camas.Update(cama);
-                }
-                var paciente = await _context.Pacientes.FindAsync(asignacionExiste.IdPaciente);
-                if (paciente != null)
-                {
-                    paciente.Estado = EstadoPaciente.Alta;
-                    _context.Pacientes.Update(paciente);
-                }
-            }
-
             try
             {
-                await _context.SaveChangesAsync();
+                var result = await _asignacionService.UpdateAsignacionAsync(id, asignacionDTO);
+                if (!result)
+                {
+                    return NotFound("No se ha encontrado ninguna asignación con el ID proporcionado.");
+                }
+                return NoContent();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (ArgumentException ex)
             {
-                if (!AsignacionExists(id))
-                {
-                    return NotFound("No se encontró la asignación especificada.");
-                }
-                else
-                {
-                    throw;
-                }
+                return BadRequest(ex.Message);
             }
-            return NoContent();
         }
 
+        // Eliminar una asignación
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAsignacion(int id)
         {
-            var asignacion = await _context.Asignaciones.FindAsync(id);
-            if (asignacion == null)
+            var result = await _asignacionService.DeleteAsignacionAsync(id);
+            if (!result)
             {
                 return NotFound("No se encontró la asignación especificada.");
             }
 
-            _context.Asignaciones.Remove(asignacion);
-            await _context.SaveChangesAsync();
-
             return NoContent();
-        }
-        private bool AsignacionExists(int id)
-        {
-            return _context.Asignaciones.Any(e => e.IdAsignacion == id);
         }
     }
 }

@@ -1,10 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using HospitalApi.Models;
+﻿using HospitalApi.Services;
 using HospitalApi.DTO;
-using AutoMapper;
-using Swashbuckle.AspNetCore.Filters;
-using HospitalApi.SwaggerExamples;
+using Microsoft.AspNetCore.Mvc;
 
 namespace HospitalApi.Controllers
 {
@@ -12,135 +8,79 @@ namespace HospitalApi.Controllers
     [Route("api/[controller]")]
     public class RolesController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
-        private readonly IMapper _mapper;
-
-        public RolesController(ApplicationDbContext context, IMapper mapper)
+        private readonly RolService _rolService;
+        public RolesController(RolService rolService)
         {
-            _context = context;
-            _mapper = mapper;
+            _rolService = rolService;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<RolDTO>>> GetRoles(
-            [FromQuery] string? nombreRol)
+        public async Task<ActionResult<IEnumerable<RolDTO>>> GetRoles([FromQuery] string? nombreRol)
         {
-            IQueryable<Rol> query = _context.Roles;
-
-            if (!string.IsNullOrEmpty(nombreRol))
-                query = query.Where(r => r.NombreRol.ToLower().Contains(nombreRol.ToLower()));
-
-            var roles = await query.ToListAsync();
-
-            var rolesDTO = _mapper.Map<IEnumerable<RolDTO>>(roles);
-
-            return Ok(rolesDTO);
+            var roles = await _rolService.GetRolesAsync(nombreRol);
+            if (roles == null)
+                return NotFound("No se han encontrado roles.");
+            return Ok(roles);
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<RolDTO>> GetRol(int id)
         {
-            var rol = await _context.Roles.FindAsync(id);
-
-            if (rol == null)
+            try
             {
-                return NotFound("No se encontró ningún rol con el ID especificado.");
+                var rol = await _rolService.GetRolByIdAsync(id);
+                return Ok(rol);
             }
-
-            var rolDTO = _mapper.Map<RolDTO>(rol);
-            return Ok(rolDTO);
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
 
         [HttpPost]
-        [ProducesResponseType(typeof(RolDTO), 201)]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(409)]
-        [ProducesResponseType(500)]
-        [SwaggerResponseExample(201, typeof(RolDTOExample))]
-        public async Task<ActionResult<RolDTO>> CreateRol(RolCreateDTO rolDTO)
+        public async Task<ActionResult<RolDTO>> CreateRol(RolCreateDTO rolCreateDTO)
         {
-            if (string.IsNullOrWhiteSpace(rolDTO.NombreRol))
+            try
             {
-                return BadRequest("No es posible añadir un Rol en blanco.");
+                var rol = await _rolService.CreateRolAsync(rolCreateDTO);
+                return CreatedAtAction(nameof(GetRol), new { id = rol.IdRol }, rol);
             }
-
-            if (await _context.Roles.AnyAsync(r => r.NombreRol == rolDTO.NombreRol))
+            catch (ArgumentException ex)
             {
-                return Conflict("Ya hay un rol registrado con ese nombre. Por favor, elige un nombre diferente para el nuevo rol.");
+                return Conflict(ex.Message);
             }
-
-            var rol = _mapper.Map<Rol>(rolDTO);
-            _context.Roles.Add(rol);
-            await _context.SaveChangesAsync();
-
-            var rolDTOResult = _mapper.Map<RolDTO>(rol);
-            return CreatedAtAction(nameof(GetRol), new { id = rolDTOResult.IdRol }, rolDTOResult);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateRol(int id, RolUpdateDTO rolDTO)
+        public async Task<IActionResult> UpdateRol(int id, RolUpdateDTO rolUpdateDTO)
         {
-            var rolExiste = await _context.Roles.FindAsync(id);
-
-            if (rolExiste == null)
-            {
-                return NotFound("No se encontró ningún rol con el ID proporcionado.");
-            }
-
-            if (string.IsNullOrWhiteSpace(rolDTO.NombreRol))
-            {
-                return BadRequest("No es posible añadir un Rol en blanco.");
-            }
-
-            if (await _context.Roles.AnyAsync(r => r.IdRol != id && r.NombreRol == rolDTO.NombreRol))
-            {
-                return Conflict("Ya existe un rol con ese nombre. Por favor, elige un nombre diferente.");
-            }
-
-            _mapper.Map(rolDTO, rolExiste);
-
             try
             {
-                await _context.SaveChangesAsync();
+                await _rolService.UpdateRolAsync(id, rolUpdateDTO);
+                return NoContent();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (ArgumentException ex)
             {
-                if (!RolExists(id))
-                {
-                    return NotFound("No se encontró el Rol especificado.");
-                }
-                else
-                {
-                    throw;
-                }
+                return Conflict(ex.Message);
             }
-            return NoContent();
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteRol(int id)
         {
-            var rol = await _context.Roles.FindAsync(id);
-
-            if (rol == null)
+            try
             {
-                return NotFound("No se encontró el rol con el ID proporcionado.");
+                await _rolService.DeleteRolAsync(id);
+                return NoContent();
             }
-
-            if (await _context.Usuarios.AnyAsync(u => u.IdRol == id))
+            catch (KeyNotFoundException ex)
             {
-                return Conflict("Este rol está asignado a usuarios y no puede ser eliminado.");
+                return NotFound(ex.Message);
             }
-
-            _context.Roles.Remove(rol);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
-
-        private bool RolExists(int id)
-        {
-            return _context.Roles.Any(e => e.IdRol == id);
         }
     }
 }
