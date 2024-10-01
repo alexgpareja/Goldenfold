@@ -40,13 +40,13 @@ export class IngresosComponent implements OnInit {
   crearFormularioIngreso(): void{
     this.ingresoForm = new FormGroup({
       IdIngreso: new FormControl(0),
-      IdPaciente: new FormControl(0),
-      IdMedico: new FormControl(0),
+      IdPaciente: new FormControl('',[Validators.required]),
+      IdMedico: new FormControl(''),
       Motivo: new FormControl(''),
       FechaSolicitud: new FormControl(new Date()),
       FechaIngreso: new FormControl (null),
-      Estado: new FormControl(0),
-      TipoCama: new FormControl(0),
+      Estado: new FormControl(''),
+      TipoCama: new FormControl(''),
       IdAsignacion: new FormControl(null)
     });
   }
@@ -93,7 +93,7 @@ export class IngresosComponent implements OnInit {
       this.apiService.addIngreso(nuevoIngreso).subscribe({
         next: (ingreso: Ingreso) => {
           this.ingresos.push(ingreso);
-          this.crearFormularioIngreso(); //despues de agregarlo, reseteas el formulario
+          this.ingresoForm.reset(); //despues de agregarlo, reseteas el formulario
           alert('Ingreso creado con exito');
         },
         error: (error: any) => {

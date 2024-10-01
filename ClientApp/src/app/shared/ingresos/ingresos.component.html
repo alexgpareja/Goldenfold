@@ -63,10 +63,11 @@
         <label for="idPaciente">Paciente:</label>
         <select formControlName="IdPaciente" required>
           <option [value]="0" disabled>Selecciona un paciente</option>
-          @for (paciente of pacientes; track paciente.IdPaciente) {
-            <option [value]="paciente.IdPaciente">{{paciente.Nombre}}</option>
-          }
+          <option *ngFor="let paciente of pacientes" [value]="paciente.IdPaciente">{{paciente.Nombre}}</option>
         </select>
+        <div *ngIf="ingresoForm.get('IdPaciente')?.invalid && ingresoForm.get('IdPaciente')?.touched">
+          <small *ngIf="ingresoForm.get('IdPaciente')?.hasError('required')">Selecciona un paciente</small>
+        </div>
         <label for="idMedico">Médico:</label>
         <select formControlName="IdMedico" required>
           <option [value]="0" disabled>Selecciona un médico</option>
