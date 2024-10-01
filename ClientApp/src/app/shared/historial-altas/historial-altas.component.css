@@ -4,6 +4,25 @@
   margin: 20px;
 }
 
+.error , .required {
+  color: #D90202;
+}
+.required {
+  padding-left: 5px;
+}
+
+form button:disabled {
+  background-color: grey;
+  cursor: not-allowed; 
+}
+
+.form-container button:enabled button:hover {
+  background-color: #218838;
+}
+
+.label-container {
+  display: flex;
+}
 /* Estilo para el título principal */
 h2 {
   font-size: 1.5rem;
@@ -152,6 +171,10 @@ th span {
   margin-bottom: 5px;
 }
 
+span {
+  font-size: 0.8rem;
+}
+
 .form-container input {
   width: 100%;
   padding: 10px;
@@ -159,7 +182,7 @@ th span {
   border-radius: 4px;
   font-size: 14px;
   box-sizing: border-box;
-  margin-bottom: 15px;
+  margin-bottom: 5px;
 }
 
 /* Estilo del botón de envío */
@@ -173,11 +196,9 @@ th span {
   cursor: pointer;
   font-size: 16px;
   transition: background-color 0.3s ease;
+  margin-top: 10px;
 }
 
-.form-container button:hover {
-  background-color: #218838;
-}
 
 /* Estilo de la paginación */
 .paginacion {
@@ -229,6 +250,7 @@ th span {
   .table td {
     font-size: 12px;
   }
+
 
   .form-container button {
     font-size: 14px;

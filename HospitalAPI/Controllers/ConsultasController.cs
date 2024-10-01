@@ -1,8 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using HospitalApi.DTO;
-using HospitalApi.Models;
-using AutoMapper;
+using HospitalApi.Services;
 
 namespace HospitalApi.Controllers
 {
@@ -10,123 +8,83 @@ namespace HospitalApi.Controllers
     [Route("api/[controller]")]
     public class ConsultasController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
-        private readonly IMapper _mapper;
+        private readonly ConsultaService _consultaService;
 
-        public ConsultasController(ApplicationDbContext context, IMapper mapper)
+        public ConsultasController(ConsultaService consultaService)
         {
-            _context = context;
-            _mapper = mapper;
+            _consultaService = consultaService;
         }
 
-       
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ConsultaDTO>>> GetConsultas(
             [FromQuery] int? idPaciente, 
             [FromQuery] int? idMedico, 
+            [FromQuery] string? motivo, 
+            [FromQuery] DateTime? fechaSolicitud, 
+            [FromQuery] DateTime? fechaConsulta, 
             [FromQuery] string? estado)
         {
-            IQueryable<Consulta> query = _context.Consultas;
-            if (idPaciente.HasValue)
-                query = query.Where(c => c.IdPaciente == idPaciente.Value);
-            if (idMedico.HasValue)
-                query = query.Where(c => c.IdMedico == idMedico.Value);
-            if (!string.IsNullOrEmpty(estado))
+            try
             {
-                if (Enum.TryParse(typeof(EstadoConsulta), estado, true, out var estadoEnum)){
-                    query = query.Where(c => c.Estado == (EstadoConsulta)estadoEnum);
-                }
-                else{
-                    return BadRequest("El valor de estado no es válido.");
-                }
+                var consultas = await _consultaService.GetConsultasAsync(idPaciente, idMedico, motivo, fechaSolicitud, fechaConsulta, estado);
+
+                if (!consultas.Any())
+                    return NotFound("No se han encontrado consultas que coincidan con los criterios de búsqueda.");
+
+                return Ok(consultas);
             }
-            var consultas = await query.ToListAsync();
-            var consultasDTO = _mapper.Map<IEnumerable<ConsultaDTO>>(consultas);
-            return Ok(consultasDTO);
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<ConsultaDTO>> GetConsultaById(int id)
         {
-            var consulta = await _context.Consultas
-                .Include(c => c.Paciente) 
-                .FirstOrDefaultAsync(c => c.IdConsulta == id);
-
+            var consulta = await _consultaService.GetConsultaByIdAsync(id);
             if (consulta == null)
-            {
-                return NotFound();
-            }
+                return NotFound($"No se ha encontrado ninguna consulta con el ID {id}.");
 
-            var consultaDTO = _mapper.Map<ConsultaDTO>(consulta);
-            return Ok(consultaDTO);
+            return Ok(consulta);
         }
 
         [HttpPost]
         public async Task<ActionResult<ConsultaDTO>> CreateConsulta(ConsultaCreateDTO consultaDTO)
         {
-            var consulta = _mapper.Map<Consulta>(consultaDTO);
-            var paciente = await _context.Pacientes.FindAsync(consultaDTO.IdPaciente);
-            if (paciente == null)
+            try
             {
-                return NotFound("El paciente especificado no existe.");
+                var nuevaConsulta = await _consultaService.CreateConsultaAsync(consultaDTO);
+                return CreatedAtAction(nameof(GetConsultaById), new { id = nuevaConsulta.IdConsulta }, nuevaConsulta);
             }
-
-            paciente.Estado = EstadoPaciente.EnConsulta; 
-            _context.Consultas.Add(consulta);
-
-            await _context.SaveChangesAsync();
-            var consultaDTOResult = _mapper.Map<ConsultaDTO>(consulta);
-            return CreatedAtAction(nameof(GetConsultaById), new { id = consultaDTOResult.IdConsulta }, consultaDTOResult);
+            catch (ArgumentException ex)
+            {
+                return Conflict(ex.Message);
+            }
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateConsulta(int id, ConsultaUpdateDTO consultaDTO)
         {
-            if (id != consultaDTO.IdConsulta)
-            {
-                return BadRequest("El ID proporcionado no coincide con el ID de la consulta.");
-            }
-            var consultaExiste = await _context.Consultas.FindAsync(id);
-
-            if (consultaExiste == null)
-            {
-                return NotFound($"No se encontró ninguna consulta con el ID {id}.");
-            }
-
-            _mapper.Map(consultaDTO, consultaExiste);
-
             try
             {
-                await _context.SaveChangesAsync();
+                var result = await _consultaService.UpdateConsultaAsync(id, consultaDTO);
+                if (!result)
+                    return NotFound("No se encontró ninguna consulta con el ID proporcionado.");
+                return NoContent();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (ArgumentException ex)
             {
-                if (!_context.Consultas.Any(c => c.IdConsulta == id))
-                {
-                    return NotFound($"No se encontró ninguna consulta con el ID {id}.");
-                }
-                else
-                {
-                    throw;
-                }
+                return Conflict(ex.Message);
             }
-
-            return NoContent();
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteConsulta(int id)
         {
-            var consulta = await _context.Consultas.FindAsync(id);
-
-            if (consulta == null)
-            {
-                return NotFound($"No se encontró ninguna consulta con el ID {id}.");
-            }
-
-            _context.Consultas.Remove(consulta);
-            await _context.SaveChangesAsync();
-
+            var result = await _consultaService.DeleteConsultaAsync(id);
+            if (!result)
+                return NotFound("No se encontró la consulta con el ID proporcionado.");
             return NoContent();
         }
     }

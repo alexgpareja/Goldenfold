@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using HospitalApi.Models;
 using HospitalApi.DTO;
-using AutoMapper;
+using HospitalApi.Services;
 
 namespace HospitalApi.Controllers
 {
@@ -10,141 +8,75 @@ namespace HospitalApi.Controllers
     [Route("api/[controller]")]
     public class HistorialAltasController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
-        private readonly IMapper _mapper;
+        private readonly HistorialAltaService _historialAltaService;
 
-        public HistorialAltasController(ApplicationDbContext context, IMapper mapper)
+        public HistorialAltasController(HistorialAltaService historialAltaService)
         {
-            _context = context;
-            _mapper = mapper;
+            _historialAltaService = historialAltaService;
         }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<HistorialAltaDTO>>> GetHistorialAltas(
-            [FromQuery] int? id_paciente,
-            [FromQuery] DateTime? fecha_alta,
-            [FromQuery] string? diagnostico,
+            [FromQuery] int? idPaciente, 
+            [FromQuery] DateTime? fechaAlta, 
+            [FromQuery] string? diagnostico, 
             [FromQuery] string? tratamiento)
         {
-            IQueryable<HistorialAlta> query = _context.HistorialesAltas;
+            var historialAltas = await _historialAltaService.GetHistorialAltasAsync(idPaciente, fechaAlta, diagnostico, tratamiento);
+            
+            if (!historialAltas.Any())
+                return NotFound("No se han encontrado registros de altas con los criterios proporcionados.");
 
-            if (id_paciente.HasValue)
-                query = query.Where(h => h.IdPaciente == id_paciente.Value);
-
-            if (fecha_alta.HasValue)
-                query = query.Where(h => h.FechaAlta.Date == fecha_alta.Value.Date);
-
-            if (!string.IsNullOrEmpty(diagnostico))
-                query = query.Where(h => h.Diagnostico.ToLower().Contains(diagnostico.ToLower()));
-
-            if (!string.IsNullOrEmpty(tratamiento))
-                query = query.Where(h => h.Tratamiento.ToLower().Contains(tratamiento.ToLower()));
-
-            var historialAlta = await query.ToListAsync();
-
-            var historialAltasDTO = _mapper.Map<IEnumerable<HistorialAltaDTO>>(historialAlta);
-
-            return Ok(historialAltasDTO);
+            return Ok(historialAltas);
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<HistorialAltaDTO>> GetHistorialAltaById(int id)
         {
-            var historialAlta = await _context.HistorialesAltas.FindAsync(id);
+            var historialAlta = await _historialAltaService.GetHistorialAltaByIdAsync(id);
             if (historialAlta == null)
-            {
-                return NotFound("No se ha encontrado ninguna alta con este ID.");
-            }
-            var historialAltaDTO = _mapper.Map<HistorialAltaDTO>(historialAlta);
-            return Ok(historialAltaDTO);
+                return NotFound($"No se ha encontrado ningún historial de alta con el ID {id}.");
+
+            return Ok(historialAlta);
         }
 
         [HttpPost]
         public async Task<ActionResult<HistorialAltaDTO>> CreateHistorialAlta(HistorialAltaCreateDTO historialAltaDTO)
         {
-            var paciente = await _context.Pacientes.FindAsync(historialAltaDTO.IdPaciente);
-            if (paciente == null)
+            try
             {
-                return NotFound("El paciente especificado no existe.");
+                var nuevoHistorialAlta = await _historialAltaService.CreateHistorialAltaAsync(historialAltaDTO);
+                return CreatedAtAction(nameof(GetHistorialAltaById), new { id = nuevoHistorialAlta.IdHistorial }, nuevoHistorialAlta);
             }
-
-            var medico = await _context.Usuarios.FindAsync(historialAltaDTO.IdMedico);
-            if (medico == null)
+            catch (ArgumentException ex)
             {
-                return NotFound("El médico especificado no existe.");
+                return Conflict(ex.Message);
             }
-
-            paciente.Estado = EstadoPaciente.Alta;
-
-            var consulta = await _context.Consultas
-    .Where(c => c.IdPaciente == historialAltaDTO.IdPaciente)
-    .FirstOrDefaultAsync();
-
-
-            if (consulta == null)
-            {
-                return NotFound("No se encontró una consulta pendiente para este paciente.");
-            }
-
-            consulta.Estado = EstadoConsulta.completada;
-            consulta.FechaConsulta = DateTime.Now;
-
-            var historialAlta = _mapper.Map<HistorialAlta>(historialAltaDTO);
-
-            _context.HistorialesAltas.Add(historialAlta);
-
-            await _context.SaveChangesAsync();
-
-            var historialAltaDTOResult = _mapper.Map<HistorialAltaDTO>(historialAlta);
-
-            return CreatedAtAction(nameof(GetHistorialAltas), new { id = historialAltaDTOResult.IdHistorial }, historialAltaDTOResult);
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateHistorialAlta(int id, HistorialAltaUpdateDTO historialAltaDTO)
         {
-            var historialAltaExiste = await _context.HistorialesAltas.FindAsync(id);
-
-            if (historialAltaExiste == null)
-            {
-                return NotFound("No se encontró el historial especificado.");
-            }
-            _mapper.Map(historialAltaDTO, historialAltaExiste);
-
             try
             {
-                await _context.SaveChangesAsync();
+                var result = await _historialAltaService.UpdateHistorialAltaAsync(id, historialAltaDTO);
+                if (!result)
+                    return NotFound("No se encontró el historial de alta con el ID proporcionado.");
+                return NoContent();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (ArgumentException ex)
             {
-                if (!HistorialAltaExists(id))
-                {
-                    return NotFound("No se encontró el historial especificado.");
-                }
-                else
-                {
-                    throw;
-                }
+                return Conflict(ex.Message);
             }
-            return NoContent();
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteHistorialAlta(int id)
         {
-            var historialAlta = await _context.HistorialesAltas.FindAsync(id);
-
-            if (historialAlta == null)
-            {
-                return NotFound("No se encontró el historial especificado.");
-            }
-            _context.HistorialesAltas.Remove(historialAlta);
-            await _context.SaveChangesAsync();
+            var result = await _historialAltaService.DeleteHistorialAltaAsync(id);
+            if (!result)
+                return NotFound("No se encontró el historial de alta con el ID proporcionado.");
             return NoContent();
-        }
-        private bool HistorialAltaExists(int id)
-        {
-            return _context.HistorialesAltas.Any(e => e.IdHistorial == id);
         }
     }
 }

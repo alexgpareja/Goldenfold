@@ -17,7 +17,6 @@
           <th>ID Usuario</th>
           <th>Nombre</th>
           <th>Nombre Usuario</th>
-          <th>Contraseña</th>
           <th>ID Rol</th>
           <th>Acciones</th>
         </tr>
@@ -27,23 +26,6 @@
           <td>{{ usuario.IdUsuario }}</td>
           <td>{{ usuario.Nombre }}</td>
           <td>{{ usuario.NombreUsuario }}</td>
-          <td>
-            <span
-              [ngClass]="{
-                'hidden-text': !mostrarContrasenas[usuario.IdUsuario]
-              }"
-            >
-              {{ usuario.Contrasenya }}
-            </span>
-            <button
-              class="password"
-              (mousedown)="mostrarContrasena(usuario.IdUsuario)"
-              (mouseup)="ocultarContrasena(usuario.IdUsuario)"
-              (mouseleave)="ocultarContrasena(usuario.IdUsuario)"
-            >
-              👁️
-            </button>
-          </td>
           <td>{{ usuario.IdRol }}</td>
           <td>
             <button (click)="toggleActualizarUsuario(usuario)">
@@ -106,7 +88,7 @@
         <small *ngIf="usuarioForm.get('IdRol')?.hasError('required')">El rol es requerido</small>
       </div>
       <div class="botones">
-        <button type="submit">Guardar</button>
+        <button type="submit" [disabled]="usuarioForm.invalid">Guardar</button>
         <button type="button" (click)="cancelarActualizarUsuario()">
           Cancelar
         </button>
@@ -114,7 +96,7 @@
     </form>
   </div>
 
-  <div class="form-container">
+  <div class="form-container" *ngIf="!usuarioParaActualizar">
     <h3>Agregar Usuario</h3>
     <form [formGroup]="usuarioForm" (ngSubmit)="agregarUsuario()">
       <label for="nombre">Nombre completo:</label>

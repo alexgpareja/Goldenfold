@@ -1,12 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, NgModule, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';;
 import { ApiService, HistorialAlta, Paciente } from '../../services/api.service';
+import { asyncPatientIdExistsValidator } from '../../validators/patientIdExistsValidator';
+import { CustomValidators } from '../../validators';
 
 @Component({
   selector: 'app-historial-altas',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule],
   templateUrl: './historial-altas.component.html',
   styleUrls: ['./historial-altas.component.css']
 })
@@ -15,6 +17,8 @@ export class HistorialAltasComponent implements OnInit {
   historialAltasPaginadas: HistorialAlta[] = [];
   nuevoHistorialAlta: HistorialAlta = this.inicializarHistorialAlta();
   historialAltaParaActualizar: HistorialAlta | null = null;
+  
+  historialAltaForm!: FormGroup;
 
   paginaActual: number = 1;
   historialAltasPorPagina: number = 5;
@@ -35,6 +39,8 @@ export class HistorialAltasComponent implements OnInit {
   ngOnInit(): void {
     this.obtenerHistorialAltas();
     this.obtenerPacientes();
+    this.crearFormularioHistorialAlta();
+    this.configurarValidaciones();
   }
 
   inicializarHistorialAlta(): HistorialAlta {
@@ -46,6 +52,32 @@ export class HistorialAltasComponent implements OnInit {
       Diagnostico: '',
       Tratamiento: ''
     };
+  }
+
+  crearFormularioHistorialAlta(): void {
+    this.historialAltaForm = new FormGroup({
+      IdHistorial: new FormControl({ value: '', disabled: true }),
+      IdPaciente: new FormControl('',{
+        validators: [Validators.required],
+        asyncValidators: [asyncPatientIdExistsValidator(this.apiService)],
+        updateOn: 'blur' // triggerea la validación asincrona después de que el usuario salga del campo
+      }),
+      FechaAlta: new FormControl('',[Validators.required,CustomValidators.noWhitespaceValidator()],[]),
+      Diagnostico: new FormControl('',[Validators.required,CustomValidators.noWhitespaceValidator()]),
+      Tratamiento: new FormControl('',[Validators.required,CustomValidators.noWhitespaceValidator()])
+    });
+
+  }
+
+  
+  configurarValidaciones(): void{
+    if(!this.historialAltaParaActualizar){
+      this.historialAltaForm.get('IdPaciente')?.setAsyncValidators(asyncPatientIdExistsValidator(this.apiService));
+    }
+    else{
+      this.historialAltaForm.get('IdPaciente')?.clearAsyncValidators();
+    }
+    this.historialAltaForm.get('IdPaciente')?.updateValueAndValidity();
   }
 
   obtenerPacientes() {
@@ -125,9 +157,14 @@ export class HistorialAltasComponent implements OnInit {
   }
 
   toggleActualizarHistorialAlta(historialAlta: HistorialAlta): void {
-    this.historialAltaParaActualizar = this.historialAltaParaActualizar?.IdHistorial === historialAlta.IdHistorial
-      ? null
-      : { ...historialAlta };
+    if (this.historialAltaParaActualizar?.IdHistorial === historialAlta.IdHistorial) {
+      this.historialAltaParaActualizar = null;
+      this.historialAltaForm.reset();
+    } else {
+      this.historialAltaParaActualizar = { ...historialAlta };
+      this.configurarValidaciones();
+      this.historialAltaForm.patchValue(this.historialAltaParaActualizar);
+    }
   }
 
   actualizarHistorialAlta(): void {
