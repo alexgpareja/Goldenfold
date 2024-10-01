@@ -15,22 +15,21 @@ import {
       if (!control.value) {
         return of(null);
       }
+
+      const id = control.value;
   
       return of(control.value).pipe(
-        debounceTime(300), //esperar que l'usuari escrigui
-        switchMap((value) =>
-          apiService.getPacientes(value).pipe(
-            map((pacientes) => {
-              const pacientesFiltrados = pacientes.filter(
-                (paciente) => paciente.IdPaciente === value
-              );
-              if (pacientesFiltrados.length === 0) {
-                return { patientIdNotFound: true };
+        debounceTime(300), 
+        switchMap((id) =>
+          apiService.getPacienteById(id).pipe(
+            map((paciente) => {
+              if (paciente) {
+                return null; //pacient existeix
+              } else {
+                return { patientIdNotFound: true }; 
               }
-              //si el pacient existeix
-              return null;
             }),
-            catchError(() => of(null))
+            catchError(() => of({ patientIdNotFound: true }))
           )
         )
       );

@@ -57,7 +57,11 @@ export class HistorialAltasComponent implements OnInit {
   crearFormularioHistorialAlta(): void {
     this.historialAltaForm = new FormGroup({
       IdHistorial: new FormControl({ value: '', disabled: true }),
-      IdPaciente: new FormControl('',[Validators.required]),
+      IdPaciente: new FormControl('',{
+        validators: [Validators.required],
+        asyncValidators: [asyncPatientIdExistsValidator(this.apiService)],
+        updateOn: 'blur' // triggerea la validación asincrona después de que el usuario salga del campo
+      }),
       FechaAlta: new FormControl('',[Validators.required,CustomValidators.noWhitespaceValidator()],[]),
       Diagnostico: new FormControl('',[Validators.required,CustomValidators.noWhitespaceValidator()]),
       Tratamiento: new FormControl('',[Validators.required,CustomValidators.noWhitespaceValidator()])
