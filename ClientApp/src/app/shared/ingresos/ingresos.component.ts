@@ -13,6 +13,13 @@ import { ApiService, Ingreso, Paciente, Usuario } from '../../services/api.servi
 export class IngresosComponent implements OnInit {
   ingresos: Ingreso[] = [];
   pacientes: Paciente[] = [];
+  estados = [
+    { value: 0, label: 'Selecciona un estado' },
+    { value: 1, label: 'Pendiente' },
+    { value: 2, label: 'Ingresado' },
+    { value: 3, label: 'Rechazado' },
+    { value: 4, label: 'Alta' }
+  ];
   medicos: Usuario[] = [];
   ingresoForm!: FormGroup;
   ingresoParaActualizar: Ingreso | null = null;
@@ -34,7 +41,7 @@ export class IngresosComponent implements OnInit {
       Motivo: new FormControl(''),
       FechaSolicitud: new FormControl(new Date()),
       FechaIngreso: new FormControl (null),
-      Estado: new FormControl(''),
+      Estado: new FormControl(0),
       TipoCama: new FormControl(''),
       IdAsignacion: new FormControl(null)
     });

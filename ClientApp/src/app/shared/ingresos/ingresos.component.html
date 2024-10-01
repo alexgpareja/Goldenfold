@@ -81,7 +81,12 @@
         <label for="fechaIngreso">Fecha de Ingreso:</label>
         <input type="date" id="fechaIngreso" formControlName="FechaIngreso" name="fechaIngreso" required>
         <label for="estado">Estado:</label>
-        <input type="text" id="estado" formControlName="Estado" name="estado" required>
+        <select formControlName="Estado" required>
+          <option [value]="0" disabled>Escoge un estado</option>
+          @for (estado of estados; track estado.value) {
+            <option [value]="estado.value">{{estado.label}}</option>
+          }
+        </select>
         <button type="submit">Agregar</button>
       </form>
     </div>
