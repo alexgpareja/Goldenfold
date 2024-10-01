@@ -35,19 +35,19 @@
             <td colspan="7">
               <div class="form-container">
                 <h3>Actualizar Ingreso</h3>
-                <form (ngSubmit)="actualizarIngreso()">
+                <form [formGroup]="ingresoForm"  (ngSubmit)="actualizarIngreso()">
                   <label for="idPaciente">ID Paciente:</label>
-                  <input type="number" id="idPaciente" [(ngModel)]="ingresoParaActualizar.IdPaciente" name="idPaciente" disabled>
+                  <input type="number" id="idPaciente" formControlName="IdPaciente" name="idPaciente">
                   <label for="idMedico">ID Médico:</label>
-                  <input type="number" id="idMedico" [(ngModel)]="ingresoParaActualizar.IdMedico" name="idMedico" required>
+                  <input type="number" id="idMedico" formControlName="IdMedico" name="idMedico" required>
                   <label for="motivo">Motivo:</label>
-                  <input type="text" id="motivo" [(ngModel)]="ingresoParaActualizar.Motivo" name="motivo" required>
+                  <input type="text" id="motivo" formControlName="Motivo" name="motivo" required>
                   <label for="fechaSolicitud">Fecha de Solicitud:</label>
-                  <input type="date" id="fechaSolicitud" [(ngModel)]="ingresoParaActualizar.FechaSolicitud" name="fechaSolicitud" required>
+                  <input type="date" id="fechaSolicitud" formControlName="FechaSolicitud" name="fechaSolicitud" required>
                   <label for="fechaIngreso">Fecha de FechaIngreso:</label>
-                  <input type="date" id="fechaIngreso" [(ngModel)]="ingresoParaActualizar.FechaIngreso" name="fechaIngreso" required>
+                  <input type="date" id="fechaIngreso" formControlName="FechaIngreso" name="fechaIngreso" required>
                   <label for="estado">Estado:</label>
-                  <input type="text" id="estado" [(ngModel)]="ingresoParaActualizar.Estado" name="estado" required>
+                  <input type="text" id="estado" formControlName="Estado" name="estado" required>
                   <button type="submit">Guardar</button>
                 </form>
               </div>
@@ -59,19 +59,19 @@
   
     <div class="form-container">
       <h3>Agregar Ingreso</h3>
-      <form (ngSubmit)="agregarIngreso()">
+      <form [formGroup]="ingresoForm"  (ngSubmit)="agregarIngreso()">
         <label for="idPaciente">ID Paciente:</label>
-        <input type="number" id="idPaciente" [(ngModel)]="nuevoIngreso.IdPaciente" name="idPaciente" required>
+        <input type="number" id="idPaciente" formControlName="IdPaciente" name="idPaciente" required>
         <label for="idMedico">ID Médico:</label>
-        <input type="number" id="idMedico" [(ngModel)]="nuevoIngreso.IdMedico" name="idMedico" required>
+        <input type="number" id="idMedico" formControlName="IdMedico" name="idMedico" required>
         <label for="motivo">Motivo de Ingreso:</label>
-        <input type="text" id="motivo" [(ngModel)]="nuevoIngreso.Motivo" name="motivo" required>
+        <input type="text" id="motivo" formControlName="Motivo" name="motivo" required>
         <label for="fechaSolicitud">Fecha de Solicitud:</label>
-        <input type="date" id="fechaSolicitud" [(ngModel)]="nuevoIngreso.FechaSolicitud" name="fechaSolicitud" required>
+        <input type="date" id="fechaSolicitud" formControlName="FechaSolicitud" name="fechaSolicitud" required>
         <label for="fechaIngreso">Fecha de Ingreso:</label>
-        <input type="date" id="fechaIngreso" [(ngModel)]="nuevoIngreso.FechaIngreso" name="fechaIngreso" required>
+        <input type="date" id="fechaIngreso" formControlName="FechaIngreso" name="fechaIngreso" required>
         <label for="estado">Estado:</label>
-        <input type="text" id="estado" [(ngModel)]="nuevoIngreso.Estado" name="estado" required>
+        <input type="text" id="estado" formControlName="Estado" name="estado" required>
         <button type="submit">Agregar</button>
       </form>
     </div>
