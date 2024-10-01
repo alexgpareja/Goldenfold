@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';;
 import { ApiService, HistorialAlta, Paciente } from '../../services/api.service';
 import { asyncPatientIdExistsValidator } from '../../validators/patientIdExistsValidator';
+import { CustomValidators } from '../../validators';
 
 @Component({
   selector: 'app-historial-altas',
@@ -57,9 +58,9 @@ export class HistorialAltasComponent implements OnInit {
     this.historialAltaForm = new FormGroup({
       IdHistorial: new FormControl({ value: '', disabled: true }),
       IdPaciente: new FormControl('',[Validators.required]),
-      FechaAlta: new FormControl('',[Validators.required],[]),
-      Diagnostico: new FormControl('',[Validators.required]),
-      Tratamiento: new FormControl('',[Validators.required])
+      FechaAlta: new FormControl('',[Validators.required,CustomValidators.noWhitespaceValidator()],[]),
+      Diagnostico: new FormControl('',[Validators.required,CustomValidators.noWhitespaceValidator()]),
+      Tratamiento: new FormControl('',[Validators.required,CustomValidators.noWhitespaceValidator()])
     });
 
   }

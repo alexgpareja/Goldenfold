@@ -59,23 +59,6 @@
   <div class="form-container" *ngIf="historialAltaParaActualizar">
     <h3>Actualizar Historial de Alta</h3>
     <form [formGroup]="historialAltaForm" (ngSubmit)="actualizarHistorialAlta()">
-      <label for="idHistorial">ID Historial:</label> 
-      <input type="number" id="idHistorial" formControlName="IdHistorial" name="idHistorial" hidden>
-      <label for="idPaciente">ID Paciente:</label>
-      <input type="number" id="idPaciente"  formControlName="IdPaciente" name="idPaciente">
-      <label for="fechaAlta">Fecha de Alta:</label>
-      <input type="date" id="fechaAlta" formControlName="FechaAlta" name="fechaAlta">
-      <label for="diagnostico">Diagnóstico:</label>
-      <input type="text" id="diagnostico" formControlName="Diagnostico" name="diagnostico">
-      <label for="tratamiento">Tratamiento:</label>
-      <input type="text" id="tratamiento"formControlName="Tratamiento" name="tratamiento">
-      <button type="submit">Guardar</button>
-    </form>
-  </div>
-
-  <div class="form-container">
-    <h3>Agregar Historial de Alta</h3>
-    <form [formGroup]="historialAltaForm" (ngSubmit)="agregarHistorialAlta()">
       <div class="label-container"><label for="idPaciente">ID Paciente </label><span class="required">*</span></div>
       <input type="number" id="idPaciente"  formControlName="IdPaciente" name="idPaciente">
       @if (historialAltaForm.get("IdPaciente")?.hasError("required") && historialAltaForm.get("IdPaciente")?.touched) {
@@ -97,6 +80,37 @@
       <div class="label-container"><label for="Tratamiento">Tratamiento </label><span class="required">*</span></div>
       <input type="text" id="tratamiento"  formControlName="Tratamiento" name="tratamiento">
       @if (historialAltaForm.get("Tratamiento")?.hasError("required") && historialAltaForm.get("Tratamiento")?.touched) {
+        <span class="error">El tratamiento es obligatorio.</span>
+      }
+      <button type="submit" [disabled]="historialAltaForm.invalid">Actualizar</button>
+    </form>
+  </div>
+
+  <div class="form-container">
+    <h3>Agregar Historial de Alta</h3>
+    <form [formGroup]="historialAltaForm" (ngSubmit)="agregarHistorialAlta()">
+      <div class="label-container"><label for="idPaciente">ID Paciente </label><span class="required">*</span></div>
+      <input type="number" id="idPaciente"  formControlName="IdPaciente" name="idPaciente">
+      @if ((historialAltaForm.get("IdPaciente")?.hasError("required")) && historialAltaForm.get("IdPaciente")?.touched) {
+        <span class="error"> El Id de paciente es obligatorio.</span>
+      }
+      @if (historialAltaForm.get("IdPaciente")?.hasError("patientIdNotFound")) {
+        <span class="error"> El Id de paciente no existe.</span>
+      }
+      <div class="label-container"><label for="fechaAlta">Fecha alta </label><span class="required">*</span></div>
+      <input type="date" id="fechaAlta" formControlName="FechaAlta" name="fechaAlta">
+      @if (historialAltaForm.get("FechaAlta")?.hasError("required") && historialAltaForm.get("FechaAlta")?.touched) {
+        <span class="error"> La fecha de alta es obligatoria.</span>
+      }
+      <div class="label-container"><label for="dignostico">Diagnóstico </label><span class="required">*</span></div>
+      <input type="text" id="diagnostico"  formControlName="Diagnostico" name="diagnostico">
+      @if ((historialAltaForm.get("Diagnostico")?.hasError("required") || (historialAltaForm.get("Diagnostico")?.hasError("whitespace"))) && historialAltaForm.get("Diagnostico")?.touched) {
+        <span class="error">El diagnostico es obligatorio.</span> 
+      }
+      
+      <div class="label-container"><label for="Tratamiento">Tratamiento </label><span class="required">*</span></div>
+      <input type="text" id="tratamiento"  formControlName="Tratamiento" name="tratamiento">
+      @if ((historialAltaForm.get("Tratamiento")?.hasError("required") || (historialAltaForm.get("Tratamiento")?.hasError("whitespace"))) && historialAltaForm.get("Tratamiento")?.touched) {
         <span class="error">El tratamiento es obligatorio.</span>
       }
       <button type="submit" [disabled]="historialAltaForm.invalid">Agregar</button>
