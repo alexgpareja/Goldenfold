@@ -69,26 +69,35 @@
         </div>
         <label for="idMedico">Médico:</label>
         <select formControlName="IdMedico" required>
-          @for (medico of medicos; track medico.IdUsuario) {
-            <option [value]="medico.IdUsuario">{{medico.Nombre}}</option>
-          }
+            <option *ngFor="let medico of medicos"  [value]="medico.IdUsuario">{{medico.Nombre}}</option>
         </select>
+        <div *ngIf="ingresoForm.get('IdMedico')?.invalid&&ingresoForm.get('IdMedico')?.touched">
+          <small *ngIf="ingresoForm.get('IdMedico')?.hasError('required')">Selecciona un médico</small>
+        </div>
         <label for="motivo">Motivo de Ingreso:</label>
         <input type="text" id="motivo" formControlName="Motivo" name="motivo" required>
+        <div *ngIf="ingresoForm.get('Motivo')?.invalid&&ingresoForm.get('Motivo')?.touched">
+          <small *ngIf="ingresoForm.get('Motivo')?.hasError('required')">Motivo requerido</small>
+        </div>
         <label for="fechaSolicitud">Fecha de Solicitud:</label>
         <input type="date" id="fechaSolicitud" formControlName="FechaSolicitud" name="fechaSolicitud" required>
+        <div *ngIf="ingresoForm.get('FechaSolicitud')?.invalid&&ingresoForm.get('FechaSolicitud')?.touched">
+          <small *ngIf="ingresoForm.get('FechaSolicitud')?.hasError('required')">Fecha de solicitud requerida</small>
+        </div>
         <label for="estado">Estado:</label>
         <select formControlName="Estado" required>
-          @for (estado of estados; track estado.value) {
-            <option [value]="estado.label">{{estado.label}}</option>
-          }
+            <option *ngFor="let estado of estados" [value]="estado.label">{{estado.label}}</option>
         </select>
+        <div *ngIf="ingresoForm.get('Estado')?.invalid&&ingresoForm.get('Estado')?.touched">
+          <small *ngIf="ingresoForm.get('Estado')?.getError('required')">Selecciona un estado</small>
+        </div>
         <label for="tipoCama">Tipo cama:</label>
         <select formControlName="TipoCama" required>
-          @for (tipo of tipos; track tipo.value) {
-            <option [value]="tipo.label">{{tipo.label}}</option>
-          }
+            <option *ngFor="let tipo of tipos" [value]="tipo.label">{{tipo.label}}</option>
         </select>
+        <div *ngIf="ingresoForm.get('TipoCama')?.invalid&&ingresoForm.get('TipoCama')?.touched">
+            <small *ngIf="ingresoForm.get('TipoCama')?.invalid&&ingresoForm.get('TipoCama')?.touched">Selecciona el tipo de cama</small>
+        </div>
         <button type="submit">Agregar</button>
       </form>
     </div>

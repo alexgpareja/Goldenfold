@@ -41,12 +41,12 @@ export class IngresosComponent implements OnInit {
     this.ingresoForm = new FormGroup({
       IdIngreso: new FormControl(0),
       IdPaciente: new FormControl('',[Validators.required]),
-      IdMedico: new FormControl(''),
-      Motivo: new FormControl(''),
-      FechaSolicitud: new FormControl(new Date()),
+      IdMedico: new FormControl('',[Validators.required]),
+      Motivo: new FormControl('',[Validators.required]),
+      FechaSolicitud: new FormControl(new Date(),[Validators.required]),
       FechaIngreso: new FormControl (null),
-      Estado: new FormControl(''),
-      TipoCama: new FormControl(''),
+      Estado: new FormControl('',[Validators.required]),
+      TipoCama: new FormControl('',[Validators.required]),
       IdAsignacion: new FormControl(null)
     });
   }
