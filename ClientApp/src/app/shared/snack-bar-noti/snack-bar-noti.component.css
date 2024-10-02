@@ -1,0 +1,23 @@
+
+.success-snackbar {
+ color: #4caf50 !important; /* Verde para éxito */
+
+}
+
+.error-snackbar {
+  color: #f44336 !important; /* Rojo para error */
+}
+
+.alert-snackbar {
+  color: #ff9800 !important; /* Naranja para alerta */
+
+}
+
+.snackbar-content {
+  display: flex;
+  align-items: center; /* Alinea verticalmente el icono y el texto */
+}
+
+.snackbar-content .material-icons {
+  margin-right: 8px; /* Espacio entre el icono y el texto */
+}
