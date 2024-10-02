@@ -28,10 +28,12 @@ import { DialogFormularioComponent } from './dialog-formulario/dialog-formulario
     MatInputModule,      
     MatButtonModule,     
   ],
-  declarations: [SearchBoxComponent],
-  exports: [CommonModule, SearchBoxComponent]
-  declarations: [SearchBoxComponent, DialogFormularioComponent],
+  declarations: [
+    SearchBoxComponent, 
+    DialogFormularioComponent  // Añade ambos componentes aquí
+  ],
   exports: [
+    CommonModule,
     SearchBoxComponent,
     MatPaginatorModule,
     MatTableModule,
@@ -39,7 +41,7 @@ import { DialogFormularioComponent } from './dialog-formulario/dialog-formulario
     MatFormFieldModule,  
     MatInputModule,      
     MatButtonModule,
-    DialogFormularioComponent     
+    DialogFormularioComponent  // Exporta también el componente DialogFormularioComponent si es necesario fuera de este módulo
   ],
   providers: [
     { provide: MAT_DIALOG_DATA, useValue: {} },
