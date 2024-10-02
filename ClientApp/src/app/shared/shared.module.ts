@@ -4,14 +4,46 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SharedRoutingModule } from './shared-routing.module';
 import { SearchBoxComponent } from './search-box/search-box.component';
 
+// Angular Material Imports
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatTableModule } from '@angular/material/table';
+import { MatDialogModule, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { DialogFormularioComponent } from './dialog-formulario/dialog-formulario.component';
+
 @NgModule({
   imports: [
     CommonModule,
     ReactiveFormsModule,
     FormsModule,
     SharedRoutingModule,
+
+    // Angular Material Modules
+    MatPaginatorModule,
+    MatTableModule,
+    MatDialogModule,
+    MatFormFieldModule,  
+    MatInputModule,      
+    MatButtonModule,     
   ],
   declarations: [SearchBoxComponent],
   exports: [CommonModule, SearchBoxComponent]
+  declarations: [SearchBoxComponent, DialogFormularioComponent],
+  exports: [
+    SearchBoxComponent,
+    MatPaginatorModule,
+    MatTableModule,
+    MatDialogModule,
+    MatFormFieldModule,  
+    MatInputModule,      
+    MatButtonModule,
+    DialogFormularioComponent     
+  ],
+  providers: [
+    { provide: MAT_DIALOG_DATA, useValue: {} },
+    { provide: MatDialogRef, useValue: {} },
+  ],
 })
 export class SharedModule { }

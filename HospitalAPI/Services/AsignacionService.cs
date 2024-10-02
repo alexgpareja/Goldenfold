@@ -48,28 +48,56 @@ namespace HospitalApi.Services
             return asignacion == null ? null : _mapper.Map<AsignacionDTO>(asignacion);
         }
 
-        // Crear una nueva asignación
         public async Task<AsignacionDTO> CreateAsignacionAsync(AsignacionCreateDTO asignacionDTO)
         {
-            var asignacion = _mapper.Map<Asignacion>(asignacionDTO);
-            _context.Asignaciones.Add(asignacion);
-            await _context.SaveChangesAsync();
+            using var transaction = await _context.Database.BeginTransactionAsync(); // Iniciar transacción
 
-            var ingreso = await _context.Ingresos
-                .FirstOrDefaultAsync(i => i.IdPaciente == asignacionDTO.IdPaciente && i.Estado == EstadoIngreso.Pendiente);
-
-            if (ingreso != null)
+            try
             {
-                ingreso.Estado = EstadoIngreso.Ingresado;
-                ingreso.IdAsignacion = asignacion.IdAsignacion;
-                ingreso.FechaIngreso = DateTime.Now;
-                _context.Ingresos.Update(ingreso);
-                await _context.SaveChangesAsync();
+                // Verificar si la cama ya está asignada a otro paciente y no ha sido liberada
+                var asignacionExistente = await _context.Asignaciones
+                    .Where(a => a.IdCama == asignacionDTO.IdCama && a.FechaLiberacion == null)
+                    .FirstOrDefaultAsync();
+
+                if (asignacionExistente != null)
+                {
+                    throw new InvalidOperationException("La cama ya está asignada a otro paciente y no ha sido liberada.");
+                }
+
+                // Crear nueva asignación
+                var asignacion = _mapper.Map<Asignacion>(asignacionDTO);
+                _context.Asignaciones.Add(asignacion);
+                await _context.SaveChangesAsync(); // Guardar la nueva asignación
+
+                // Verificar si el paciente tiene un ingreso pendiente y actualizar su estado
+                var ingreso = await _context.Ingresos
+                    .FirstOrDefaultAsync(i => i.IdPaciente == asignacionDTO.IdPaciente && i.Estado == EstadoIngreso.Pendiente);
+
+                if (ingreso != null)
+                {
+                    ingreso.Estado = EstadoIngreso.Ingresado;
+                    ingreso.IdAsignacion = asignacion.IdAsignacion;
+                    ingreso.FechaIngreso = DateTime.Now;
+                    _context.Ingresos.Update(ingreso);
+                    await _context.SaveChangesAsync();
+                }
+
+                await transaction.CommitAsync(); // Confirmar transacción
+                return _mapper.Map<AsignacionDTO>(asignacion);
             }
-
-            return _mapper.Map<AsignacionDTO>(asignacion);
+            catch (InvalidOperationException ex)
+            {
+                // Este bloque captura errores específicos y los reenvía sin cambiarlos
+                await transaction.RollbackAsync(); // Revertir transacción en caso de error
+                throw; // Lanzar la excepción original
+            }
+            catch (Exception ex)
+            {
+                // Para otros errores, lanzar el mensaje genérico
+                await transaction.RollbackAsync(); // Revertir transacción en caso de error
+                throw new InvalidOperationException("Ocurrió un error inesperado durante la asignación.", ex);
+            }
         }
-
         // Actualizar una asignación existente
         public async Task<bool> UpdateAsignacionAsync(int id, AsignacionUpdateDTO asignacionDTO)
         {
