@@ -141,6 +141,13 @@ export class IngresosComponent implements OnInit {
   }
 
   toggleActualizarIngreso(ingreso: Ingreso): void {
-    this.ingresoParaActualizar = ingreso;
+    if(this.ingresoParaActualizar&&this.ingresoParaActualizar.IdIngreso===ingreso.IdIngreso){
+      this.ingresoParaActualizar==null;
+      this.ingresoForm.reset();
+    }
+    else{
+      this.ingresoParaActualizar = {...ingreso};
+      this.ingresoForm.patchValue(this.ingresoParaActualizar);
+    }
   }
 }
