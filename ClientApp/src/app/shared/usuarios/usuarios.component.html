@@ -79,7 +79,6 @@
       </div>
       <label for="idRol">Rol:</label>
       <select formControlName="IdRol" required>
-        <option [value]="0" disabled>Selecciona un rol</option>
         <option *ngFor="let rol of roles" [value]="rol.IdRol">
           {{ rol.NombreRol }}
         </option>
@@ -139,7 +138,6 @@
   
       <label for="idRol">Rol:</label>
       <select formControlName="IdRol" required>
-        <option [value]="0" disabled>Selecciona un rol</option>
         <option *ngFor="let rol of roles" [value]="rol.IdRol">
           {{ rol.NombreRol }}
         </option>
