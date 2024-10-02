@@ -47,20 +47,24 @@ namespace HospitalApi.Controllers
             return Ok(asignacion);
         }
 
-        // Crear una nueva asignación
         [HttpPost]
         public async Task<ActionResult<AsignacionDTO>> CreateAsignacion(AsignacionCreateDTO asignacionDTO)
         {
             try
             {
-                var asignacion = await _asignacionService.CreateAsignacionAsync(asignacionDTO);
-                return CreatedAtAction(nameof(GetAsignacion), new { id = asignacion.IdAsignacion }, asignacion);
+                var nuevaAsignacion = await _asignacionService.CreateAsignacionAsync(asignacionDTO);
+                return CreatedAtAction(nameof(GetAsignacion), new { id = nuevaAsignacion.IdAsignacion }, nuevaAsignacion);
             }
-            catch (ArgumentException ex)
+            catch (InvalidOperationException ex)
             {
-                return BadRequest(ex.Message);
+                return Conflict(ex.Message); 
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Ocurrió un error inesperado."); 
             }
         }
+
 
         // Actualizar una asignación existente
         [HttpPut("{id}")]

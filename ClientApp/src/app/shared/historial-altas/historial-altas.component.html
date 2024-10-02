@@ -92,7 +92,10 @@
       <div class="label-container"><label for="idPaciente">ID Paciente </label><span class="required">*</span></div>
       <input type="number" id="idPaciente"  formControlName="IdPaciente" name="idPaciente">
       @if ((historialAltaForm.get("IdPaciente")?.hasError("required")) && historialAltaForm.get("IdPaciente")?.touched) {
-        <span class="error"> El Id de paciente es obligatorio.</span>
+        <span class="error"> El Id del paciente es obligatorio.</span>
+      }
+      @if (historialAltaForm.get("IdPaciente")?.hasError("consultaNotFound")  && historialAltaForm.get("IdPaciente")?.touched) {
+        <span class="error"> El Id del paciente no tiene ninguna consulta asociada. </span>
       }
       @if (historialAltaForm.get("IdPaciente")?.hasError("patientIdNotFound") && historialAltaForm.get("IdPaciente")?.touched) {
         <span class="error"> El Id de paciente no existe.</span>

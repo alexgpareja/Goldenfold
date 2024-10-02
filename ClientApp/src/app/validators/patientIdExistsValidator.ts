@@ -12,16 +12,15 @@ import {
   ): AsyncValidatorFn => {
     return (control: AbstractControl): Observable<ValidationErrors | null> => {
       // si no hi ha res escrit no fer validació
-      if (!control.value) {
+      const idPaciente = control.value;
+      if (!idPaciente) {
         return of(null);
       }
-
-      const id = control.value;
   
-      return of(control.value).pipe(
+      return of(idPaciente).pipe(
         debounceTime(300), 
-        switchMap((id) =>
-          apiService.getPacienteById(id).pipe(
+        switchMap((idPaciente) =>
+          apiService.getPacienteById(idPaciente).pipe(
             map((paciente) => {
               if (paciente) {
                 return null; //pacient existeix
