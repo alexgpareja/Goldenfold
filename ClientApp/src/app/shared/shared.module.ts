@@ -7,7 +7,6 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatButtonModule } from '@angular/material/button';
 import { SharedRoutingModule } from './shared-routing.module';
 import { SearchBoxComponent } from './search-box/search-box.component';
-import { InfoTableComponent } from './info-table/info-table.component';
 
 @NgModule({
   imports: [
@@ -20,11 +19,10 @@ import { InfoTableComponent } from './info-table/info-table.component';
     MatSortModule, // Importa MatSortModule
     MatButtonModule, // Para los botones de acciones
   ],
-  declarations: [SearchBoxComponent, InfoTableComponent],
+  declarations: [SearchBoxComponent],
   exports: [
     CommonModule,
     SearchBoxComponent,
-    InfoTableComponent,
     MatTableModule,
     MatPaginatorModule,
     MatSortModule,
