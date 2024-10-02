@@ -4,6 +4,7 @@ import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angula
 import { ApiService, Asignacion, Ingreso, Paciente, Usuario } from '../../services/api.service';
 import { IngresosValidators } from '../../validators/ingresos.validators';
 import { forkJoin } from 'rxjs';
+import { TitleStrategy } from '@angular/router';
 
 @Component({
   selector: 'app-ingresos',
@@ -113,19 +114,19 @@ export class IngresosComponent implements OnInit {
 
 
   actualizarIngreso(): void {
-    if (this.ingresoParaActualizar) {
-      this.apiService.updateIngreso(this.ingresoParaActualizar).subscribe({
-        next: (ingresoActualizado: Ingreso) => {
-          const index = this.ingresos.findIndex(i => i.IdIngreso === ingresoActualizado.IdIngreso);
-          if (index !== -1) {
-            this.ingresos[index] = ingresoActualizado;
-          }
-          this.ingresoParaActualizar = null;
+    if(this.ingresoParaActualizar&&this.ingresoForm.valid){
+      const ingresoActualizado: Ingreso = {...this.ingresoParaActualizar,...this.ingresoForm.value};
+      this.apiService.updateIngreso(ingresoActualizado).subscribe({
+        next:() =>{
+          this.obtenerIngresos();
+          this.ingresoParaActualizar=null;
+          this.ingresoForm.reset();
+          alert('Ingreso actualizado con éxito.');
         },
-        error: (error: any) => {
-          console.error('Error al actualizar el ingreso', error);
+        error:(error: any)=>{
+          console.error('Error al actualizar el ingreso',error);
         }
-      });
+      })
     }
   }
 
@@ -141,6 +142,22 @@ export class IngresosComponent implements OnInit {
   }
 
   toggleActualizarIngreso(ingreso: Ingreso): void {
-    this.ingresoParaActualizar = ingreso;
+    if(this.ingresoParaActualizar&&this.ingresoParaActualizar.IdIngreso===ingreso.IdIngreso){
+      this.ingresoParaActualizar==null;
+      this.ingresoForm.reset();
+    }
+    else{
+      this.ingresoParaActualizar = {...ingreso};
+      this.ingresoForm.patchValue(this.ingresoParaActualizar);
+    }
+  }
+
+  cancelarNuevoIngreso(): void{
+    this.ingresoForm.reset();
+  }
+
+  cancelarActualizarIngreso(): void{
+    this.ingresoParaActualizar = null;
+    this.ingresoForm.reset();
   }
 }

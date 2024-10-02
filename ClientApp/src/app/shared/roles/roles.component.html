@@ -6,73 +6,67 @@
     ]" [defaultSearchType]="'nombreRol'" placeholder="Escribe para buscar..." (search)="filtrarRoles($event)">
   </app-search-box>
 
+  <!-- Tabla de Angular Material -->
+  <div class="table-container">
+    <table mat-table [dataSource]="roles" matSort class="mat-elevation-z8">
 
-  <!-- Formulario de Actualización -->
-  <div class="form-container" *ngIf="rolParaActualizar">
-    <h3>Actualizar Rol</h3>
-    <form [formGroup]="actualizarRolForm" (ngSubmit)="actualizarRol()">
-      <label for="idRol">ID Rol:</label>
-      <input type="number" id="idRol" formControlName="IdRol" IdRol.disabled />
+      <!-- Columna ID -->
+      <ng-container matColumnDef="IdRol">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>ID Rol</th>
+        <td mat-cell *matCellDef="let rol">{{ rol.IdRol }}</td>
+      </ng-container>
 
-      <label for="nombreRol">Nombre Rol:</label>
-      <input type="text" id="nombreRol" formControlName="NombreRol" />
+      <!-- Columna Nombre -->
+      <ng-container matColumnDef="NombreRol">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Nombre Rol</th>
+        <td mat-cell *matCellDef="let rol">{{ rol.NombreRol }}</td>
+      </ng-container>
 
-      <!-- Mensajes de error de actualización -->
-      <div *ngIf="
-          actualizarRolForm.get('NombreRol')?.invalid &&
-          (actualizarRolForm.get('NombreRol')?.touched ||
-            actualizarRolForm.get('NombreRol')?.dirty)
-        ">
-        <!-- Mostrar error si el campo está vacío o solo tiene espacios en blanco -->
-        <span *ngIf="actualizarRolForm.get('NombreRol')?.errors?.['whitespace']">
-          El campo no puede estar vacío o contener solo espacios.
-        </span>
+      <!-- Columna Acciones -->
+      <ng-container matColumnDef="Actions">
+        <th mat-header-cell *matHeaderCellDef>Acciones</th>
+        <td mat-cell *matCellDef="let rol">
+          <button mat-button (click)="onEdit(rol)">Actualizar</button>
+          <button mat-button color="warn" (click)="onDelete(rol)">Eliminar</button>
+        </td>
+      </ng-container>
 
-        <!-- Mostrar error si el rol ya existe -->
-        <span *ngIf="actualizarRolForm.get('NombreRol')?.errors?.['asyncFieldExisting']">
-          Este rol ya existe.
-        </span>
-      </div>
+      <!-- Header de la tabla -->
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <!-- Filas de la tabla -->
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
 
-      <div class="botones">
-        <button type="submit" [disabled]="actualizarRolForm.invalid">
-          Guardar
-        </button>
-        <button type="button" (click)="descartarCambios()">Descartar</button>
-      </div>
-    </form>
+    <!-- Paginación -->
+    <mat-paginator [pageSizeOptions]="[5, 10, 25]" showFirstLastButtons></mat-paginator>
   </div>
 
-  <!-- Formulario de Agregar -->
-  <div class="form-container">
-    <h3>Agregar Rol</h3>
+  <!-- Formulario de Agregar Rol -->
+  <mat-card>
     <form [formGroup]="agregarRolForm" (ngSubmit)="agregarRol()">
-      <label for="nombreRol">Nombre Rol:</label>
-      <input type="text" id="nombreRol" formControlName="NombreRol" />
-
-      <!-- Mensajes de error de agregar -->
-      <div *ngIf="
-          agregarRolForm.get('NombreRol')?.invalid &&
-          (agregarRolForm.get('NombreRol')?.touched ||
-            agregarRolForm.get('NombreRol')?.dirty)
-        ">
-        <!-- Mostrar error si el campo está vacío o solo tiene espacios en blanco -->
-        <span *ngIf="agregarRolForm.get('NombreRol')?.errors?.['whitespace']">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Nombre del Rol</mat-label>
+        <input matInput formControlName="NombreRol" />
+        <mat-error *ngIf="agregarRolForm.get('NombreRol')?.hasError('required')">
+          El nombre es requerido.
+        </mat-error>
+        <mat-error *ngIf="agregarRolForm.get('NombreRol')?.hasError('nombreRolExiste')">
+          El rol ya existe.
+        </mat-error>
+        <!-- Mensaje de error si el campo está vacío o contiene solo espacios -->
+        <mat-error
+          *ngIf="agregarRolForm.get('NombreRol')?.hasError('whitespace') && agregarRolForm.get('NombreRol')?.touched">
           El campo no puede estar vacío o contener solo espacios.
-        </span>
+        </mat-error>
+      </mat-form-field>
 
-        <!-- Mostrar error si el rol ya existe -->
-        <span *ngIf="
-            agregarRolForm.get('NombreRol')?.hasError('asyncFieldExisting')
-          ">El rol ya existe</span>
-      </div>
-
-      <div class="botones">
-        <button type="submit">Agregar</button>
-        <button type="button" (click)="descartarCambios('agregar')">
-          Cancelar
+      <div>
+        <button mat-raised-button color="primary" type="submit" [disabled]="agregarRolForm.invalid">
+          Agregar
         </button>
+        <button mat-button type="button" (click)="descartarCambios('agregar')">Cancelar</button>
       </div>
     </form>
-  </div>
+  </mat-card>
+
 </div>
