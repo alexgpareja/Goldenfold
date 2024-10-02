@@ -71,7 +71,10 @@
         <div *ngIf="ingresoForm.get('TipoCama')?.invalid&&ingresoForm.get('TipoCama')?.touched">
             <small *ngIf="ingresoForm.get('TipoCama')?.invalid&&ingresoForm.get('TipoCama')?.touched">Selecciona el tipo de cama</small>
         </div>
-        <button type="submit" [disabled]="ingresoForm.invalid">Actualizar</button>
+        <div>
+          <button type="submit" [disabled]="ingresoForm.invalid">Actualizar</button>
+          <button type="button" (click)="cancelarActualizarIngreso()">Cancelar</button>
+        </div>
       </form>
     </div>
   
@@ -111,7 +114,10 @@
         <div *ngIf="ingresoForm.get('TipoCama')?.invalid&&ingresoForm.get('TipoCama')?.touched">
             <small *ngIf="ingresoForm.get('TipoCama')?.invalid&&ingresoForm.get('TipoCama')?.touched">Selecciona el tipo de cama</small>
         </div>
-        <button type="submit" [disabled]="ingresoForm.invalid">Agregar</button>
+        <div>
+          <button type="submit" [disabled]="ingresoForm.invalid">Agregar</button>
+          <button type="button" (click)="cancelarNuevoIngreso()">Cancelar</button>
+        </div>
       </form>
     </div>
   </div>

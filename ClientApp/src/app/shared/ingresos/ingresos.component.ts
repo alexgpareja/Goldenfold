@@ -151,4 +151,13 @@ export class IngresosComponent implements OnInit {
       this.ingresoForm.patchValue(this.ingresoParaActualizar);
     }
   }
+
+  cancelarNuevoIngreso(): void{
+    this.ingresoForm.reset();
+  }
+
+  cancelarActualizarIngreso(): void{
+    this.ingresoParaActualizar = null;
+    this.ingresoForm.reset();
+  }
 }
