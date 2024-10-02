@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import {
   HttpClient,
-  HttpErrorResponse,
   HttpParams,
 } from '@angular/common/http';
 import { catchError, Observable, throwError } from 'rxjs';
@@ -166,13 +165,13 @@ export class ApiService {
     idPaciente?: number,
     idMedico?: number,
     estado?: string,
-    tipoCama?: string // Añadir el filtro por tipo de cama
+    tipoCama?: string 
   ): Observable<Ingreso[]> {
     let params = new HttpParams();
     if (idPaciente) params = params.set('idPaciente', idPaciente.toString());
     if (idMedico) params = params.set('idMedico', idMedico.toString());
     if (estado) params = params.set('estado', estado);
-    if (tipoCama) params = params.set('tipoCama', tipoCama); // Añadir el parámetro tipoCama
+    if (tipoCama) params = params.set('tipoCama', tipoCama); 
     return this.http.get<Ingreso[]>(`${this.apiUrl}/Ingresos`, { params });
   }
 
@@ -192,21 +191,22 @@ export class ApiService {
   }
 
 
-  // CRUD para Asignaciones con parámetros
   getAsignaciones(
     idPaciente?: number,
-    ubicacion?: string,
-    fechaAsignacion?: Date
+    idCama?: number,
+    fechaAsignacion?: Date,
+    fechaLiberacion?: Date | null,
+    asignadoPor?: number
   ): Observable<Asignacion[]> {
     let params = new HttpParams();
-    if (idPaciente) params = params.set('idPaciente', idPaciente.toString());
-    if (ubicacion) params = params.set('ubicacion', ubicacion);
-    if (fechaAsignacion)
-      params = params.set('fechaAsignacion', fechaAsignacion.toISOString());
 
-    return this.http.get<Asignacion[]>(`${this.apiUrl}/Asignaciones`, {
-      params,
-    });
+    if (idPaciente) params = params.set('idPaciente', idPaciente.toString());
+    if (idCama) params = params.set('idCama', idCama.toString());
+    if (fechaAsignacion) params = params.set('fechaAsignacion', fechaAsignacion.toISOString());
+    if (fechaLiberacion) params = params.set('fechaLiberacion', fechaLiberacion.toISOString());
+    if (asignadoPor) params = params.set('asignadoPor', asignadoPor.toString());
+
+    return this.http.get<Asignacion[]>(`${this.apiUrl}/Asignaciones`, { params });
   }
 
   addAsignacion(asignacion: Asignacion): Observable<Asignacion> {
