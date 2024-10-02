@@ -142,4 +142,9 @@
       margin-left: 10px;
     }
   }
+
+  small {
+    color: #d9534f;
+    font-size: 12px;
+  }
   

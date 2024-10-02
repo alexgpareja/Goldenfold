@@ -62,31 +62,37 @@
       <form [formGroup]="ingresoForm"  (ngSubmit)="agregarIngreso()">
         <label for="idPaciente">Paciente:</label>
         <select formControlName="IdPaciente" required>
-          <option [value]="0" disabled>Selecciona un paciente</option>
-          @for (paciente of pacientes; track paciente.IdPaciente) {
-            <option [value]="paciente.IdPaciente">{{paciente.Nombre}}</option>
-          }
+          <option *ngFor="let paciente of pacientes" [value]="paciente.IdPaciente">{{paciente.Nombre}}</option>
         </select>
+        <div *ngIf="ingresoForm.get('IdPaciente')?.invalid && ingresoForm.get('IdPaciente')?.touched">
+          <small *ngIf="ingresoForm.get('IdPaciente')?.hasError('required')">Selecciona un paciente</small>
+        </div>
         <label for="idMedico">Médico:</label>
         <select formControlName="IdMedico" required>
-          <option [value]="0" disabled>Selecciona un médico</option>
-          @for (medico of medicos; track medico.IdUsuario) {
-            <option [value]="medico.IdUsuario">{{medico.Nombre}}</option>
-          }
+            <option *ngFor="let medico of medicos"  [value]="medico.IdUsuario">{{medico.Nombre}}</option>
         </select>
+        <div *ngIf="ingresoForm.get('IdMedico')?.invalid&&ingresoForm.get('IdMedico')?.touched">
+          <small *ngIf="ingresoForm.get('IdMedico')?.hasError('required')">Selecciona un médico</small>
+        </div>
         <label for="motivo">Motivo de Ingreso:</label>
         <input type="text" id="motivo" formControlName="Motivo" name="motivo" required>
-        <label for="fechaSolicitud">Fecha de Solicitud:</label>
-        <input type="date" id="fechaSolicitud" formControlName="FechaSolicitud" name="fechaSolicitud" required>
-        <label for="fechaIngreso">Fecha de Ingreso:</label>
-        <input type="date" id="fechaIngreso" formControlName="FechaIngreso" name="fechaIngreso" required>
+        <div *ngIf="ingresoForm.get('Motivo')?.invalid&&ingresoForm.get('Motivo')?.touched">
+          <small *ngIf="ingresoForm.get('Motivo')?.hasError('whitespace')">El motivo no puede estar en blanco</small>
+        </div>
         <label for="estado">Estado:</label>
         <select formControlName="Estado" required>
-          <option [value]="0" disabled>Escoge un estado</option>
-          @for (estado of estados; track estado.value) {
-            <option [value]="estado.value">{{estado.label}}</option>
-          }
+            <option *ngFor="let estado of estados" [value]="estado.label">{{estado.label}}</option>
         </select>
+        <div *ngIf="ingresoForm.get('Estado')?.invalid&&ingresoForm.get('Estado')?.touched">
+          <small *ngIf="ingresoForm.get('Estado')?.getError('required')">Selecciona un estado</small>
+        </div>
+        <label for="tipoCama">Tipo cama:</label>
+        <select formControlName="TipoCama" required>
+            <option *ngFor="let tipo of tipos" [value]="tipo.label">{{tipo.label}}</option>
+        </select>
+        <div *ngIf="ingresoForm.get('TipoCama')?.invalid&&ingresoForm.get('TipoCama')?.touched">
+            <small *ngIf="ingresoForm.get('TipoCama')?.invalid&&ingresoForm.get('TipoCama')?.touched">Selecciona el tipo de cama</small>
+        </div>
         <button type="submit">Agregar</button>
       </form>
     </div>

@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
-import { ApiService, Ingreso, Paciente, Usuario } from '../../services/api.service';
+import { ApiService, Asignacion, Ingreso, Paciente, Usuario } from '../../services/api.service';
+import { IngresosValidators } from '../../validators/ingresos.validators';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-ingresos',
@@ -14,12 +16,16 @@ export class IngresosComponent implements OnInit {
   ingresos: Ingreso[] = [];
   pacientes: Paciente[] = [];
   estados = [
-    { value: 0, label: 'Selecciona un estado' },
     { value: 1, label: 'Pendiente' },
     { value: 2, label: 'Ingresado' },
     { value: 3, label: 'Rechazado' },
     { value: 4, label: 'Alta' }
   ];
+  tipos = [
+    { value:1, label: 'General'},
+    { value:2, label: 'UCI'},
+    { value:3, label: 'Postoperatorio'},
+  ]
   medicos: Usuario[] = [];
   ingresoForm!: FormGroup;
   ingresoParaActualizar: Ingreso | null = null;
@@ -36,13 +42,13 @@ export class IngresosComponent implements OnInit {
   crearFormularioIngreso(): void{
     this.ingresoForm = new FormGroup({
       IdIngreso: new FormControl(0),
-      IdPaciente: new FormControl(0),
-      IdMedico: new FormControl(0),
-      Motivo: new FormControl(''),
+      IdPaciente: new FormControl('',[Validators.required]),
+      IdMedico: new FormControl('',[Validators.required]),
+      Motivo: new FormControl('',[IngresosValidators.noWhitespaceValidator()]),
       FechaSolicitud: new FormControl(new Date()),
       FechaIngreso: new FormControl (null),
-      Estado: new FormControl(0),
-      TipoCama: new FormControl(''),
+      Estado: new FormControl('',[Validators.required]),
+      TipoCama: new FormControl('',[Validators.required]),
       IdAsignacion: new FormControl(null)
     });
   }
@@ -88,7 +94,9 @@ export class IngresosComponent implements OnInit {
       const nuevoIngreso: Ingreso = this.ingresoForm.value; //obtener los datos del formulario
       this.apiService.addIngreso(nuevoIngreso).subscribe({
         next: (ingreso: Ingreso) => {
+          ingreso.FechaSolicitud = new Date();
           this.ingresos.push(ingreso);
+          console.log(ingreso);
           this.ingresoForm.reset(); //despues de agregarlo, reseteas el formulario
           alert('Ingreso creado con exito');
         },
@@ -102,6 +110,7 @@ export class IngresosComponent implements OnInit {
       alert('Por favor, completa todos los campos requeridos.');  
     }
   }
+
 
   actualizarIngreso(): void {
     if (this.ingresoParaActualizar) {
