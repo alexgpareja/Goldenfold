@@ -77,12 +77,7 @@
         <label for="motivo">Motivo de Ingreso:</label>
         <input type="text" id="motivo" formControlName="Motivo" name="motivo" required>
         <div *ngIf="ingresoForm.get('Motivo')?.invalid&&ingresoForm.get('Motivo')?.touched">
-          <small *ngIf="ingresoForm.get('Motivo')?.hasError('required')">Motivo requerido</small>
-        </div>
-        <label for="fechaSolicitud">Fecha de Solicitud:</label>
-        <input type="date" id="fechaSolicitud" formControlName="FechaSolicitud" name="fechaSolicitud" required>
-        <div *ngIf="ingresoForm.get('FechaSolicitud')?.invalid&&ingresoForm.get('FechaSolicitud')?.touched">
-          <small *ngIf="ingresoForm.get('FechaSolicitud')?.hasError('required')">Fecha de solicitud requerida</small>
+          <small *ngIf="ingresoForm.get('Motivo')?.hasError('whitespace')">El motivo no puede estar en blanco</small>
         </div>
         <label for="estado">Estado:</label>
         <select formControlName="Estado" required>
