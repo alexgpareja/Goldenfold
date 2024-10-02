@@ -71,7 +71,7 @@
         <div *ngIf="ingresoForm.get('TipoCama')?.invalid&&ingresoForm.get('TipoCama')?.touched">
             <small *ngIf="ingresoForm.get('TipoCama')?.invalid&&ingresoForm.get('TipoCama')?.touched">Selecciona el tipo de cama</small>
         </div>
-        <button type="submit">Actualziar</button>
+        <button type="submit" [disabled]="ingresoForm.invalid">Actualizar</button>
       </form>
     </div>
   
