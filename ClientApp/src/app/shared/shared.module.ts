@@ -17,37 +17,14 @@ import { DialogFormularioComponent } from './dialog-formulario/dialog-formulario
 
 @NgModule({
   imports: [
+    MatSnackBarModule,
     CommonModule,
     ReactiveFormsModule,
     FormsModule,
     SharedRoutingModule,
+  ],
+  declarations: [SearchBoxComponent, SnackBarNotiComponent],
+  exports: [CommonModule, SearchBoxComponent],
 
-    // Angular Material Modules
-    MatPaginatorModule,
-    MatTableModule,
-    MatDialogModule,
-    MatFormFieldModule,  
-    MatInputModule,      
-    MatButtonModule,     
-  ],
-  declarations: [
-    SearchBoxComponent, 
-    DialogFormularioComponent  // Añade ambos componentes aquí
-  ],
-  exports: [
-    CommonModule,
-    SearchBoxComponent,
-    MatPaginatorModule,
-    MatTableModule,
-    MatDialogModule,
-    MatFormFieldModule,  
-    MatInputModule,      
-    MatButtonModule,
-    DialogFormularioComponent  // Exporta también el componente DialogFormularioComponent si es necesario fuera de este módulo
-  ],
-  providers: [
-    { provide: MAT_DIALOG_DATA, useValue: {} },
-    { provide: MatDialogRef, useValue: {} },
-  ],
 })
 export class SharedModule { }

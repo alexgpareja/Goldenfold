@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { ApiService, Paciente, Consulta } from '../../../services/api.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { MatSnackBar } from '@angular/material/snack-bar'; // Importa el MatSnackBar
+import { SnackBarNotiComponent } from '../../../shared/snack-bar-noti/snack-bar-noti.component'; // Importa el componente del snackbar
 
 @Component({
   selector: 'app-buscar-paciente',
@@ -16,7 +18,6 @@ export class BuscarPacienteComponent {
   mostrarFormularioConsulta: boolean = false; // Mostrar u ocultar el formulario de consulta
   mostrarFormularioEdicion: boolean = false; // Mostrar u ocultar el formulario de edición
 
-  // Inicializar un objeto vacío para la nueva consulta
   consulta: Consulta = {
     IdConsulta: 0,
     IdPaciente: 0,
@@ -27,139 +28,108 @@ export class BuscarPacienteComponent {
     Estado: 'pendiente'
   };
 
-  constructor(private apiService: ApiService) {}
+  constructor(private apiService: ApiService, private snackBar: MatSnackBar) {} // Inyecta el MatSnackBar
 
   buscarPaciente(event: Event) {
     event.preventDefault();
 
-    // Resetea los resultados anteriores
     this.errorMensaje = null;
     this.pacientesEncontrados = [];
 
-    // Verificar si al menos uno de los campos de búsqueda está lleno
     if (this.searchName.trim() !== '' || this.searchSS.trim() !== '') {
       this.apiService.getPacientes(this.searchName, this.searchSS).subscribe({
         next: (pacientes: Paciente[]) => {
           if (pacientes.length > 0) {
             this.pacientesEncontrados = pacientes;
           } else {
-            this.errorMensaje = 'No se encontraron pacientes con ese nombre o número de seguridad social.';
+            this.mostrarNotificacionAlert('No se encontraron pacientes con ese nombre o número de seguridad social.');
           }
         },
         error: (error: HttpErrorResponse) => {
-          this.errorMensaje = 'Error al buscar el paciente. Por favor, inténtalo de nuevo.';
+          this.mostrarNotificacionError('Error al buscar el paciente. Por favor, inténtalo de nuevo.');
         }
       });
     } else {
-      this.errorMensaje = 'Por favor, ingresa un nombre o un número de seguridad social para buscar.';
+      this.mostrarNotificacionAlert('Por favor, ingresa un nombre o un número de seguridad social para buscar.');
     }
-}
-
-
-
-
-  // Seleccionar un paciente para editar
-editarPaciente(paciente: Paciente) {
-  if (this.pacienteSeleccionado && this.pacienteSeleccionado.IdPaciente === paciente.IdPaciente) {
-    // Si ya está seleccionado, ocultar el formulario
-    this.pacienteSeleccionado = null;
-    this.mostrarFormularioEdicion = false;
-  } else {
-    // Si no está seleccionado, mostrar el formulario de edición
-    this.pacienteSeleccionado = { ...paciente }; // Clona el paciente seleccionado
-    this.mostrarFormularioEdicion = true; // Mostrar el formulario de edición
-    this.mostrarFormularioConsulta = false; // Ocultar el formulario de consulta
   }
-}
 
+  editarPaciente(paciente: Paciente) {
+    if (this.pacienteSeleccionado && this.pacienteSeleccionado.IdPaciente === paciente.IdPaciente) {
+      this.pacienteSeleccionado = null;
+      this.mostrarFormularioEdicion = false;
+    } else {
+      this.pacienteSeleccionado = { ...paciente };
+      this.mostrarFormularioEdicion = true;
+      this.mostrarFormularioConsulta = false;
+    }
+  }
 
-  // Actualizar los datos del paciente
   actualizarPaciente() {
     if (this.pacienteSeleccionado) {
       this.apiService.updatePaciente(this.pacienteSeleccionado).subscribe({
         next: () => {
-          this.buscarPaciente(new Event('')); // Rehacer la búsqueda para actualizar los datos
-          this.pacienteSeleccionado = null; // Limpiar el paciente seleccionado
-          this.mostrarFormularioEdicion = false; // Ocultar el formulario de edición
-          this.notificacion = 'Paciente registrado con éxito';
+          this.buscarPaciente(new Event(''));
+          this.pacienteSeleccionado = null;
+          this.mostrarFormularioEdicion = false;
+          this.mostrarNotificacionSuccess('Paciente actualizado con éxito.');
         },
         error: (error: HttpErrorResponse) => {
-          this.errorMensaje = 'Error al actualizar el paciente. Por favor, inténtalo de nuevo.';
+          this.mostrarNotificacionError('Error al actualizar el paciente. Por favor, inténtalo de nuevo.');
         }
       });
     }
   }
 
-// Seleccionar un paciente para consulta
-abrirFormularioConsulta(paciente: Paciente) {
-  if (paciente.Estado === 'EnConsulta') {
-    // Si el paciente ya está en consulta, mostrar un mensaje y no permitir abrir el formulario
-    this.notificacionMid = 'Este paciente ya esta en consulta';
-setTimeout(() => {
-    this.notificacionMid = null;
-  }, 2000);
-    return;
+  abrirFormularioConsulta(paciente: Paciente) {
+    if (paciente.Estado === 'EnConsulta') {
+      this.mostrarNotificacionAlert('Este paciente ya está en consulta.');
+      return;
+    }
 
+    if (this.pacienteSeleccionado && this.pacienteSeleccionado.IdPaciente === paciente.IdPaciente && this.mostrarFormularioConsulta) {
+      this.pacienteSeleccionado = null;
+      this.mostrarFormularioConsulta = false;
+    } else {
+      this.pacienteSeleccionado = paciente;
+      this.mostrarFormularioConsulta = true;
+      this.mostrarFormularioEdicion = false;
+
+      this.consulta.IdPaciente = paciente.IdPaciente;
+      this.consulta.FechaSolicitud = new Date();
+      this.consulta.Estado = 'pendiente';
+    }
   }
 
-  if (this.pacienteSeleccionado && this.pacienteSeleccionado.IdPaciente === paciente.IdPaciente && this.mostrarFormularioConsulta) {
-    // Si ya está seleccionado y el formulario de consulta está visible, ocultarlo
-    this.pacienteSeleccionado = null;
-    this.mostrarFormularioConsulta = false;
-  } else {
-    // Si no está seleccionado o el formulario de consulta no está visible, mostrarlo
-    this.pacienteSeleccionado = paciente;
-    this.mostrarFormularioConsulta = true; // Mostrar el formulario de consulta
-    this.mostrarFormularioEdicion = false; // Ocultar el formulario de edición
-
-    // Rellenar los campos de la consulta con los valores predeterminados
-    this.consulta.IdPaciente = paciente.IdPaciente;
-    this.consulta.FechaSolicitud = new Date(); // Fecha actual
-    this.consulta.Estado = 'pendiente';
-  }
-  setTimeout(() => {
-      this.notificacion = null;
-    }, 2000);
-}
-
-
-
-
-  // Método para registrar la consulta
   registrarConsulta() {
     if (this.consulta.IdMedico && this.consulta.Motivo) {
       this.apiService.addConsulta(this.consulta).subscribe({
         next: () => {
-          this.notificacion = 'Consulta registrada con éxito';
+          this.mostrarNotificacionSuccess('Consulta registrada con éxito.');
           this.mostrarFormularioConsulta = false;
-          this.pacienteSeleccionado = null; // Limpiar el paciente seleccionado después de registrar la consulta
-          this.resetConsulta(); // Reiniciar el formulario de consulta
+          this.pacienteSeleccionado = null;
+          this.resetConsulta();
+          window.location.reload();
         },
         error: (error: HttpErrorResponse) => {
-          this.errorMensaje = 'Error al registrar la consulta. Por favor, inténtalo de nuevo.';
+          this.mostrarNotificacionError('Error al registrar la consulta. Por favor, inténtalo de nuevo.');
         }
       });
     } else {
       alert('Por favor, ingrese todos los datos requeridos.');
     }
-    setTimeout(() => {
-      this.notificacion = null;
-    }, 2000);
   }
 
-  // Método para cancelar la edición del paciente
   cancelarEdicion() {
-    this.pacienteSeleccionado = null; // Limpiar el paciente seleccionado
-    this.mostrarFormularioEdicion = false; // Ocultar el formulario de edición
+    this.pacienteSeleccionado = null;
+    this.mostrarFormularioEdicion = false;
   }
 
-  // Método para cancelar el registro de la consulta
   cancelarConsulta() {
     this.mostrarFormularioConsulta = false;
-    this.resetConsulta(); // Reiniciar el formulario de consulta
+    this.resetConsulta();
   }
 
-  // Método para reiniciar el formulario de consulta
   resetConsulta() {
     this.consulta = {
       IdConsulta: 0,
@@ -171,6 +141,44 @@ setTimeout(() => {
       Estado: 'pendiente'
     };
   }
-  notificacion: string | null = null;
-  notificacionMid: string | null = null;
+
+  // Métodos para manejar las notificaciones utilizando Snackbar
+mostrarNotificacionSuccess(mensaje: string) {
+  this.snackBar.openFromComponent(SnackBarNotiComponent, {
+    data: {
+      message: mensaje,
+        panelClass: 'success-snackbar',
+      icon: 'check_circle' // Icono para éxito
+    },
+    duration: 2500,
+    horizontalPosition: 'right',
+    verticalPosition: 'top',
+  });
+}
+
+mostrarNotificacionError(mensaje: string) {
+  this.snackBar.openFromComponent(SnackBarNotiComponent, {
+    data: {
+      message: mensaje,
+      panelClass: 'error-snackbar',
+      icon: 'error' // Icono para error
+    },
+    duration: 3000,
+    horizontalPosition: 'right',
+    verticalPosition: 'top',
+  });
+}
+
+mostrarNotificacionAlert(mensaje: string) {
+  this.snackBar.openFromComponent(SnackBarNotiComponent, {
+    data: {
+      message: mensaje,
+      panelClass: 'alert-snackbar',
+      icon: 'warning' // Icono para alerta
+    },
+    duration: 3000,
+    horizontalPosition: 'right',
+    verticalPosition: 'top',
+  });
+}
 }
