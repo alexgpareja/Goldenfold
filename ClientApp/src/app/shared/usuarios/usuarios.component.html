@@ -115,61 +115,38 @@
     </form>
   </div>
 
-  <div class="form-container" *ngIf="!usuarioParaActualizar">
-    <h3>Agregar Usuario</h3>
+  <!--Agregar usuario form-->
+  <mat-card>
     <form [formGroup]="usuarioForm" (ngSubmit)="agregarUsuario()">
-      <label for="nombre">Nombre completo:</label>
-      <input
-        type="text"
-        id="nombre"
-        formControlName="Nombre"
-        required
-      />
-      <div *ngIf="usuarioForm.get('Nombre')?.invalid && usuarioForm.get('Nombre')?.touched">
-        <small *ngIf="usuarioForm.get('Nombre')?.hasError('whitespace')">El nombre no puede estar en blanco</small>
-        <!-- Mostrar <br> solo si existen ambos errores -->
-        <br *ngIf="usuarioForm.get('Nombre')?.hasError('whitespace') && usuarioForm.get('Nombre')?.hasError('pattern')">
-
-        <small *ngIf="usuarioForm.get('Nombre')?.hasError('pattern')">Introduzca el nombre completo</small>
-      </div>
-  
-      <label for="nombreUsuario">Nombre de usuario:</label>
-      <input
-        type="text"
-        id="nombreUsuario"
-        formControlName="NombreUsuario"
-        required
-      />
-      <div *ngIf="usuarioForm.get('NombreUsuario')?.invalid && usuarioForm.get('NombreUsuario')?.touched">
-        <small *ngIf="usuarioForm.get('NombreUsuario')?.hasError('whitespace')">El nombre de usuario no puede estar en blanco</small>
-        <small *ngIf="usuarioForm.get('NombreUsuario')?.hasError('asyncFieldExisting')">El nombre de usuario ya existe</small>
-      </div>
-  
-      <label for="contrasenya">Contraseña:</label>
-      <input
-        type="password"
-        id="contrasenya"
-        formControlName="Contrasenya"
-        required
-      />
-      <div *ngIf="usuarioForm.get('Contrasenya')?.invalid && usuarioForm.get('Contrasenya')?.touched">
-        <small *ngIf="usuarioForm.get('Contrasenya')?.hasError('required')">La contraseña es requerida</small>
-      </div>
-  
-      <label for="idRol">Rol:</label>
-      <select formControlName="IdRol" required>
-        <option *ngFor="let rol of roles" [value]="rol.IdRol">
-          {{ rol.NombreRol }}
-        </option>
-      </select>
-      <div *ngIf="usuarioForm.get('IdRol')?.invalid && usuarioForm.get('IdRol')?.touched">
-        <small *ngIf="usuarioForm.get('IdRol')?.hasError('required')">El rol es requerido</small>
-      </div>
-  
-      <div class="botones">
-        <button type="submit" [disabled]="usuarioForm.invalid">Guardar</button>
-        <button type="button" (click)="cancelarNuevoUsuario()">Cancelar</button>
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Nombre:*</mat-label>
+        <input matInput formControlName="Nombre" />
+        <mat-error *ngIf="usuarioForm.get('Nombre')?.hasError('whitespace')">El nombre no puede estar en blanco</mat-error>
+        <mat-error *ngIf="usuarioForm.get('Nombre')?.hasError('pattern')&&!usuarioForm.get('Nombre')?.hasError('whitespace')">Introduzca el nombre completo</mat-error>
+        <br/>
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Nombre usuario:*</mat-label>
+        <input matInput formControlName="NombreUsuario" />
+        <mat-error *ngIf="usuarioForm.get('NombreUsuario')?.hasError('whitespace')">El nombre de usuario no puede estar en blanco</mat-error>
+        <mat-error *ngIf="usuarioForm.get('NombreUsuario')?.hasError('asyncFieldExisting')">El de nombre de usuario ya existe</mat-error>
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Contraseña:</mat-label>
+        <input matInput formControlName="Contrasenya" />
+        <mat-error *ngIf="usuarioForm.get('Contrasenya')?.hasError('required')">Introduzca una contraseña</mat-error>
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>ID Rol:</mat-label>
+        <input matInput formControlName="IdRol" />
+        <mat-error *ngIf="usuarioForm.get('IdRol')?.hasError('required')">Introduzca un rol</mat-error>
+      </mat-form-field>
+      <div>
+        <button mat-raised-button color="primary" type="submit" [disabled]="usuarioForm.invalid">
+          Agregar
+        </button>
+        <button mat-button type="button" (click)="cancelarNuevoUsuario()">Cancelar</button>
       </div>
     </form>
-  </div>  
+  </mat-card>
 </div>
