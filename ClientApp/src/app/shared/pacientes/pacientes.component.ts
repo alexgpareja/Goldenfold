@@ -33,7 +33,7 @@ export class PacientesComponent implements OnInit, AfterViewInit {
   displayedColumns: string[] = ['IdPaciente', 'Nombre', 'Dni', 'FechaNacimiento', 'Estado', 'FechaRegistro', 'SeguridadSocial', 'acciones'];
   dataSource = new MatTableDataSource<Paciente>([]); // Esta solo contendrá los datos visibles
   totalItems = 0; // Número total de pacientes
-  itemsPerPage = 10; // Tamaño de página
+  itemsPerPage = 300; // Tamaño de página
   pageIndex = 0; // Índice de la página actual
 
   pacientes: Paciente[] = []; // Aquí almacenaremos todos los pacientes recibidos

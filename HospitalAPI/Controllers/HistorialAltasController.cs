@@ -23,9 +23,6 @@ namespace HospitalApi.Controllers
             [FromQuery] string? tratamiento)
         {
             var historialAltas = await _historialAltaService.GetHistorialAltasAsync(idPaciente, fechaAlta, diagnostico, tratamiento);
-            
-            if (!historialAltas.Any())
-                return NotFound("No se han encontrado registros de altas con los criterios proporcionados.");
 
             return Ok(historialAltas);
         }
