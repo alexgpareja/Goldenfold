@@ -17,11 +17,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 // Componentes personalizados
-import { SearchBoxComponent } from './search-box/search-box.component';
 import { DialogFormularioComponent } from './dialog-formulario/dialog-formulario.component';
 
-// Routing Module
-import { SharedRoutingModule } from './shared-routing.module';
 
 @NgModule({
   imports: [
