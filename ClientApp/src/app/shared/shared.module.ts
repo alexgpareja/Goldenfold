@@ -18,6 +18,7 @@ import { DialogFormularioComponent } from './dialog-formulario/dialog-formulario
 // Routing Module
 import { SharedRoutingModule } from './shared-routing.module';
 
+
 @NgModule({
   imports: [
     CommonModule,
@@ -35,14 +36,14 @@ import { SharedRoutingModule } from './shared-routing.module';
     MatInputModule,
   ],
   declarations: [
-    SearchBoxComponent, 
+    SearchBoxComponent,
     DialogFormularioComponent,
   ],
   exports: [
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    
+
     // Exportación de componentes
     SearchBoxComponent,
     DialogFormularioComponent, // Exportar si se va a usar fuera del módulo
