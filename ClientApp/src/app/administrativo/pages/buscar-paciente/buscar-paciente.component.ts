@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { ApiService, Paciente, Consulta } from '../../../services/api.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { MatSnackBar } from '@angular/material/snack-bar'; // Importa el MatSnackBar
-import { SnackBarNotiComponent } from '../../../shared/snack-bar-noti/snack-bar-noti.component'; // Importa el componente del snackbar
 
 @Component({
   selector: 'app-buscar-paciente',
@@ -42,15 +41,15 @@ export class BuscarPacienteComponent {
           if (pacientes.length > 0) {
             this.pacientesEncontrados = pacientes;
           } else {
-            this.mostrarNotificacionAlert('No se encontraron pacientes con ese nombre o número de seguridad social.');
+            
           }
         },
         error: (error: HttpErrorResponse) => {
-          this.mostrarNotificacionError('Error al buscar el paciente. Por favor, inténtalo de nuevo.');
+          
         }
       });
     } else {
-      this.mostrarNotificacionAlert('Por favor, ingresa un nombre o un número de seguridad social para buscar.');
+      
     }
   }
 
@@ -72,10 +71,9 @@ export class BuscarPacienteComponent {
           this.buscarPaciente(new Event(''));
           this.pacienteSeleccionado = null;
           this.mostrarFormularioEdicion = false;
-          this.mostrarNotificacionSuccess('Paciente actualizado con éxito.');
         },
         error: (error: HttpErrorResponse) => {
-          this.mostrarNotificacionError('Error al actualizar el paciente. Por favor, inténtalo de nuevo.');
+          
         }
       });
     }
@@ -83,7 +81,6 @@ export class BuscarPacienteComponent {
 
   abrirFormularioConsulta(paciente: Paciente) {
     if (paciente.Estado === 'EnConsulta') {
-      this.mostrarNotificacionAlert('Este paciente ya está en consulta.');
       return;
     }
 
@@ -105,14 +102,13 @@ export class BuscarPacienteComponent {
     if (this.consulta.IdMedico && this.consulta.Motivo) {
       this.apiService.addConsulta(this.consulta).subscribe({
         next: () => {
-          this.mostrarNotificacionSuccess('Consulta registrada con éxito.');
           this.mostrarFormularioConsulta = false;
           this.pacienteSeleccionado = null;
           this.resetConsulta();
           window.location.reload();
         },
         error: (error: HttpErrorResponse) => {
-          this.mostrarNotificacionError('Error al registrar la consulta. Por favor, inténtalo de nuevo.');
+          
         }
       });
     } else {
@@ -142,43 +138,5 @@ export class BuscarPacienteComponent {
     };
   }
 
-  // Métodos para manejar las notificaciones utilizando Snackbar
-mostrarNotificacionSuccess(mensaje: string) {
-  this.snackBar.openFromComponent(SnackBarNotiComponent, {
-    data: {
-      message: mensaje,
-        panelClass: 'success-snackbar',
-      icon: 'check_circle' // Icono para éxito
-    },
-    duration: 2500,
-    horizontalPosition: 'right',
-    verticalPosition: 'top',
-  });
 }
 
-mostrarNotificacionError(mensaje: string) {
-  this.snackBar.openFromComponent(SnackBarNotiComponent, {
-    data: {
-      message: mensaje,
-      panelClass: 'error-snackbar',
-      icon: 'error' // Icono para error
-    },
-    duration: 3000,
-    horizontalPosition: 'right',
-    verticalPosition: 'top',
-  });
-}
-
-mostrarNotificacionAlert(mensaje: string) {
-  this.snackBar.openFromComponent(SnackBarNotiComponent, {
-    data: {
-      message: mensaje,
-      panelClass: 'alert-snackbar',
-      icon: 'warning' // Icono para alerta
-    },
-    duration: 3000,
-    horizontalPosition: 'right',
-    verticalPosition: 'top',
-  });
-}
-}
