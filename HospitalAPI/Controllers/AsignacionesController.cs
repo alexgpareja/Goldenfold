@@ -26,11 +26,6 @@ namespace HospitalApi.Controllers
         {
             var asignaciones = await _asignacionService.GetAsignacionesAsync(idPaciente, idCama, fechaAsignacion, fechaLiberacion, asignadoPor);
 
-            if (!asignaciones.Any())
-            {
-                return NotFound("No se han encontrado asignaciones.");
-            }
-
             return Ok(asignaciones);
         }
 
