@@ -1,41 +1,61 @@
 <div class="usuarios-section">
   <h2>Usuarios</h2>
   <!-- Caja de búsqueda -->
-  <div class="search-container">
-    <label for="search">Buscar Usuario por Nombre:</label>
-    <input
-      type="text"
-      id="search"
-      placeholder="Escribe para buscar..."
-      (ngModelChange)="filtrarUsuarios()"
-    />
-  </div>
+  <app-search-box 
+  [searchOptions]="[
+  { label: 'ID Usuario', value: 'IdUsuario' },
+  { label: 'Nombre', value: 'Nombre' },
+  { label: 'Nombre Usuario', value: 'NombreUsuario' },
+  { label: 'ID Rol', value: 'IdRol' }
+]"
+   [defaultSearchType]="'IdUsuario'" placeholder="Escribe para buscar..." (search)="filtrarUsuarios($event)">
+  </app-search-box>  
+  
+  <!--Tabla Angular Material-->
   <div class="table-container">
-    <table class="table">
-      <thead>
-        <tr>
-          <th>ID Usuario</th>
-          <th>Nombre</th>
-          <th>Nombre Usuario</th>
-          <th>ID Rol</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let usuario of usuarios">
-          <td>{{ usuario.IdUsuario }}</td>
-          <td>{{ usuario.Nombre }}</td>
-          <td>{{ usuario.NombreUsuario }}</td>
-          <td>{{ usuario.IdRol }}</td>
-          <td>
-            <button (click)="toggleActualizarUsuario(usuario)">
-              Actualizar
-            </button>
-            <button (click)="borrarUsuario(usuario.IdUsuario)">Borrar</button>
-          </td>
-        </tr>
-      </tbody>
+    <table mat-table [dataSource]="usuarios" matSort class="mat-elevation-z8">
+      <!--Columna ID-->
+      <ng-container matColumnDef="IdUsuario">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>ID Usuario</th>
+        <td mat-cell *matCellDef="let usuario">{{ usuario.IdUsuario }}</td>
+      </ng-container>
+
+      <!--Columna Nombre-->
+      <ng-container matColumnDef="Nombre">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Nombre</th>
+        <td mat-cell *matCellDef="let usuario">{{ usuario.Nombre }}</td>
+      </ng-container>
+
+      <!--Columna Nombre Usuario-->
+      <ng-container matColumnDef="NombreUsuario">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Nombre Usuario</th>
+        <td mat-cell *matCellDef="let usuario">{{ usuario.NombreUsuario }}</td>
+      </ng-container>
+
+      <!--Columna IdRol-->
+      <ng-container matColumnDef="IdRol">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>ID Rol</th>
+        <td mat-cell *matCellDef="let usuario">{{ usuario.IdRol }}</td>
+      </ng-container>
+
+      <!--Columna Acciones-->
+      <ng-container matColumnDef="Actions">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Acciones</th>
+        <td mat-cell *matCellDef="let usuario">
+          <button mat-button (click)="toggleActualizarUsuario(usuario)">Actualizar</button>
+          <button mat-button color="warn" (click)="borrarUsuario(usuario)">Eliminar</button>
+        </td>
+      </ng-container>
+
+      <!-- Header de la tabla -->
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+       
+      <!-- Filas de la tabla -->
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
+
+    <!-- Paginación -->
+     <mat-paginator [pageSizeOptions]="[5, 10, 25]" showFirstLastButtons></mat-paginator>
   </div>
 
   <div class="form-container" *ngIf="usuarioParaActualizar">
