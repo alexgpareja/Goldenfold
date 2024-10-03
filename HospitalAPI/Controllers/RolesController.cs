@@ -18,8 +18,6 @@ namespace HospitalApi.Controllers
         public async Task<ActionResult<IEnumerable<RolDTO>>> GetRoles([FromQuery] string? nombreRol)
         {
             var roles = await _rolService.GetRolesAsync(nombreRol);
-            if (roles == null)
-                return NotFound("No se han encontrado roles.");
             return Ok(roles);
         }
 

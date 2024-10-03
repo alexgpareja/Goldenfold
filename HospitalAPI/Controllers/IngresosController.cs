@@ -25,8 +25,6 @@ namespace HospitalApi.Controllers
             [FromQuery] DateTime? fechaSolicitudHasta)
         {
             var ingresos = await _ingresoService.GetIngresosAsync(idPaciente, idMedico, estado, tipoCama, fechaSolicitudDesde, fechaSolicitudHasta);
-            if (!ingresos.Any())
-                return NotFound("No se encontraron ingresos con los criterios proporcionados.");
             return Ok(ingresos);
         }
 

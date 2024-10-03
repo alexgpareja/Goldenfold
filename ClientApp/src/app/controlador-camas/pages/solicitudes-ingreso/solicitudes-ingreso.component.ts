@@ -104,15 +104,16 @@ export class SolicitudesIngresoComponent implements OnInit {
             );
           },
           error: (error: HttpErrorResponse) => {
-            console.error('Error al obtener las camas disponibles:', error);
+            console.error('Error al obtener las camas disponibles:', error.message);
           }
         });
       },
       error: (error: HttpErrorResponse) => {
-        console.error('Error al obtener las asignaciones activas:', error);
+        console.error('Error al obtener las asignaciones activas:', error.message);
       }
     });
   }
+  
   
   
 
