@@ -41,15 +41,15 @@ export class BuscarPacienteComponent {
           if (pacientes.length > 0) {
             this.pacientesEncontrados = pacientes;
           } else {
-            
+
           }
         },
         error: (error: HttpErrorResponse) => {
-          
+
         }
       });
     } else {
-      
+
     }
   }
 
@@ -73,7 +73,7 @@ export class BuscarPacienteComponent {
           this.mostrarFormularioEdicion = false;
         },
         error: (error: HttpErrorResponse) => {
-          
+
         }
       });
     }
@@ -108,7 +108,7 @@ export class BuscarPacienteComponent {
           window.location.reload();
         },
         error: (error: HttpErrorResponse) => {
-          
+
         }
       });
     } else {

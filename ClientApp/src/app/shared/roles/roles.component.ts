@@ -11,16 +11,20 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { SnackbarComponent } from '../snackbar/snackbar.component'; // Importar el componente standalone
+
 
 @Component({
   selector: 'app-roles',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, SharedModule, MatFormFieldModule,
-    MatInputModule, MatButtonModule, MatCardModule],
+    MatInputModule, MatButtonModule, MatCardModule,SnackbarComponent],
   templateUrl: './roles.component.html',
   styleUrls: ['./roles.component.css'],
 })
 export class RolesComponent implements OnInit {
+  @ViewChild(SnackbarComponent) snackbar!: SnackbarComponent;  // Referencia al snackbar
+
   // Para la tabla
   roles = new MatTableDataSource<Rol>([]);
   displayedColumns: string[] = ['IdRol', 'NombreRol', 'Actions'];
@@ -105,6 +109,7 @@ export class RolesComponent implements OnInit {
       next: (roles: Rol[]) => {
         if (roles.length > 0) {
           nombreRolControl.setErrors({ nombreRolExiste: true });
+          this.snackbar.showNotification('error', 'El rol ya existe'); // Notificación de error
         } else {
           const nuevoRol: Rol = {
             IdRol: 0,
@@ -117,29 +122,35 @@ export class RolesComponent implements OnInit {
               this.agregarRolForm.reset(); // Limpia el formulario
               this.agregarRolForm.markAsPristine(); // Marcamos como "limpio"
               this.agregarRolForm.markAsUntouched(); // Marcamos como "no tocado"
+              this.snackbar.showNotification('success', 'Rol agregado exitosamente'); // Notificación de éxito
             },
             error: () => {
               nombreRolControl.setErrors({ apiError: true });
+              this.snackbar.showNotification('error', 'Error al agregar el rol'); // Notificación de error
             },
           });
         }
       },
       error: () => {
         console.error('Error al verificar el nombre del rol');
+        this.snackbar.showNotification('error', 'Error al verificar el nombre del rol'); // Notificación de error
       },
     });
   }
 
   borrarRol(id: number): void {
-    if (confirm('¿Estás seguro de que quieres eliminar este rol?')) {
+
       this.apiService.deleteRol(id).subscribe({
         next: () => {
           this.roles.data = this.roles.data.filter((r) => r.IdRol !== id);
-          alert('Rol eliminado con éxito');
+          this.snackbar.showNotification('success', 'Rol eliminado con éxito'); // Notificación de éxito
         },
-        error: (error) => console.error('Error al borrar el rol', error),
+        error: (error) => {
+          console.error('Error al borrar el rol', error);
+          this.snackbar.showNotification('error', 'Error al borrar el rol'); // Notificación de error
+        },
       });
-    }
+
   }
 
 

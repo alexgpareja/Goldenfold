@@ -9,8 +9,9 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialogModule, MatDialog } from '@angular/material/dialog'; 
+import { MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { DialogFormularioComponent } from '../dialog-formulario/dialog-formulario.component';
+import { SnackbarComponent } from '../snackbar/snackbar.component';
 
 @Component({
   selector: 'app-pacientes',
@@ -22,13 +23,14 @@ import { DialogFormularioComponent } from '../dialog-formulario/dialog-formulari
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
-    MatDialogModule
+    MatDialogModule,
+    SnackbarComponent
   ],
   templateUrl: './pacientes.component.html',
   styleUrls: ['./pacientes.component.css'],
 })
 export class PacientesComponent implements OnInit, AfterViewInit {
-
+  @ViewChild(SnackbarComponent) snackbar!: SnackbarComponent
   // Variables relacionadas con la tabla y los datos
   displayedColumns: string[] = ['IdPaciente', 'Nombre', 'Dni', 'FechaNacimiento', 'Estado', 'FechaRegistro', 'SeguridadSocial', 'acciones'];
   dataSource = new MatTableDataSource<Paciente>([]); // Esta solo contendrá los datos visibles
@@ -61,7 +63,7 @@ export class PacientesComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    this.obtenerPacientes(); 
+    this.obtenerPacientes();
   }
 
   ngAfterViewInit() {
@@ -139,28 +141,53 @@ export class PacientesComponent implements OnInit, AfterViewInit {
   }
 
   // Eliminar paciente
-  borrarPaciente(id: number): void {
-    this.apiService.deletePaciente(id).subscribe(() => {
+borrarPaciente(id: number): void {
+  this.apiService.deletePaciente(id).subscribe({
+    next: () => {
       this.obtenerPacientes(); // Refrescar la tabla tras borrar
-    });
-  }
+      this.snackbar.showNotification('success', 'Paciente eliminado correctamente'); // Notificación de éxito
+    },
+    error: (error: any) => {
+      console.error('Error al eliminar el paciente', error);
+      this.snackbar.showNotification('error', 'Error al eliminar el paciente'); // Notificación de error
+    },
+  });
+}
 
-  // Guardar un nuevo paciente
-  guardarPaciente(): void {
-    this.apiService.addPaciente(this.nuevoPaciente).subscribe(() => {
+// Guardar un nuevo paciente
+guardarPaciente(): void {
+  this.apiService.addPaciente(this.nuevoPaciente).subscribe({
+    next: () => {
       this.obtenerPacientes();
       this.cerrarFormulario();
-    });
-  }
+      this.snackbar.showNotification('success', 'Paciente guardado exitosamente'); // Notificación de éxito
+    },
+    error: (error: any) => {
+      console.error('Error al guardar el paciente', error);
+      this.snackbar.showNotification('error', 'Error al guardar el paciente'); // Notificación de error
+    },
+  });
+}
 
-  // Actualizar el paciente seleccionado
-  actualizarPaciente(): void {
-    if (this.pacienteSeleccionado) {
-      this.apiService.updatePaciente(this.pacienteSeleccionado).subscribe(() => {
+actualizarPaciente(): void {
+  console.log(this.pacienteSeleccionado); // Para verificar que pacienteSeleccionado no sea null o undefined
+  if (this.pacienteSeleccionado) {
+    this.apiService.updatePaciente(this.pacienteSeleccionado).subscribe({
+      next: () => {
         this.obtenerPacientes();
         this.cerrarFormulario();
-      });
-    }
+        this.snackbar.showNotification('success', 'Paciente actualizado correctamente'); // Notificación de éxito
+      },
+      error: (error: any) => {
+        console.error('Error al actualizar el paciente', error);
+        this.snackbar.showNotification('error', 'Error al actualizar el paciente'); // Notificación de error
+      },
+    });
+  } else {
+    console.error('pacienteSeleccionado no es válido');
   }
+}
+
+
 
 }

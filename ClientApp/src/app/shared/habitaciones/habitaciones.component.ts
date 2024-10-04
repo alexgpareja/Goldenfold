@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ApiService, Habitacion } from '../../services/api.service';
-import { SnackbarComponent } from '../notification/snackbar.component'; // Importar el componente standalone
+import { SnackbarComponent } from '../snackbar/snackbar.component'; // Importar el componente standalone
 
 @Component({
   selector: 'app-habitaciones',
@@ -79,10 +79,11 @@ export class HabitacionesComponent implements OnInit {
               (h) => h.IdHabitacion === habitacionActualizada.IdHabitacion
             );
             if (index !== -1) {
+              this.snackbar.showNotification('success', 'Habitación actualizada correctamente');
               this.habitaciones[index] = habitacionActualizada;
             }
             this.habitacionParaActualizar = null;
-            this.snackbar.showNotification('success', 'Habitación actualizada correctamente');  // Mostrar notificación de éxito
+              // Mostrar notificación de éxito
           },
           error: (error: any) => {
             console.error('Error al actualizar la habitación', error);
