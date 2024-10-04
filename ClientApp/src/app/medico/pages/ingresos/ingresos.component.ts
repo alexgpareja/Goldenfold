@@ -56,24 +56,49 @@ export class IngresosComponent implements OnInit {
     const altaData = {
       IdHistorial: 0,
       IdPaciente: this.ingresoSeleccionado.IdPaciente,
-      IdMedico: 6,
+      IdMedico: 6, // Ajusta el IdMedico según sea necesario
       Diagnostico: this.diagnostico,
       Tratamiento: this.tratamiento,
-      FechaAlta: new Date(), 
-      FechaLiberacion: new Date(),
+      FechaAlta: new Date(),
+      FechaLiberacion: new Date(), // Asignar la fecha de liberación actual
     };
 
+    // 1. Dar de alta al paciente
     this.apiService.addHistorialAlta(altaData).subscribe({
       next: () => {
-        window.alert('Paciente dado de alta correctamente.');
-        this.resetFormulario();
-        this.obtenerPacientesIngresados(); // Actualizar la lista de ingresos
+        // 2. Obtener la asignación asociada al paciente para actualizarla
+        this.apiService.getAsignaciones(this.ingresoSeleccionado!.IdPaciente).subscribe({
+          next: (asignaciones: Asignacion[]) => {
+            if (asignaciones.length > 0) {
+              const asignacion = asignaciones[0]; // Asumimos una única asignación activa
+              asignacion.FechaLiberacion = new Date(); // Asignar la fecha de liberación actual
+
+              // 3. Actualizar la asignación
+              this.apiService.updateAsignacion(asignacion).subscribe({
+                next: () => {
+                  window.alert('Paciente dado de alta correctamente y asignación actualizada.');
+                  this.resetFormulario();
+                  this.obtenerPacientesIngresados();
+                },
+                error: () => {
+                  window.alert('Error al actualizar la asignación.');
+                }
+              });
+            } else {
+              window.alert('No se encontró ninguna asignación para este paciente.');
+            }
+          },
+          error: () => {
+            window.alert('Error al obtener la asignación del paciente.');
+          }
+        });
       },
-      error: (err: any) => {
+      error: () => {
         window.alert('Error al dar de alta al paciente.');
       }
     });
   }
+  
 
   // Resetear el formulario
   resetFormulario() {
