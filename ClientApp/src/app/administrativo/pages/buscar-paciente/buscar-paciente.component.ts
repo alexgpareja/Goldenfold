@@ -27,7 +27,7 @@ export class BuscarPacienteComponent {
     Estado: 'pendiente'
   };
 
-  constructor(private apiService: ApiService, private snackBar: MatSnackBar) {} // Inyecta el MatSnackBar
+  constructor(private apiService: ApiService, private snackBar: MatSnackBar) { } // Inyecta el MatSnackBar
 
   buscarPaciente(event: Event) {
     event.preventDefault();
@@ -41,15 +41,24 @@ export class BuscarPacienteComponent {
           if (pacientes.length > 0) {
             this.pacientesEncontrados = pacientes;
           } else {
-            
+            this.snackBar.open('No se encontraron pacientes con los datos proporcionados.', 'Cerrar', {
+              duration: 3000,
+              panelClass: ['snack-bar-error']
+            });
           }
         },
         error: (error: HttpErrorResponse) => {
-          
+          this.snackBar.open('Error al buscar pacientes. Inténtelo más tarde.', 'Cerrar', {
+            duration: 3000,
+            panelClass: ['snack-bar-error']
+          });
         }
       });
     } else {
-      
+      this.snackBar.open('Por favor, ingrese un nombre o número de seguridad social para la búsqueda.', 'Cerrar', {
+        duration: 3000,
+        panelClass: ['snack-bar-warning']
+      });
     }
   }
 
@@ -71,9 +80,16 @@ export class BuscarPacienteComponent {
           this.buscarPaciente(new Event(''));
           this.pacienteSeleccionado = null;
           this.mostrarFormularioEdicion = false;
+          this.snackBar.open('Paciente actualizado exitosamente.', 'Cerrar', {
+            duration: 3000,
+            panelClass: ['snack-bar-success']
+          });
         },
         error: (error: HttpErrorResponse) => {
-          
+          this.snackBar.open('Error al actualizar el paciente. Inténtelo más tarde.', 'Cerrar', {
+            duration: 3000,
+            panelClass: ['snack-bar-error']
+          });
         }
       });
     }
@@ -81,6 +97,10 @@ export class BuscarPacienteComponent {
 
   abrirFormularioConsulta(paciente: Paciente) {
     if (paciente.Estado === 'EnConsulta') {
+      this.snackBar.open('El paciente ya está en consulta.', 'Cerrar', {
+        duration: 3000,
+        panelClass: ['snack-bar-warning']
+      });
       return;
     }
 
@@ -105,14 +125,25 @@ export class BuscarPacienteComponent {
           this.mostrarFormularioConsulta = false;
           this.pacienteSeleccionado = null;
           this.resetConsulta();
-          window.location.reload();
+          this.snackBar.open('Consulta registrada exitosamente.', 'Cerrar', {
+            duration: 3000,
+            panelClass: ['snack-bar-success'],
+            horizontalPosition: 'center',
+            verticalPosition: 'top'
+          });
         },
         error: (error: HttpErrorResponse) => {
-          
+          this.snackBar.open('Error al registrar la consulta. Inténtelo más tarde.', 'Cerrar', {
+            duration: 3000,
+            panelClass: ['snack-bar-error']
+          });
         }
       });
     } else {
-      alert('Por favor, ingrese todos los datos requeridos.');
+      this.snackBar.open('Por favor, ingrese todos los datos requeridos.', 'Cerrar', {
+        duration: 3000,
+        panelClass: ['snack-bar-warning']
+      });
     }
   }
 
@@ -137,6 +168,4 @@ export class BuscarPacienteComponent {
       Estado: 'pendiente'
     };
   }
-
 }
-

@@ -11,23 +11,26 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { SnackbarComponent } from '../snackbar/snackbar.component';
 
 @Component({
   selector: 'app-usuarios',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, SharedModule, MatFormFieldModule,
-    MatInputModule, MatButtonModule, MatCardModule, MatSortModule],
+    MatInputModule, MatButtonModule, MatCardModule, MatSortModule,SnackbarComponent],
   templateUrl: './usuarios.component.html',
   styleUrls: ['./usuarios.component.css'],
 })
 export class UsuariosComponent implements OnInit {
+  @ViewChild(SnackbarComponent) snackbar!: SnackbarComponent;  // Referencia al snackbar
+
   //tabla Angular Material
   usuarios: MatTableDataSource<Usuario> = new MatTableDataSource<Usuario>();
 
   //columnas que se mostraran en la tabla
   displayedColumns: string[] = ['IdUsuario','Nombre','NombreUsuario','IdRol','Actions'];
 
-  //paginador y ordenador 
+  //paginador y ordenador
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
@@ -107,7 +110,7 @@ export class UsuariosComponent implements OnInit {
 
   agregarUsuario(): void {
     if(this.usuarioForm.valid) {
-      const nuevoUsuario: Usuario = this.usuarioForm.value; //obtener los datos del formulario
+      const nuevoUsuario: Usuario = this.usuarioForm.value; // Obtener los datos del formulario
       this.apiService.addUsuario(nuevoUsuario).subscribe({
         next: (usuario: Usuario) => {
           this.usuarios.data = [...this.usuarios.data,usuario];
@@ -117,13 +120,14 @@ export class UsuariosComponent implements OnInit {
         error: (error: any) => {
           const mensajeError =
             error.error || 'Error inesperado. Inténtalo de nuevo.';
-          alert(mensajeError);
+          this.snackbar.showNotification('error', mensajeError); // Notificación de error
         },
       });
-    } else{
-      alert('Por favor, completa todos los campos requeridos.');  
+    } else {
+      this.snackbar.showNotification('error', 'Por favor, completa todos los campos requeridos.'); // Notificación de error de validación
     }
   }
+
 
   toggleActualizarUsuario(usuario: Usuario): void {
     if (
@@ -140,40 +144,38 @@ export class UsuariosComponent implements OnInit {
   }
 
   actualizarUsuario(): void {
-    if(this.usuarioParaActualizar && this.usuarioForm.valid) {
-      const usuarioActualizado: Usuario = { ...this.usuarioParaActualizar,...this.usuarioForm.value};
+    if (this.usuarioParaActualizar) {
+      const usuarioActualizado: Usuario = { ...this.usuarioParaActualizar, ...this.usuarioForm.value };
+
       this.apiService.updateUsuario(usuarioActualizado).subscribe({
         next: () => {
-          this.obtenerUsuarios();
-          this.usuarioParaActualizar = null;
-          this.usuarioForm.reset();
-          alert('Usuario actualizado con éxito.');
-        },
-        error: (error: any) =>{
-          console.error('Error al actualizar el usuario',error)
-        },
-      }); 
-    }
-      
-  }
-
-  borrarUsuario(idUsuario: number): void {
-    const confirmacion = confirm(
-      '¿Estás seguro de que deseas eliminar este usuario?'
-    );
-    if (confirmacion) {
-      this.apiService.deleteUsuario(idUsuario).subscribe({
-        next: () => {
           this.obtenerUsuarios(); // Refrescar la lista de usuarios
-          alert('Usuario eliminado con éxito.');
+          this.usuarioParaActualizar = null;
+          this.usuarioForm.reset(); // Resetear el formulario
+          this.snackbar.showNotification('success', 'Usuario actualizado con éxito'); // Notificación de éxito
         },
         error: (error: any) => {
-          console.error('Error al eliminar el usuario', error);
-          alert('Error al eliminar el usuario. Por favor, inténtelo de nuevo.');
+          console.error('Error al actualizar el usuario', error);
+          this.snackbar.showNotification('error', 'Error al actualizar el usuario. Por favor, inténtelo de nuevo.'); // Notificación de error
         },
       });
     }
   }
+
+
+  borrarUsuario(idUsuario: number): void {
+    this.apiService.deleteUsuario(idUsuario).subscribe({
+      next: () => {
+        this.obtenerUsuarios(); // Refrescar la lista de usuarios
+        this.snackbar.showNotification('success', 'Usuario eliminado con éxito'); // Notificación de éxito
+      },
+      error: (error: any) => {
+        console.error('Error al eliminar el usuario', error);
+        this.snackbar.showNotification('error', 'Error al eliminar el usuario. Por favor, inténtelo de nuevo.'); // Notificación de error
+      },
+    });
+  }
+
 
   resetUsuario(): Usuario {
     return {

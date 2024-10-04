@@ -11,6 +11,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { DialogFormularioComponent } from '../dialog-formulario/dialog-formulario.component';
+import { SnackbarComponent } from '../snackbar/snackbar.component';
 
 @Component({
   selector: 'app-pacientes',
@@ -22,13 +23,15 @@ import { DialogFormularioComponent } from '../dialog-formulario/dialog-formulari
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
-    MatDialogModule
+    MatDialogModule,
+    SnackbarComponent
   ],
   templateUrl: './pacientes.component.html',
   styleUrls: ['./pacientes.component.css'],
 })
 export class PacientesComponent implements OnInit, AfterViewInit {
-
+  @ViewChild(SnackbarComponent) snackbar!: SnackbarComponent
+  // Variables relacionadas con la tabla y los datos
   displayedColumns: string[] = ['IdPaciente', 'Nombre', 'Dni', 'FechaNacimiento', 'Estado', 'FechaRegistro', 'SeguridadSocial', 'acciones'];
   dataSource = new MatTableDataSource<Paciente>([]);
   totalItems = 0;
@@ -137,37 +140,55 @@ export class PacientesComponent implements OnInit, AfterViewInit {
     this.pacienteSeleccionado = null;
   }
 
-  borrarPaciente(id: number): void {
-    this.apiService.deletePaciente(id).subscribe(() => {
-      this.obtenerPacientes();
-      this.notificacion = 'Paciente borrado con éxito';
-      this.ocultarNotificacion();
-    });
-  }
+  // Eliminar paciente
+borrarPaciente(id: number): void {
+  this.apiService.deletePaciente(id).subscribe({
+    next: () => {
+      this.obtenerPacientes(); // Refrescar la tabla tras borrar
+      this.snackbar.showNotification('success', 'Paciente eliminado correctamente'); // Notificación de éxito
+    },
+    error: (error: any) => {
+      console.error('Error al eliminar el paciente', error);
+      this.snackbar.showNotification('error', 'Error al eliminar el paciente'); // Notificación de error
+    },
+  });
+}
 
-  guardarPaciente(): void {
-    this.apiService.addPaciente(this.nuevoPaciente).subscribe(() => {
+// Guardar un nuevo paciente
+guardarPaciente(): void {
+  this.apiService.addPaciente(this.nuevoPaciente).subscribe({
+    next: () => {
       this.obtenerPacientes();
       this.cerrarFormulario();
-      this.notificacion = 'Paciente guardado con éxito';
-      this.ocultarNotificacion();
-    }, error => {
-      console.error('Error al guardar paciente', error);
-    });
-  }
+      this.snackbar.showNotification('success', 'Paciente guardado exitosamente'); // Notificación de éxito
+    },
+    error: (error: any) => {
+      console.error('Error al guardar el paciente', error);
+      this.snackbar.showNotification('error', 'Error al guardar el paciente'); // Notificación de error
+    },
+  });
+}
 
-  actualizarPaciente(): void {
-    if (this.pacienteSeleccionado) {
-      this.apiService.updatePaciente(this.pacienteSeleccionado).subscribe(() => {
+actualizarPaciente(): void {
+  console.log(this.pacienteSeleccionado); // Para verificar que pacienteSeleccionado no sea null o undefined
+  if (this.pacienteSeleccionado) {
+    this.apiService.updatePaciente(this.pacienteSeleccionado).subscribe({
+      next: () => {
         this.obtenerPacientes();
         this.cerrarFormulario();
-        this.notificacion = 'Paciente actualizado con éxito';
-        this.ocultarNotificacion();
-      }, error => {
-        console.error('Error al actualizar paciente', error);
-      });
-    }
+        this.snackbar.showNotification('success', 'Paciente actualizado correctamente'); // Notificación de éxito
+      },
+      error: (error: any) => {
+        console.error('Error al actualizar el paciente', error);
+        this.snackbar.showNotification('error', 'Error al actualizar el paciente'); // Notificación de error
+      },
+    });
+  } else {
+    console.error('pacienteSeleccionado no es válido');
   }
+}
+
+
 
   // Función para ocultar la notificación después de 2 segundos
   private ocultarNotificacion(): void {
