@@ -1,170 +1,267 @@
-/* Estilos generales */
+/* Estilo general de la sección de búsqueda de pacientes */
 .search-section {
   font-family: Arial, sans-serif;
   margin: 20px;
 }
 
+/* Estilo para el título principal */
 h2 {
-  font-size: 1.6rem;
+  font-size: 1.5rem;
   color: #333;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
+  text-align: center;
   font-weight: bold;
 }
 
-h3 {
-  font-size: 1.4rem;
-  color: #0078d4;
-  margin-bottom: 10px;
-  font-weight: bold;
-}
-
-/* Estilo del formulario de búsqueda */
+/* Estilo de la caja de búsqueda */
 .search-form {
-  background-color: #f9f9f9;
-  padding: 15px;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  align-items: center;
+  justify-content: center;
   margin-bottom: 20px;
 }
 
-.form-group {
-  margin-bottom: 15px;
+.search-form .form-group {
+  width: 60%;
 }
 
-.form-group label {
+.search-form label {
   display: block;
   font-weight: bold;
-  margin-bottom: 5px;
   color: #333;
+  margin-bottom: 5px;
 }
 
-.form-group input,
-.form-group select,
-.form-group textarea {
-  width: 100%;
-  padding: 8px;
-  border: 1px solid #ccc;
+.search-form input {
+  padding: 10px;
+  border: 1px solid #ddd;
   border-radius: 4px;
+  width: 100%;
   font-size: 14px;
   box-sizing: border-box;
 }
 
-textarea {
-  resize: vertical;
-}
-
-.error-message {
-  color: #d9534f;
-  font-size: 12px;
-  margin-top: 5px;
-}
-
-/* Botones generales */
-.submit-btn, .update-btn, .cancel-btn, .edit-btn, .consulta-btn {
-  padding: 10px 16px;
+/* Estilo de los botones de búsqueda */
+.search-form .submit-btn {
+  width: 100px;
+  padding: 10px;
+  background-color: #007bff;
+  color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 5px;
+  font-size: 14px;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
 
-.submit-btn {
-  background-color: #28a745;
-  color: white;
-}
-
-.submit-btn:hover {
-  background-color: #218838;
-}
-
-.update-btn {
-  background-color: #007bff;
-  color: white;
-}
-
-.update-btn:hover {
+.search-form .submit-btn:hover {
   background-color: #0056b3;
 }
 
-.cancel-btn {
-  background-color: #dc3545;
-  color: white;
+/* Mensaje de error */
+.error-message {
+  color: #d9534f;
+  text-align: center;
+  margin-top: 10px;
+  font-size: 14px;
 }
 
-.cancel-btn:hover {
-  background-color: #c82333;
-}
-
-.edit-btn {
-  background-color: #ffc107;
-  color: #333;
-}
-
-.edit-btn:hover {
-  background-color: #e0a800;
-}
-
-.consulta-btn {
-  background-color: #17a2b8;
-  color: white;
-}
-
-.consulta-btn:hover {
-  background-color: #138496;
-}
-
-/* Resultados de búsqueda */
+/* Estilo de los resultados de los pacientes */
 .resultados {
-  margin-top: 20px;
+  margin-top: 30px;
+  text-align: center;
 }
 
 .pacientes-container {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 20px;
 }
 
 .paciente-info {
-  background-color: #f1f1f1;
-  padding: 15px;
+  background-color: #f9f9f9;
+  padding: 20px;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 300px;
+  text-align: left;
 }
 
 .paciente-info p {
   margin: 5px 0;
 }
 
-.paciente-info strong {
-  color: #0078d4;
+/* Botones de acción en los resultados */
+.paciente-info button {
+  width: 100px;
+  padding: 10px;
+  margin: 5px;
+  border: none;
+  border-radius: 5px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
-/* Estilo de la sección de edición */
+.paciente-info .edit-btn {
+  background-color: #007bff;
+  color: white;
+}
+
+.paciente-info .edit-btn:hover {
+  background-color: #0056b3;
+}
+
+.paciente-info .consulta-btn {
+  background-color: #28a745;
+  color: white;
+}
+
+.paciente-info .consulta-btn:hover {
+  background-color: #218838;
+}
+
+/* Estilo del formulario de edición */
 .edit-section {
-  background-color: #fff;
+  margin-top: 30px;
+  background-color: #f9f9f9;
   padding: 20px;
   border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-  margin-top: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Estilo de la sección de consultas */
+.edit-section h3 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.edit-section .form-group {
+  margin-bottom: 15px;
+}
+
+.edit-section label {
+  font-weight: bold;
+  color: #333;
+}
+
+.edit-section input,
+.edit-section textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+/* Estilo de los botones del formulario de edición */
+.edit-section .update-btn,
+.edit-section .cancel-btn {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+.edit-section .update-btn {
+  background-color: #28a745;
+  color: white;
+}
+
+.edit-section .update-btn:hover {
+  background-color: #218838;
+}
+
+.edit-section .cancel-btn {
+  background-color: #dc3545;
+  color: white;
+}
+
+.edit-section .cancel-btn:hover {
+  background-color: #c82333;
+}
+
+/* Estilo del formulario de consulta */
 .consulta-section {
-  background-color: #fff;
+  margin-top: 30px;
+  background-color: #f9f9f9;
   padding: 20px;
   border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-  margin-top: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Responsive design */
+.consulta-section h3 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.consulta-section .form-group {
+  margin-bottom: 15px;
+}
+
+.consulta-section label {
+  font-weight: bold;
+  color: #333;
+}
+
+.consulta-section input,
+.consulta-section textarea,
+.consulta-section select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+/* Estilo de los botones del formulario de consulta */
+.consulta-section .submit-btn,
+.consulta-section .cancel-btn {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+.consulta-section .submit-btn {
+  background-color: #007bff;
+  color: white;
+}
+
+.consulta-section .submit-btn:hover {
+  background-color: #0056b3;
+}
+
+.consulta-section .cancel-btn {
+  background-color: #dc3545;
+  color: white;
+}
+
+.consulta-section .cancel-btn:hover {
+  background-color: #c82333;
+}
+
+/* Diseño responsivo */
 @media (max-width: 768px) {
-  .pacientes-container {
-    grid-template-columns: 1fr;
+  .search-form .form-group {
+    width: 90%;
   }
 
-  .consulta-section, .edit-section {
-    margin-top: 15px;
+  .paciente-info {
+    width: 100%;
+  }
+
+  .paciente-info button {
+    width: 100%;
   }
 }
-

@@ -1,4 +1,4 @@
-/* Estilo general de la sección de consultas */
+/* Estilo general de la sección de solicitudes de ingreso */
 .solicitudes-ingreso-section {
   font-family: Arial, sans-serif;
   margin: 20px;
@@ -6,25 +6,31 @@
 
 /* Estilo para el título principal */
 h2 {
-  font-size: 1.8rem;
+  font-size: 1.5rem;
   color: #333;
   margin-bottom: 20px;
+  text-align: center;
   font-weight: bold;
 }
 
-/* Estilo para el mensaje de error */
+/* Mensaje de error */
 .error-message {
   color: #d9534f;
+  text-align: center;
+  margin-top: 10px;
   font-size: 14px;
-  margin-bottom: 20px;
 }
 
 /* Estilo de la tabla de solicitudes */
 .solicitudes-table {
   width: 100%;
   border-collapse: collapse;
+  margin-top: 20px;
   font-size: 14px;
-  margin-bottom: 20px;
+  background-color: rgb(243, 240, 240);
+  border-radius: 7px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  table-layout: auto;
 }
 
 .solicitudes-table th,
@@ -32,120 +38,114 @@ h2 {
   padding: 10px;
   border: 1px solid #ccc;
   text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .solicitudes-table th {
-  background-color: #007bff;
-  color: #fff;
-  font-weight: bold;
+  background-color: #0078d4;
+  color: white;
+  cursor: pointer;
+}
+
+.solicitudes-table th:hover {
+  background-color: #0056b3;
 }
 
 .solicitudes-table td {
-  background-color: #f9f9f9;
+  background-color: white;
 }
 
-.solicitudes-table tr:nth-child(even) {
-  background-color: #f1f1f1;
-}
-
-/* Estilo para los botones de acciones */
-.solicitudes-table button {
+/* Estilo de los botones dentro de la tabla */
+.solicitudes-table td button {
   padding: 8px 12px;
-  border: none;
-  border-radius: 4px;
-  background-color: #007bff;
-  color: white;
-  cursor: pointer;
-  font-size: 14px;
-  transition: background-color 0.3s ease;
-}
-
-.solicitudes-table button:hover {
-  background-color: #0056b3;
-}
-
-/* Estilo para la sección de acciones de la solicitud seleccionada */
-.solicitudes-ingreso-section h3 {
-  font-size: 1.3rem;
-  color: #333;
-  margin-top: 20px;
-  margin-bottom: 10px;
-}
-
-/* Botones para las acciones de solicitud */
-.solicitudes-ingreso-section button {
-  padding: 10px 16px;
-  margin-right: 10px;
-  border: none;
-  border-radius: 4px;
-  background-color: #007bff;
-  color: white;
-  cursor: pointer;
-  font-size: 14px;
-  transition: background-color 0.3s ease;
-}
-
-.solicitudes-ingreso-section button:hover {
-  background-color: #0056b3;
-}
-
-.solicitudes-ingreso-section button:last-child {
-  margin-right: 0;
-}
-
-/* Formulario de selección de cama */
-.solicitudes-ingreso-section form {
-  margin-top: 20px;
-  background-color: #f9f9f9;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.solicitudes-ingreso-section label {
-  font-weight: bold;
-  color: #333;
-  margin-bottom: 5px;
-  display: block;
-}
-
-.solicitudes-ingreso-section select {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 14px;
-  margin-bottom: 15px;
-  box-sizing: border-box;
-}
-
-.solicitudes-ingreso-section form button {
-  width: 100%;
-  padding: 10px;
-  border: none;
-  border-radius: 4px;
   background-color: #28a745;
   color: white;
+  border: none;
+  border-radius: 5px;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 12px;
+  transition: background-color 0.3s ease;
 }
 
-.solicitudes-ingreso-section form button:hover {
+.solicitudes-table td button:hover {
   background-color: #218838;
 }
 
-/* Estilo responsivo */
+/* Estilo de los botones de acción */
+button {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  margin-right: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+button[type="submit"] {
+  margin-top: 10px;
+  background-color: #28a745;
+}
+
+button[type="submit"]:hover {
+  background-color: #218838;
+}
+
+button[type="button"].cancel-btn {
+  background-color: #dc3545;
+}
+
+button[type="button"].cancel-btn:hover {
+  background-color: #c82333;
+}
+
+/* Estilo del formulario */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+form label {
+  font-weight: bold;
+  color: #333;
+}
+
+form input,
+form select {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  width: 100%;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+/* Título del formulario de alta o selección de cama */
+h3, h4 {
+  font-size: 1.3rem;
+  color: #333;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+/* Diseño responsivo */
 @media (max-width: 768px) {
-  .solicitudes-ingreso-section {
-    padding: 15px;
+  .solicitudes-table th,
+  .solicitudes-table td {
+    font-size: 12px;
   }
 
-  .solicitudes-ingreso-section button {
-    font-size: 14px;
-    padding: 8px 12px;
-  }
-
-  .solicitudes-ingreso-section form button {
+  form button {
     font-size: 14px;
   }
 }
