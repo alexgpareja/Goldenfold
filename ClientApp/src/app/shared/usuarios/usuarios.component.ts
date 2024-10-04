@@ -13,7 +13,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { SnackbarComponent } from '../snackbar/snackbar.component';
 
-
 @Component({
   selector: 'app-usuarios',
   standalone: true,
@@ -114,9 +113,9 @@ export class UsuariosComponent implements OnInit {
       const nuevoUsuario: Usuario = this.usuarioForm.value; // Obtener los datos del formulario
       this.apiService.addUsuario(nuevoUsuario).subscribe({
         next: (usuario: Usuario) => {
-          this.usuarios.data = [...this.usuarios.data, usuario];
-          this.usuarioForm.reset(); // Después de agregarlo, reseteas el formulario
-          this.snackbar.showNotification('success', 'Usuario creado con éxito'); // Notificación de éxito
+          this.usuarios.data = [...this.usuarios.data,usuario];
+          this.usuarioForm.reset(); //despues de agregarlo, reseteas el formulario
+          alert('Usuario creado con exito');
         },
         error: (error: any) => {
           const mensajeError =

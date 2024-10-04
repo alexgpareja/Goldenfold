@@ -17,44 +17,40 @@ h2 {
 .table-container {
   width: 100%;
   overflow-x: auto; /* Permite el desplazamiento horizontal si es necesario */
-  background-color: rgb(243, 240, 240);
+  background-color: #f3f0f0;
   padding: 10px;
   margin: 5px;
   border-radius: 7px;
   box-shadow: 0 0 10px rgba(8, 8, 8, 0.1);
-  margin-bottom: 0px;
-  padding-bottom: 0px;
 }
 
 /* Estilo de la tabla */
-.table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 14px; /* Tamaño de texto adecuado */
-  table-layout: auto; /* Permite ajustar el tamaño de las columnas automáticamente */
+.mat-elevation-z8 {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .table th,
 .table td {
   padding: 8px 12px;
-  border: 1px solid #ccc;
   text-align: left;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.table th {
+.mat-header-cell {
   background-color: #0078d4;
   color: white;
   font-size: 14px;
+  font-weight: bold;
 }
 
-.table td {
-  background-color: rgb(255, 255, 255);
+.mat-cell {
+  background-color: white;
+  font-size: 14px;
 }
 
-.table td button {
+.mat-cell button {
   font-size: 12px;
   padding: 5px 10px;
   border-radius: 4px;
@@ -62,15 +58,7 @@ h2 {
   cursor: pointer;
 }
 
-td button {
-  margin: 2px;
-  padding: 5px 10px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-td button:hover {
+.mat-cell button:hover {
   background-color: #066fdf;
   color: #e0e0e0;
   transition: 0.3s;
@@ -93,29 +81,18 @@ td button:hover {
   text-align: center;
 }
 
-.form-container label {
-  display: block;
-  font-weight: bold;
-  color: #333;
-  margin-bottom: 5px;
+.mat-form-field {
+  width: 100%;
+  margin-bottom: 20px;
 }
 
-.form-container input,
-.form-container select {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+.mat-form-field .mat-input-element {
   font-size: 14px;
-  box-sizing: border-box;
-  margin-bottom: 15px;
 }
-.form-container .formulari{
-  display: grid;
-  grid-template-rows: (7,1fr);
-}
+
+/* Botones */
 .form-container button {
-  width: 7.4%;
+  width: auto;
   padding: 10px;
   border: none;
   border-radius: 5px;
@@ -125,6 +102,20 @@ td button:hover {
   font-size: 16px;
   transition: background-color 0.3s ease;
   display: inline-flex;
+}
+
+.form-container button.mat-button {
+  background-color: #007bff;
+  color: white;
+  margin-right: 10px;
+}
+
+.form-container button.mat-button:hover {
+  background-color: #0a4c93;
+}
+
+.form-container button.mat-raised-button {
+  background-color: #28a745;
 }
 
 .form-container button:hover {
@@ -137,8 +128,8 @@ td button:hover {
     padding: 15px;
   }
 
-  .table th,
-  .table td {
+  .mat-header-cell,
+  .mat-cell {
     font-size: 12px;
   }
 
@@ -146,8 +137,9 @@ td button:hover {
     font-size: 14px;
   }
 }
+
 /* Estilo de la paginación */
-.paginacion {
+.mat-paginator {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -155,7 +147,7 @@ td button:hover {
   gap: 5px;
 }
 
-.paginacion button {
+.mat-paginator button {
   padding: 5px 10px;
   border: none;
   border-radius: 3px;
@@ -166,18 +158,18 @@ td button:hover {
   transition: background-color 0.2s, color 0.2s;
 }
 
-.paginacion button:disabled {
+.mat-paginator button:disabled {
   cursor: not-allowed;
   background-color: #e0e0e0;
   color: #999;
 }
 
-.paginacion button:not(:disabled):hover {
+.mat-paginator button:not(:disabled):hover {
   background-color: #0a4c93;
   color: #fff;
 }
 
-.paginacion span {
+.mat-paginator-range-label {
   font-size: 12px;
   color: #333;
 }

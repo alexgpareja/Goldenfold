@@ -6,117 +6,152 @@
 
 /* Estilo para el título principal */
 h2 {
-  font-size: 1.8rem;
+  font-size: 1.5rem;
   color: #333;
   margin-bottom: 20px;
+  text-align: center;
   font-weight: bold;
 }
 
-/* Estilo del mensaje de error */
+/* Mensaje de error */
 .error-message {
   color: #d9534f;
+  text-align: center;
+  margin-top: 10px;
   font-size: 14px;
-  margin-bottom: 10px;
 }
 
 /* Estilo de la tabla de consultas */
 .consultas-table {
   width: 100%;
   border-collapse: collapse;
-  background-color: rgb(248, 248, 248);
-  margin-bottom: 20px;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-top: 20px;
+  font-size: 14px;
+  background-color: rgb(243, 240, 240);
+  border-radius: 7px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  table-layout: auto;
 }
 
 .consultas-table th,
 .consultas-table td {
   padding: 10px;
+  border: 1px solid #ccc;
   text-align: left;
-  border: 1px solid #ddd;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .consultas-table th {
-  background-color: #007bff;
+  background-color: #0078d4;
   color: white;
-  font-size: 14px;
+  cursor: pointer;
+}
+
+.consultas-table th:hover {
+  background-color: #0056b3;
 }
 
 .consultas-table td {
-  background-color: #f9f9f9;
-  font-size: 13px;
+  background-color: white;
 }
 
-/* Estilo de las filas de la tabla */
-.consultas-table tr:nth-child(even) {
-  background-color: #f1f1f1;
-}
-
-.consultas-table tr:hover {
-  background-color: #f5f5f5;
-}
-
-/* Estilo del botón "Evaluar" */
-button {
+/* Estilo de los botones dentro de la tabla */
+.consultas-table td button {
   padding: 8px 12px;
-  border: none;
-  border-radius: 4px;
   background-color: #28a745;
   color: white;
+  border: none;
+  border-radius: 5px;
   cursor: pointer;
+  font-size: 12px;
   transition: background-color 0.3s ease;
 }
 
-button:hover {
+.consultas-table td button:hover {
   background-color: #218838;
 }
 
-/* Estilo para los formularios de Alta e Ingreso */
+/* Estilo para los títulos de los formularios */
+h3 {
+  font-size: 1.3rem;
+  color: #333;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
 h4 {
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   color: #333;
   margin-bottom: 10px;
 }
 
+/* Estilo para los botones de alta e ingreso */
+button {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  margin-right: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+button[type="submit"] {
+  margin-top: 10px;
+  background-color: #28a745;
+}
+
+button[type="submit"]:hover {
+  background-color: #218838;
+}
+
+button[type="button"].cancel-btn {
+  background-color: #dc3545;
+}
+
+button[type="button"].cancel-btn:hover {
+  background-color: #c82333;
+}
+
+/* Estilo del formulario */
 form {
   display: flex;
   flex-direction: column;
   gap: 15px;
-  margin-top: 15px;
+  margin-top: 20px;
 }
 
-label {
+form label {
   font-weight: bold;
   color: #333;
 }
 
-input[type="text"],
-select {
-  padding: 8px;
+form input,
+form select {
+  padding: 10px;
   border: 1px solid #ddd;
   border-radius: 4px;
   width: 100%;
+  font-size: 14px;
+  box-sizing: border-box;
 }
 
-input[type="text"]:focus,
-select:focus {
-  border-color: #007bff;
-  outline: none;
-  box-shadow: 0 0 5px rgba(0, 123, 255, 0.2);
-}
+/* Diseño responsivo */
+@media (max-width: 768px) {
+  .consultas-table th,
+  .consultas-table td {
+    font-size: 12px;
+  }
 
-/* Estilo del botón para confirmar acciones */
-button[type="submit"] {
-  padding: 10px 16px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-button[type="submit"]:hover {
-  background-color: #0056b3;
+  button {
+    font-size: 12px;
+  }
 }

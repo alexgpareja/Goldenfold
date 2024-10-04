@@ -3,7 +3,7 @@ import { ApiService, Paciente } from '../../services/api.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SharedModule } from '../shared.module';
-import { MatPaginator, PageEvent} from '@angular/material/paginator';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -30,21 +30,26 @@ import { SnackbarComponent } from '../snackbar/snackbar.component';
   styleUrls: ['./pacientes.component.css'],
 })
 export class PacientesComponent implements OnInit, AfterViewInit {
+<<<<<<< HEAD
   @ViewChild(SnackbarComponent) snackbar!: SnackbarComponent
   // Variables relacionadas con la tabla y los datos
-  displayedColumns: string[] = ['IdPaciente', 'Nombre', 'Dni', 'FechaNacimiento', 'Estado', 'FechaRegistro', 'SeguridadSocial', 'acciones'];
-  dataSource = new MatTableDataSource<Paciente>([]); // Esta solo contendrá los datos visibles
-  totalItems = 0; // Número total de pacientes
-  itemsPerPage = 300; // Tamaño de página
-  pageIndex = 0; // Índice de la página actual
+=======
 
-  pacientes: Paciente[] = []; // Aquí almacenaremos todos los pacientes recibidos
-  nuevoPaciente: Paciente; // Para manejar el nuevo paciente
+>>>>>>> 4f96273b3294c99bf0cea13d47c7e15686449477
+  displayedColumns: string[] = ['IdPaciente', 'Nombre', 'Dni', 'FechaNacimiento', 'Estado', 'FechaRegistro', 'SeguridadSocial', 'acciones'];
+  dataSource = new MatTableDataSource<Paciente>([]);
+  totalItems = 0;
+  itemsPerPage = 300;
+  pageIndex = 0;
+
+  pacientes: Paciente[] = [];
+  nuevoPaciente: Paciente;
+  notificacion: string | null = null;  // Variable para notificaciones
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  pacienteSeleccionado: Paciente | null = null; // Paciente seleccionado para editar o actualizar
+  pacienteSeleccionado: Paciente | null = null;
 
   constructor(private apiService: ApiService, public dialog: MatDialog) {
     this.nuevoPaciente = {
@@ -68,38 +73,34 @@ export class PacientesComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort; // Conectar el ordenamiento
+    this.dataSource.sort = this.sort;
   }
 
-  // Obtener todos los pacientes
   obtenerPacientes(): void {
     this.apiService.getPacientes().subscribe((data: Paciente[]) => {
-      this.pacientes = data;  // Almacena todos los pacientes
-      this.totalItems = data.length; // Configura el total de pacientes
-      this.actualizarPagina(0, this.itemsPerPage);  // Mostrar la primera página
+      this.pacientes = data;
+      this.totalItems = data.length;
+      this.actualizarPagina(0, this.itemsPerPage);
     });
   }
 
-  // Controlar la paginación localmente
   onPaginateChange(event: PageEvent) {
     this.pageIndex = event.pageIndex;
     this.itemsPerPage = event.pageSize;
     this.actualizarPagina(this.pageIndex, this.itemsPerPage);
   }
 
-  // Actualizar los datos que se muestran según la página actual
   actualizarPagina(pageIndex: number, pageSize: number) {
     const startIndex = pageIndex * pageSize;
     const endIndex = startIndex + pageSize;
-    this.dataSource.data = this.pacientes.slice(startIndex, endIndex);  // Mostrar los datos paginados
+    this.dataSource.data = this.pacientes.slice(startIndex, endIndex);
   }
 
-  // Filtrar pacientes desde el searchbox
   filtrarPacientes(event: { type: string; term: string }): void {
     const { term } = event;
-    this.dataSource.filter = term.trim().toLowerCase(); // Aplicar el filtro
+    this.dataSource.filter = term.trim().toLowerCase();
     if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage(); // Resetea a la primera página si se aplica un filtro
+      this.dataSource.paginator.firstPage();
     }
   }
 
@@ -108,12 +109,14 @@ export class PacientesComponent implements OnInit, AfterViewInit {
     this.pacienteSeleccionado = { ...paciente };
     this.dialog.open(DialogFormularioComponent, {
       data: this.pacienteSeleccionado
-    }).afterClosed().subscribe(() => {
-      this.obtenerPacientes(); // Refrescar la tabla tras actualizar
+    }).afterClosed().subscribe((pacienteActualizado) => {
+      if (pacienteActualizado) {
+        this.pacienteSeleccionado = pacienteActualizado;
+        this.actualizarPaciente();
+      }
     });
   }
 
-  // Mostrar el formulario para agregar nuevo paciente
   toggleFormularioAgregar(): void {
     this.nuevoPaciente = {
       IdPaciente: 0,
@@ -130,16 +133,18 @@ export class PacientesComponent implements OnInit, AfterViewInit {
     };
     this.dialog.open(DialogFormularioComponent, {
       data: this.nuevoPaciente
-    }).afterClosed().subscribe(() => {
-      this.obtenerPacientes();  // Refrescar la tabla tras agregar
+    }).afterClosed().subscribe((pacienteCreado) => {
+      if (pacienteCreado) {
+        this.guardarPaciente();
+      }
     });
   }
 
-  // Cerrar el formulario
   cerrarFormulario(): void {
     this.pacienteSeleccionado = null;
   }
 
+<<<<<<< HEAD
   // Eliminar paciente
 borrarPaciente(id: number): void {
   this.apiService.deletePaciente(id).subscribe({
@@ -185,9 +190,47 @@ actualizarPaciente(): void {
     });
   } else {
     console.error('pacienteSeleccionado no es válido');
+=======
+  borrarPaciente(id: number): void {
+    this.apiService.deletePaciente(id).subscribe(() => {
+      this.obtenerPacientes();
+      this.notificacion = 'Paciente borrado con éxito';
+      this.ocultarNotificacion();
+    });
+  }
+
+  guardarPaciente(): void {
+    this.apiService.addPaciente(this.nuevoPaciente).subscribe(() => {
+      this.obtenerPacientes();
+      this.cerrarFormulario();
+      this.notificacion = 'Paciente guardado con éxito';
+      this.ocultarNotificacion();
+    }, error => {
+      console.error('Error al guardar paciente', error);
+    });
+  }
+
+  actualizarPaciente(): void {
+    if (this.pacienteSeleccionado) {
+      this.apiService.updatePaciente(this.pacienteSeleccionado).subscribe(() => {
+        this.obtenerPacientes();
+        this.cerrarFormulario();
+        this.notificacion = 'Paciente actualizado con éxito';
+        this.ocultarNotificacion();
+      }, error => {
+        console.error('Error al actualizar paciente', error);
+      });
+    }
+>>>>>>> 4f96273b3294c99bf0cea13d47c7e15686449477
   }
 }
 
 
 
+  // Función para ocultar la notificación después de 2 segundos
+  private ocultarNotificacion(): void {
+    setTimeout(() => {
+      this.notificacion = null;
+    }, 2000);
+  }
 }
