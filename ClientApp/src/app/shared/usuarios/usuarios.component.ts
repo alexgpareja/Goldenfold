@@ -11,12 +11,14 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { MatSelectModule } from '@angular/material/select';
+
 
 @Component({
   selector: 'app-usuarios',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, SharedModule, MatFormFieldModule,
-    MatInputModule, MatButtonModule, MatCardModule, MatSortModule],
+    MatInputModule, MatButtonModule, MatCardModule, MatSortModule, MatSelectModule],
   templateUrl: './usuarios.component.html',
   styleUrls: ['./usuarios.component.css'],
 })
@@ -111,7 +113,7 @@ export class UsuariosComponent implements OnInit {
       this.apiService.addUsuario(nuevoUsuario).subscribe({
         next: (usuario: Usuario) => {
           this.usuarios.data = [...this.usuarios.data,usuario];
-          this.usuarioForm.reset(); //despues de agregarlo, reseteas el formulario
+          this.usuarioForm.reset(); //despues de agregarlo, reseteas el formulario  
           alert('Usuario creado con exito');
         },
         error: (error: any) => {
