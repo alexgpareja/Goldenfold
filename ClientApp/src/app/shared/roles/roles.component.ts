@@ -4,9 +4,9 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormControl, FormGroup } from '@angular/forms';
 import { CustomValidators, asyncRolNameExistsValidator } from '../../validators';
 import { SharedModule } from '../shared.module';
-import { MatTableDataSource } from '@angular/material/table';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
+import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
@@ -18,7 +18,7 @@ import { SnackbarComponent } from '../snackbar/snackbar.component'; // Importar 
   selector: 'app-roles',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, SharedModule, MatFormFieldModule,
-    MatInputModule, MatButtonModule, MatCardModule,SnackbarComponent],
+    MatInputModule, MatButtonModule, MatCardModule],
   templateUrl: './roles.component.html',
   styleUrls: ['./roles.component.css'],
 })
@@ -109,7 +109,6 @@ export class RolesComponent implements OnInit {
       next: (roles: Rol[]) => {
         if (roles.length > 0) {
           nombreRolControl.setErrors({ nombreRolExiste: true });
-          this.snackbar.showNotification('error', 'El rol ya existe'); // Notificación de error
         } else {
           const nuevoRol: Rol = {
             IdRol: 0,
@@ -122,18 +121,15 @@ export class RolesComponent implements OnInit {
               this.agregarRolForm.reset(); // Limpia el formulario
               this.agregarRolForm.markAsPristine(); // Marcamos como "limpio"
               this.agregarRolForm.markAsUntouched(); // Marcamos como "no tocado"
-              this.snackbar.showNotification('success', 'Rol agregado exitosamente'); // Notificación de éxito
             },
             error: () => {
               nombreRolControl.setErrors({ apiError: true });
-              this.snackbar.showNotification('error', 'Error al agregar el rol'); // Notificación de error
             },
           });
         }
       },
       error: () => {
         console.error('Error al verificar el nombre del rol');
-        this.snackbar.showNotification('error', 'Error al verificar el nombre del rol'); // Notificación de error
       },
     });
   }
@@ -153,6 +149,24 @@ export class RolesComponent implements OnInit {
 
   }
 
+  actualizarRol(): void {
+    if (this.rolParaActualizar && this.actualizarRolForm.valid) {
+      const nombreFormateado = this.formatearNombreRol(this.actualizarRolForm.value.NombreRol); // formatear nombre
+      const rolActualizado: Rol = { ...this.rolParaActualizar, NombreRol: nombreFormateado };
+      this.apiService.updateRol(rolActualizado).subscribe({
+        next: () => {
+          this.obtenerRoles();
+          this.rolParaActualizar = null;
+          this.actualizarRolForm.reset();
+          alert('Rol actualizado con éxito.');
+        },
+        error: (error: any) => {
+          console.error('Error al actualizar el rol', error)
+        },
+      });
+    }
+
+  }
 
   onEdit(rol: Rol): void {
     this.toggleActualizarRol(rol);
@@ -172,21 +186,29 @@ export class RolesComponent implements OnInit {
     }
   }
 
-  descartarCambios(tipo: 'agregar' | 'actualizar' = 'actualizar'): void {
-    if (tipo === 'actualizar') {
-      this.actualizarRolForm.reset();
-      this.actualizarRolForm.markAsPristine();
-      this.actualizarRolForm.markAsUntouched();
-      this.rolParaActualizar = null;
-    } else if (tipo === 'agregar') {
-      this.agregarRolForm.reset();
-      this.agregarRolForm.markAsPristine();
-      this.agregarRolForm.markAsUntouched();
-    }
-  }
+
 
   private formatearNombreRol(nombreRol: string): string {
     nombreRol = nombreRol.trim();
     return nombreRol.charAt(0).toUpperCase() + nombreRol.slice(1).toLowerCase();
   }
+
+  limpiarFormulario(): void {
+    this.rolParaActualizar = null;
+
+    // Limpiar el formulario de agregar
+    this.agregarRolForm.reset();
+    this.agregarRolForm.markAsPristine();
+    this.agregarRolForm.markAsUntouched();
+
+    // Actualizar los validadores y el estado del formulario
+    this.agregarRolForm.get('NombreRol')?.setErrors(null); // Restablecer errores específicos si es necesario
+
+    // Limpiar el formulario de actualizar
+    this.actualizarRolForm.reset();
+    this.actualizarRolForm.markAsPristine();
+    this.actualizarRolForm.markAsUntouched();
+    this.actualizarRolForm.get('NombreRol')?.setErrors(null); // Restablecer errores específicos si es necesario
+  }
+
 }
