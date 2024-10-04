@@ -7,7 +7,7 @@ import {
 import { Observable, of } from 'rxjs';
 import { map, catchError, switchMap, debounceTime } from 'rxjs/operators';
 import { ApiService } from '../services/api.service';
- 
+
 export const asyncRolNameExistsValidator = (
   apiService: ApiService
 ): AsyncValidatorFn => {
@@ -19,9 +19,9 @@ export const asyncRolNameExistsValidator = (
           map((roles) => {
             // Filtrar los roles en el frontend
             const rolesFiltrados = roles.filter(
-              (rol) => rol.NombreRol == value
+              (rol) => rol.NombreRol.toLowerCase().trim() === value.toLowerCase().trim()
             );
- 
+
             if (rolesFiltrados.length > 0) {
               return { asyncFieldExisting: true };
             }
@@ -33,5 +33,4 @@ export const asyncRolNameExistsValidator = (
     );
   };
 };
- 
- 
+

@@ -41,30 +41,63 @@
     <mat-paginator [pageSizeOptions]="[5, 10, 25]" showFirstLastButtons></mat-paginator>
   </div>
 
-  <!-- Formulario de Agregar Rol -->
-  <mat-card>
-    <form [formGroup]="agregarRolForm" (ngSubmit)="agregarRol()">
+  <!-- Formulario de Actualizar Rol -->
+  <mat-card *ngIf="rolParaActualizar">
+    <h3>Actualizar Rol</h3>
+    <form [formGroup]="actualizarRolForm">
+
+      <!-- Campo ID del Rol (no editable) -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Id Rol</mat-label>
+        <input matInput formControlName="IdRol" IdRol.disabled />
+      </mat-form-field>
+
+      <!-- Campo Nombre del Rol (editable) -->
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>Nombre del Rol</mat-label>
         <input matInput formControlName="NombreRol" />
-        <mat-error *ngIf="agregarRolForm.get('NombreRol')?.hasError('required')">
-          El nombre es requerido.
-        </mat-error>
-        <mat-error *ngIf="agregarRolForm.get('NombreRol')?.hasError('nombreRolExiste')">
-          El rol ya existe.
-        </mat-error>
-        <!-- Mensaje de error si el campo está vacío o contiene solo espacios -->
-        <mat-error
-          *ngIf="agregarRolForm.get('NombreRol')?.hasError('whitespace') && agregarRolForm.get('NombreRol')?.touched">
+        <mat-error *ngIf="actualizarRolForm.get('NombreRol')?.hasError('whitespace')">
           El campo no puede estar vacío o contener solo espacios.
+        </mat-error>
+        <mat-error
+          *ngIf="actualizarRolForm.get('NombreRol')?.hasError('asyncFieldExisting') && actualizarRolForm.get('NombreRol')?.touched">
+          Este rol ya existe.
         </mat-error>
       </mat-form-field>
 
       <div>
-        <button mat-raised-button color="primary" type="submit" [disabled]="agregarRolForm.invalid">
+        <button mat-raised-button color="primary" type="submit" (click)="actualizarRol()"
+          [disabled]="actualizarRolForm.invalid">
+          Actualizar
+        </button>
+        <button mat-button type="button" (click)="limpiarFormulario()">Cancelar</button>
+      </div>
+    </form>
+  </mat-card>
+
+  <!-- Formulario de Agregar Rol -->
+  <mat-card>
+    <h3>Agregar Rol</h3>
+    <form [formGroup]="agregarRolForm">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Nombre del Rol</mat-label>
+        <input matInput formControlName="NombreRol" />
+        @if (agregarRolForm.get('NombreRol')?.hasError('whitespace')) {
+        <mat-error>El campo no puede estar vacío o contener solo espacios.</mat-error>
+        }
+        @if (agregarRolForm.get('NombreRol')?.hasError('asyncFieldExisting') &&
+        agregarRolForm.get('NombreRol')?.touched)
+        {
+        <mat-error>Este rol ya existe.</mat-error>
+        }
+      </mat-form-field>
+
+      <div>
+        <button mat-raised-button color="primary" type="submit" (click)="agregarRol()"
+          [disabled]="agregarRolForm.invalid">
           Agregar
         </button>
-        <button mat-button type="button" (click)="descartarCambios('agregar')">Cancelar</button>
+        <button mat-button type="button" (click)="limpiarFormulario()">Cancelar</button>
       </div>
     </form>
   </mat-card>
