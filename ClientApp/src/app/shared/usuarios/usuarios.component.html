@@ -118,10 +118,10 @@
   </div>
 
   <!--Agregar usuario form-->
-  <mat-card>
+  <mat-card *ngIf="!usuarioParaActualizar">
     <mat-card-title>Agregar Usuario</mat-card-title>
     <br/>
-    <form [formGroup]="usuarioForm" (ngSubmit)="agregarUsuario()" *ngIf="!usuarioParaActualizar">
+    <form [formGroup]="usuarioForm" (ngSubmit)="agregarUsuario()" >
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>Nombre:*</mat-label>
         <input matInput formControlName="Nombre" />
@@ -137,7 +137,7 @@
       </mat-form-field>
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>Contraseña:</mat-label>
-        <input matInput formControlName="Contrasenya" />
+        <input matInput formControlName="Contrasenya" type="password" />
         <mat-error *ngIf="usuarioForm.get('Contrasenya')?.hasError('required')">Introduzca una contraseña</mat-error>
       </mat-form-field>
       <mat-form-field appearance="outline" class="full-width">

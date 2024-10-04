@@ -2,10 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ApiService, Habitacion } from '../../services/api.service';
-<<<<<<< HEAD
 import { SnackbarComponent } from '../snackbar/snackbar.component'; // Importar el componente standalone
-=======
-import { SnackbarComponent } from '../notification/snackbar.component'; // Importar el componente standalone
 import { MatTableModule, MatTableDataSource } from '@angular/material/table'; // Módulo de tabla de Angular Material
 import { MatPaginatorModule, MatPaginator } from '@angular/material/paginator'; // Módulo de paginación de Angular Material
 import { MatSortModule, MatSort } from '@angular/material/sort'; // Módulo de ordenación de Angular Material
@@ -14,7 +11,6 @@ import { MatInputModule } from '@angular/material/input'; // Para los campos de 
 import { MatButtonModule } from '@angular/material/button'; // Para los botones
 import { MatSelectModule } from '@angular/material/select'; // Para los selectores
 import { MatCardModule } from '@angular/material/card'; // Para las tarjetas
->>>>>>> 4f96273b3294c99bf0cea13d47c7e15686449477
 
 @Component({
   selector: 'app-habitaciones',
@@ -98,27 +94,6 @@ export class HabitacionesComponent implements OnInit {
 
   actualizarHabitacion(): void {
     if (this.habitacionParaActualizar) {
-<<<<<<< HEAD
-      this.apiService
-        .updateHabitacion(this.habitacionParaActualizar)
-        .subscribe({
-          next: (habitacionActualizada: Habitacion) => {
-            const index = this.habitaciones.findIndex(
-              (h) => h.IdHabitacion === habitacionActualizada.IdHabitacion
-            );
-            if (index !== -1) {
-              this.snackbar.showNotification('success', 'Habitación actualizada correctamente');
-              this.habitaciones[index] = habitacionActualizada;
-            }
-            this.habitacionParaActualizar = null;
-              // Mostrar notificación de éxito
-          },
-          error: (error: any) => {
-            console.error('Error al actualizar la habitación', error);
-            this.snackbar.showNotification('error', 'Error al actualizar la habitación');  // Mostrar notificación de error
-          },
-        });
-=======
       this.apiService.updateHabitacion(this.habitacionParaActualizar).subscribe({
         next: (habitacionActualizada: Habitacion) => {
           const index = this.habitaciones.findIndex(
@@ -136,7 +111,6 @@ export class HabitacionesComponent implements OnInit {
           this.snackbar.showNotification('error', 'Error al actualizar la habitación');  // Mostrar notificación de error
         },
       });
->>>>>>> 4f96273b3294c99bf0cea13d47c7e15686449477
     }
   }
 

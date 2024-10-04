@@ -30,12 +30,8 @@ import { SnackbarComponent } from '../snackbar/snackbar.component';
   styleUrls: ['./pacientes.component.css'],
 })
 export class PacientesComponent implements OnInit, AfterViewInit {
-<<<<<<< HEAD
   @ViewChild(SnackbarComponent) snackbar!: SnackbarComponent
   // Variables relacionadas con la tabla y los datos
-=======
-
->>>>>>> 4f96273b3294c99bf0cea13d47c7e15686449477
   displayedColumns: string[] = ['IdPaciente', 'Nombre', 'Dni', 'FechaNacimiento', 'Estado', 'FechaRegistro', 'SeguridadSocial', 'acciones'];
   dataSource = new MatTableDataSource<Paciente>([]);
   totalItems = 0;
@@ -144,7 +140,6 @@ export class PacientesComponent implements OnInit, AfterViewInit {
     this.pacienteSeleccionado = null;
   }
 
-<<<<<<< HEAD
   // Eliminar paciente
 borrarPaciente(id: number): void {
   this.apiService.deletePaciente(id).subscribe({
@@ -190,38 +185,6 @@ actualizarPaciente(): void {
     });
   } else {
     console.error('pacienteSeleccionado no es válido');
-=======
-  borrarPaciente(id: number): void {
-    this.apiService.deletePaciente(id).subscribe(() => {
-      this.obtenerPacientes();
-      this.notificacion = 'Paciente borrado con éxito';
-      this.ocultarNotificacion();
-    });
-  }
-
-  guardarPaciente(): void {
-    this.apiService.addPaciente(this.nuevoPaciente).subscribe(() => {
-      this.obtenerPacientes();
-      this.cerrarFormulario();
-      this.notificacion = 'Paciente guardado con éxito';
-      this.ocultarNotificacion();
-    }, error => {
-      console.error('Error al guardar paciente', error);
-    });
-  }
-
-  actualizarPaciente(): void {
-    if (this.pacienteSeleccionado) {
-      this.apiService.updatePaciente(this.pacienteSeleccionado).subscribe(() => {
-        this.obtenerPacientes();
-        this.cerrarFormulario();
-        this.notificacion = 'Paciente actualizado con éxito';
-        this.ocultarNotificacion();
-      }, error => {
-        console.error('Error al actualizar paciente', error);
-      });
-    }
->>>>>>> 4f96273b3294c99bf0cea13d47c7e15686449477
   }
 }
 

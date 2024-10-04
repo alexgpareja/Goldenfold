@@ -41,7 +41,6 @@ export class BuscarPacienteComponent {
           if (pacientes.length > 0) {
             this.pacientesEncontrados = pacientes;
           } else {
-<<<<<<< HEAD
             this.snackBar.open('No se encontraron pacientes con los datos proporcionados.', 'Cerrar', {
               duration: 3000,
               panelClass: ['snack-bar-error']
@@ -60,17 +59,6 @@ export class BuscarPacienteComponent {
         duration: 3000,
         panelClass: ['snack-bar-warning']
       });
-=======
-
-          }
-        },
-        error: (error: HttpErrorResponse) => {
-
-        }
-      });
-    } else {
-
->>>>>>> 8d11a5d7ebb9b89ac13f7bd0317bf64e5bc63311
     }
   }
 
@@ -98,14 +86,10 @@ export class BuscarPacienteComponent {
           });
         },
         error: (error: HttpErrorResponse) => {
-<<<<<<< HEAD
           this.snackBar.open('Error al actualizar el paciente. Inténtelo más tarde.', 'Cerrar', {
             duration: 3000,
             panelClass: ['snack-bar-error']
           });
-=======
-
->>>>>>> 8d11a5d7ebb9b89ac13f7bd0317bf64e5bc63311
         }
       });
     }
@@ -149,14 +133,10 @@ export class BuscarPacienteComponent {
           });
         },
         error: (error: HttpErrorResponse) => {
-<<<<<<< HEAD
           this.snackBar.open('Error al registrar la consulta. Inténtelo más tarde.', 'Cerrar', {
             duration: 3000,
             panelClass: ['snack-bar-error']
           });
-=======
-
->>>>>>> 8d11a5d7ebb9b89ac13f7bd0317bf64e5bc63311
         }
       });
     } else {

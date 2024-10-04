@@ -3,45 +3,6 @@
 
   <!-- Tabla Angular Material -->
   <div class="table-container">
-<<<<<<< HEAD
-    <app-snackbar #snackbar></app-snackbar>
-    <table class="table">
-      <thead>
-        <tr>
-          <th>Edificio</th>
-          <th>Planta</th>
-          <th>Número de Habitación</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let habitacion of habitaciones">
-          <td>{{ habitacion.Edificio }}</td>
-          <td>{{ habitacion.Planta }}</td>
-          <td>{{ habitacion.NumeroHabitacion }}</td>
-          <td>
-            <button (click)="toggleActualizarHabitacion(habitacion)">Actualizar</button>
-            <button (click)="borrarHabitacion(habitacion.IdHabitacion)">Borrar</button>
-          </td>
-        </tr>
-        <tr *ngIf="habitacionParaActualizar">
-          <td colspan="4">
-            <div class="form-container">
-              <h3>Actualizar Habitación</h3>
-              <form class = "formulari" (ngSubmit)="actualizarHabitacion()">
-                <label for="edificio">Edificio:</label>
-                <input type="text" id="edificio" [(ngModel)]="habitacionParaActualizar.Edificio" name="edificio">
-                <label for="planta">Planta:</label>
-                <input type="text" id="planta" [(ngModel)]="habitacionParaActualizar.Planta" name="planta">
-                <label for="numeroHabitacion">Número de Habitación:</label>
-                <input type="text" id="numeroHabitacion" [(ngModel)]="habitacionParaActualizar.NumeroHabitacion" name="numeroHabitacion">
-                <button type="submit" (click)="habitacionParaActualizar = null">Guardar</button>
-              </form>
-            </div>
-          </td>
-        </tr>
-      </tbody>
-=======
     <app-snackbar></app-snackbar>
     <table mat-table [dataSource]="habitaciones" class="mat-elevation-z8" matSort>
 
@@ -80,7 +41,6 @@
       <tr mat-header-row *matHeaderRowDef="['Edificio', 'Planta', 'NumeroHabitacion', 'Acciones']"></tr>
       <tr mat-row *matRowDef="let row; columns: ['Edificio', 'Planta', 'NumeroHabitacion', 'Acciones'];"></tr>
 
->>>>>>> 4f96273b3294c99bf0cea13d47c7e15686449477
     </table>
   </div>
 
