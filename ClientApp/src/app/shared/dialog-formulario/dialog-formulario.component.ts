@@ -16,7 +16,6 @@ export class DialogFormularioComponent {
 
   // Método para manejar el envío del formulario
   guardar(): void {
-    // Aquí podrías hacer validaciones o procesamiento adicional si es necesario
     this.dialogRef.close(this.data);  
   }
 }
