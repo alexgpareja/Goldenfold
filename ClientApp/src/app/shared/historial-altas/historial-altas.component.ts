@@ -60,7 +60,7 @@ export class HistorialAltasComponent implements OnInit {
           asyncPatientIdExistsValidator(this.apiService), 
           asyncConsultaExistsValidator(this.apiService)
         ],
-        updateOn: 'blur' // Trigger async validation after the user leaves the field
+        updateOn: 'blur' 
       }),
       FechaAlta: new FormControl('', [
         Validators.required,
@@ -112,10 +112,9 @@ export class HistorialAltasComponent implements OnInit {
   }
 
   filtrarPorNumeroSS(): void {
-    const filtroSS = this.numSSFiltro.trim().toLowerCase(); // Normalize input for case insensitive comparison
+    const filtroSS = this.numSSFiltro.trim().toLowerCase(); 
 
     if (filtroSS.length > 0) {
-      // Filter historialAltas based on the associated patient's SeguridadSocial
       this.historialAltas = this.historialAltas.filter(historial => {
         const paciente = this.getPacienteById(historial.IdPaciente);
         return paciente && paciente.SeguridadSocial && 
@@ -124,11 +123,9 @@ export class HistorialAltasComponent implements OnInit {
       console.log(this.historialAltas);
     } 
 
-    // No recalcular paginación ya que ha sido eliminada
   }
 
   getPacienteById(idPaciente: number): Paciente | undefined {
-    // Look for the patient by their ID in the pacientes array
     return this.pacientes.find(paciente => paciente.IdPaciente === idPaciente);
   }
 
@@ -136,7 +133,7 @@ export class HistorialAltasComponent implements OnInit {
     this.apiService.getHistorialAltas().subscribe({
       next: (data: HistorialAlta[]) => {
         this.historialAltas = data;
-        this.filtrarPorFecha(); // Filtrar inmediatamente
+        this.filtrarPorFecha();
       },
       error: (error: any) => {
         console.error('Error al obtener el historial de altas', error);
@@ -145,8 +142,8 @@ export class HistorialAltasComponent implements OnInit {
   }
 
   onFechaAltaFiltroChange(event: any) {
-    this.fechaAltaFiltro = event.target.value; // Asegúrate de que esto esté en formato YYYY-MM-DD
-    this.filtrarPorFecha(); // Filtrar inmediatamente cuando cambie el input
+    this.fechaAltaFiltro = event.target.value; 
+    this.filtrarPorFecha();
   }
 
   agregarHistorialAlta(): void {
