@@ -20,6 +20,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { DialogFormularioComponent } from './dialog-formulario/dialog-formulario.component';
 
 
+
 @NgModule({
   imports: [
     CommonModule,
@@ -37,14 +38,14 @@ import { DialogFormularioComponent } from './dialog-formulario/dialog-formulario
     MatInputModule,
   ],
   declarations: [
-    SearchBoxComponent, 
+    SearchBoxComponent,
     DialogFormularioComponent,
   ],
   exports: [
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    
+
     // Exportación de componentes
     SearchBoxComponent,
     DialogFormularioComponent, // Exportar si se va a usar fuera del módulo
