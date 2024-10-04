@@ -27,19 +27,8 @@ namespace HospitalApi.Controllers
             [FromQuery] string? telefono,
             [FromQuery] string? email)
         {
-            var pacientes = await _pacienteService.GetPacientesAsync(
-                nombre,
-                numSS,
-                dni,
-                fechaNacimiento,
-                estado,
-                fechaRegistro,
-                direccion,
-                telefono,
-                email);
+            var pacientes = await _pacienteService.GetPacientesAsync(nombre, numSS, dni, fechaNacimiento, estado, fechaRegistro, direccion, telefono, email);
 
-            if (!pacientes.Any())
-                return NotFound("No se han encontrado pacientes que coincidan con los criterios proporcionados.");
 
             return Ok(pacientes);
         }

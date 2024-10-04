@@ -9,18 +9,22 @@ import { RegistrarPacienteComponent } from './pages/registrar-paciente/registrar
 import { BuscarPacienteComponent } from './pages/buscar-paciente/buscar-paciente.component';
 import { AdministrativoInicioComponent } from './pages/administrativo-inicio/administrativo-inicio.component';
 import { PacientesComponent } from './pages/pacientes/pacientes.component';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
-    AdministrativoRoutingModule
+    AdministrativoRoutingModule,
+    MatSnackBarModule
   ],
   declarations: [
     AdministrativoDashboardComponent,
     RegistrarPacienteComponent,
     BuscarPacienteComponent,
     AdministrativoInicioComponent,
-  ]
+  ],
+  
 })
 export class AdministrativoModule { }

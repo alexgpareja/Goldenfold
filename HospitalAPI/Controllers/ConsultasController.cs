@@ -17,26 +17,16 @@ namespace HospitalApi.Controllers
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ConsultaDTO>>> GetConsultas(
-            [FromQuery] int? idPaciente, 
-            [FromQuery] int? idMedico, 
-            [FromQuery] string? motivo, 
-            [FromQuery] DateTime? fechaSolicitud, 
-            [FromQuery] DateTime? fechaConsulta, 
+            [FromQuery] int? idPaciente,
+            [FromQuery] int? idMedico,
+            [FromQuery] string? motivo,
+            [FromQuery] DateTime? fechaSolicitud,
+            [FromQuery] DateTime? fechaConsulta,
             [FromQuery] string? estado)
         {
-            try
-            {
-                var consultas = await _consultaService.GetConsultasAsync(idPaciente, idMedico, motivo, fechaSolicitud, fechaConsulta, estado);
+            var consultas = await _consultaService.GetConsultasAsync(idPaciente, idMedico, motivo, fechaSolicitud, fechaConsulta, estado);
 
-                if (!consultas.Any())
-                    return NotFound("No se han encontrado consultas que coincidan con los criterios de búsqueda.");
-
-                return Ok(consultas);
-            }
-            catch (ArgumentException ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            return Ok(consultas);
         }
 
         [HttpGet("{id}")]

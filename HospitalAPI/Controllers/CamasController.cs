@@ -22,9 +22,6 @@ namespace HospitalApi.Controllers
             [FromQuery] string? tipo)
         {
             var camas = await _camaService.GetCamasAsync(ubicacion, estado, tipo);
-            
-            if (!camas.Any())
-                return NotFound("No se han encontrado camas con los criterios proporcionados.");
 
             return Ok(camas);
         }

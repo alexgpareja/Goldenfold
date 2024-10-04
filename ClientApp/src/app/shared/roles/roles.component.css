@@ -4,6 +4,14 @@
   margin: 20px;
 }
 
+h2 {
+  font-size: 1.5rem;
+  color: #333;
+  margin-bottom: 20px;
+  text-align: center;
+  font-weight: bold;
+}
+
 .search-container form {
   display: inline-block; /* Alinea los elementos del formulario en una fila */
   margin-left: 15px;
@@ -92,7 +100,7 @@ td {
 
 th {
   background-color: #0078d4;
-  color: white;
+  color: rgb(19, 19, 19);
 }
 
 button {

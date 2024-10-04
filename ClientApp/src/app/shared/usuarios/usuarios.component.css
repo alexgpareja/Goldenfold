@@ -13,6 +13,13 @@ h2 {
   font-weight: bold;
 }
 
+mat-card-title {
+  font-size: 1.5rem;
+  color: #333;
+  margin-bottom: 20px;
+  text-align: center;
+  font-weight: bold;
+}
 /* Estilo de la caja de búsqueda */
 .search-container {
   margin-bottom: 20px;

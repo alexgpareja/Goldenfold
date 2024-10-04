@@ -1,25 +1,45 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ApiService, Rol, Usuario } from '../../services/api.service';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 import { UserValidators } from '../../validators/usuarios.validators';
+import { SharedModule } from '../shared.module';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort, MatSortModule } from '@angular/material/sort';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatSelectModule } from '@angular/material/select';
+
 
 @Component({
   selector: 'app-usuarios',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, SharedModule, MatFormFieldModule,
+    MatInputModule, MatButtonModule, MatCardModule, MatSortModule, MatSelectModule],
   templateUrl: './usuarios.component.html',
   styleUrls: ['./usuarios.component.css'],
 })
 export class UsuariosComponent implements OnInit {
-  usuarios: Usuario[] = [];
-  roles: Rol[] = [];
-  usuarioForm!: FormGroup;
-  usuarioParaActualizar: Usuario | null = null;
-  mostrarContrasenas: { [key: number]: boolean } = {};
+  //tabla Angular Material
+  usuarios: MatTableDataSource<Usuario> = new MatTableDataSource<Usuario>();
 
-  searchTerm: string = ''; // Para la caja de búsqueda
-  noResultsFound: boolean = false; // Indicador de resultados no encontrados
+  //columnas que se mostraran en la tabla
+  displayedColumns: string[] = ['IdUsuario','Nombre','NombreUsuario','IdRol','Actions'];
+
+  //paginador y ordenador 
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild(MatSort) sort!: MatSort;
+
+  //formularios reactivos
+  usuarioForm!: FormGroup;
+  buscarUsuario!: FormGroup;
+  usuarioParaActualizar: Usuario | null = null;
+
+  //propiedades utiles
+  roles: Rol[] = [];
 
   constructor(private apiService: ApiService) {}
 
@@ -53,8 +73,10 @@ export class UsuariosComponent implements OnInit {
 
   obtenerUsuarios(): void {
     this.apiService.getUsuarios().subscribe({
-      next: (data: Usuario[]) => {
-        this.usuarios = data;
+      next: (usuario: Usuario[]) => {
+        this.usuarios.data = usuario;
+        this.usuarios.paginator = this.paginator;
+        this.usuarios.sort = this.sort;
       },
       error: (error: any) => {
         console.error('Error al obtener los usuarios', error);
@@ -74,18 +96,14 @@ export class UsuariosComponent implements OnInit {
     });
   }
 
-  filtrarUsuarios(): void {
-    if (!this.searchTerm.trim()) {
-      this.obtenerUsuarios(); // Si no hay término de búsqueda, obtener todos los users
-    } else {
-      this.apiService.getUsuarios(this.searchTerm).subscribe({
-        next: (data: Usuario[]) => {
-          this.usuarios = data; // Actualizar los users filtrados
-        },
-        error: (error: any) => {
-          console.error('Error al filtrar los usuarios', error);
-        },
-      });
+  filtrarUsuarios(event: { type: string;term:string}): void {
+    const {term } = event;
+
+    //aplica el filtro a la tabla
+    this.usuarios.filter = term.trim().toLowerCase();
+
+    if(this.usuarios.paginator){
+      this.usuarios.paginator.firstPage();
     }
   }
 
@@ -94,8 +112,8 @@ export class UsuariosComponent implements OnInit {
       const nuevoUsuario: Usuario = this.usuarioForm.value; //obtener los datos del formulario
       this.apiService.addUsuario(nuevoUsuario).subscribe({
         next: (usuario: Usuario) => {
-          this.usuarios.push(usuario);
-          this.usuarioForm.reset(); //despues de agregarlo, reseteas el formulario
+          this.usuarios.data = [...this.usuarios.data,usuario];
+          this.usuarioForm.reset(); //despues de agregarlo, reseteas el formulario  
           alert('Usuario creado con exito');
         },
         error: (error: any) => {
@@ -157,14 +175,6 @@ export class UsuariosComponent implements OnInit {
         },
       });
     }
-  }
-
-  mostrarContrasena(id: number): void {
-    this.mostrarContrasenas[id] = true;
-  }
-
-  ocultarContrasena(id: number): void {
-    this.mostrarContrasenas[id] = false;
   }
 
   resetUsuario(): Usuario {
