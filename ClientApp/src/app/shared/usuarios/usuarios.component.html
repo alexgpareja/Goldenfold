@@ -117,6 +117,8 @@
 
   <!--Agregar usuario form-->
   <mat-card>
+    <mat-card-title>Agregar Usuario</mat-card-title>
+    <br/>
     <form [formGroup]="usuarioForm" (ngSubmit)="agregarUsuario()" *ngIf="!usuarioParaActualizar">
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>Nombre:*</mat-label>
