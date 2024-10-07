@@ -69,7 +69,7 @@
       <h3>Actualizar Historial de Alta</h3>
       <form [formGroup]="historialAltaForm" (ngSubmit)="actualizarHistorialAlta()">
         <div class="label-container"><label for="idPaciente">ID Paciente </label><span class="required">*</span></div>
-        <input type="number" id="idPaciente" formControlName="IdPaciente" name="idPaciente" [readonly]>
+        <input type="number" id="idPaciente" formControlName="IdPaciente" name="idPaciente" readonly>
         <div *ngIf="historialAltaForm.get('IdPaciente')?.hasError('required') && historialAltaForm.get('IdPaciente')?.touched">
           <span class="error"> El Id de paciente es obligatorio.</span>
         </div>
