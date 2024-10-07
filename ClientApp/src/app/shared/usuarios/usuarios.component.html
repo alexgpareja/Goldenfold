@@ -1,16 +1,14 @@
 <div class="usuarios-section">
   <h2>Usuarios</h2>
   <!-- Caja de búsqueda -->
-  <app-search-box 
-  [searchOptions]="[
+  <app-search-box [searchOptions]="[
   { label: 'ID Usuario', value: 'IdUsuario' },
   { label: 'Nombre', value: 'Nombre' },
   { label: 'Nombre Usuario', value: 'NombreUsuario' },
   { label: 'ID Rol', value: 'IdRol' }
-]"
-   [defaultSearchType]="'IdUsuario'" placeholder="Escribe para buscar..." (search)="filtrarUsuarios($event)">
-  </app-search-box>  
-  
+]" [defaultSearchType]="'IdUsuario'" placeholder="Escribe para buscar..." (search)="filtrarUsuarios($event)">
+  </app-search-box>
+
   <!--Tabla Angular Material-->
   <div class="table-container">
     <table mat-table [dataSource]="usuarios" matSort class="mat-elevation-z8">
@@ -49,51 +47,39 @@
 
       <!-- Header de la tabla -->
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-       
+
       <!-- Filas de la tabla -->
       <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
 
     <!-- Paginación -->
-     <mat-paginator [pageSizeOptions]="[5, 10, 25]" showFirstLastButtons></mat-paginator>
+    <mat-paginator [pageSizeOptions]="[5, 10, 25]" showFirstLastButtons></mat-paginator>
   </div>
 
   <div class="form-container" *ngIf="usuarioParaActualizar">
     <h3>Actualizar Usuario</h3>
-    <form [formGroup]="usuarioForm"   (ngSubmit)="actualizarUsuario()">
+    <form [formGroup]="usuarioForm" (ngSubmit)="actualizarUsuario()">
       <label for="idUsuario">ID Usuario:</label>
-      <input
-        type="number"
-        id="idUsuario"
-        formControlName="IdUsuario"
-      />
+      <input type="number" id="idUsuario" formControlName="IdUsuario" />
       <label for="nombre">Nombre:</label>
-      <input
-        type="text"
-        id="nombre"
-        formControlName="Nombre"
-      />
+      <input type="text" id="nombre" formControlName="Nombre" />
       <div *ngIf="usuarioForm.get('Nombre')?.invalid && usuarioForm.get('Nombre')?.touched">
         <small *ngIf="usuarioForm.get('Nombre')?.hasError('whitespace')">El nombre no puede estar en blanco</small>
         <br *ngIf="usuarioForm.get('Nombre')?.hasError('whitespace') && usuarioForm.get('Nombre')?.hasError('pattern')">
         <small *ngIf="usuarioForm.get('Nombre')?.hasError('pattern')">Introduzca el nombre completo</small>
       </div>
       <label for="nombreUsuario">Nombre Usuario:</label>
-      <input
-        type="text"
-        id="nombreUsuario"
-        formControlName="NombreUsuario"
-      />
+      <input type="text" id="nombreUsuario" formControlName="NombreUsuario" />
       <div *ngIf="usuarioForm.get('NombreUsuario')?.invalid">
-        <small *ngIf="usuarioForm.get('NombreUsuario')?.hasError('whitespace')&&usuarioForm.get('NombreUsuario')?.touched">El nombre de usuario no puede estar en blanco</small>
-        <small *ngIf="usuarioForm.get('NombreUsuario')?.hasError('asyncFieldExisting')&&usuarioForm.get('NombreUsuario')?.dirty">El nombre de usuario ya existe</small>
+        <small
+          *ngIf="usuarioForm.get('NombreUsuario')?.hasError('whitespace')&&usuarioForm.get('NombreUsuario')?.touched">El
+          nombre de usuario no puede estar en blanco</small>
+        <small
+          *ngIf="usuarioForm.get('NombreUsuario')?.hasError('asyncFieldExisting')&&usuarioForm.get('NombreUsuario')?.dirty">El
+          nombre de usuario ya existe</small>
       </div>
       <label for="contrasenya">Contraseña:</label>
-      <input
-        type="password"
-        id="contrasenya"
-        formControlName="Contrasenya"
-      />
+      <input type="password" id="contrasenya" formControlName="Contrasenya" />
       <div *ngIf="usuarioForm.get('Contrasenya')?.invalid&&usuarioForm.get('Contrasenya')?.touched">
         <small *ngIf="usuarioForm.get('Contrasenya')?.hasError('required')">La contraseña es requerida</small>
       </div>
@@ -116,22 +102,27 @@
   </div>
 
   <!--Agregar usuario form-->
-  <mat-card>
+  <mat-card *ngIf="!usuarioParaActualizar">
     <mat-card-title>Agregar Usuario</mat-card-title>
-    <br/>
-    <form [formGroup]="usuarioForm" (ngSubmit)="agregarUsuario()" *ngIf="!usuarioParaActualizar">
+    <br />
+    <form [formGroup]="usuarioForm" (ngSubmit)="agregarUsuario()">
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>Nombre:*</mat-label>
         <input matInput formControlName="Nombre" />
-        <mat-error *ngIf="usuarioForm.get('Nombre')?.hasError('whitespace')">El nombre no puede estar en blanco</mat-error>
-        <mat-error *ngIf="usuarioForm.get('Nombre')?.hasError('pattern')&&!usuarioForm.get('Nombre')?.hasError('whitespace')">Introduzca el nombre completo</mat-error>
-        <br/>
+        <mat-error *ngIf="usuarioForm.get('Nombre')?.hasError('whitespace')">El nombre no puede estar en
+          blanco</mat-error>
+        <mat-error
+          *ngIf="usuarioForm.get('Nombre')?.hasError('pattern')&&!usuarioForm.get('Nombre')?.hasError('whitespace')">Introduzca
+          el nombre completo</mat-error>
+        <br />
       </mat-form-field>
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>Nombre usuario:*</mat-label>
         <input matInput formControlName="NombreUsuario" />
-        <mat-error *ngIf="usuarioForm.get('NombreUsuario')?.hasError('whitespace')">El nombre de usuario no puede estar en blanco</mat-error>
-        <mat-error *ngIf="usuarioForm.get('NombreUsuario')?.hasError('asyncFieldExisting')">El de nombre de usuario ya existe</mat-error>
+        <mat-error *ngIf="usuarioForm.get('NombreUsuario')?.hasError('whitespace')">El nombre de usuario no puede estar
+          en blanco</mat-error>
+        <mat-error *ngIf="usuarioForm.get('NombreUsuario')?.hasError('asyncFieldExisting')">El de nombre de usuario ya
+          existe</mat-error>
       </mat-form-field>
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>Contraseña:</mat-label>
