@@ -1,38 +1,40 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
+import { ReactiveFormsModule, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ApiService, HistorialAlta, Paciente } from '../../services/api.service';
 import { asyncPatientIdExistsValidator } from '../../validators/patientIdExistsValidator';
 import { CustomValidators } from '../../validators';
 import { asyncConsultaExistsValidator } from '../../validators/consultaExistsValidator';
-import { ChangeDetectorRef } from '@angular/core';
+import { SnackbarComponent } from '../snackbar/snackbar.component';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
+import { SharedModule } from '../shared.module';
 
 @Component({
   selector: 'app-historial-altas',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule],
+  imports: [CommonModule, ReactiveFormsModule, SharedModule],
   templateUrl: './historial-altas.component.html',
   styleUrls: ['./historial-altas.component.css']
 })
 export class HistorialAltasComponent implements OnInit {
-  historialAltas: HistorialAlta[] = [];
-  nuevoHistorialAlta: HistorialAlta = this.inicializarHistorialAlta();
-  historialAltaParaActualizar: HistorialAlta | null = null;
-  
+  @ViewChild(SnackbarComponent) snackbar!: SnackbarComponent;
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild(MatSort) sort!: MatSort;
+
+  historialAltas: MatTableDataSource<HistorialAlta> = new MatTableDataSource<HistorialAlta>();
   historialAltaForm!: FormGroup;
-  filtro: string = ''; 
+  historialAltaParaActualizar: HistorialAlta | null = null;
+
+  pacientes: Paciente[] = [];
   fechaAltaFiltro: string | undefined;
-  notificacion: string | null = null;
-
-  columnaOrdenada: keyof HistorialAlta | null = null;
-  orden: 'asc' | 'desc' = 'asc';
-
-  historialSeleccionado: HistorialAlta | null = null;
-  mostrarFormularioActualizar: boolean = false;
   numSSFiltro: string = "";
-  pacientes: Paciente[] = []; 
 
-  constructor(private apiService: ApiService, private cd: ChangeDetectorRef) {}
+   //columnas que se mostraran en la tabla
+   displayedColumns: string[] = ['IdPaciente','FechaAlta','Diagnostico','Tratamiento', 'Acciones'];
+
+  constructor(private apiService: ApiService, private fb: FormBuilder) {}
 
   ngOnInit(): void {
     this.obtenerHistorialAltas();
@@ -41,137 +43,69 @@ export class HistorialAltasComponent implements OnInit {
     this.configurarValidaciones();
   }
 
-  inicializarHistorialAlta(): HistorialAlta {
-    return {
-      IdHistorial: 0,
-      IdPaciente: 0,
-      IdMedico: 1,
-      FechaAlta: new Date(),
-      Diagnostico: '',
-      Tratamiento: ''
-    };
-  }
-
   crearFormularioHistorialAlta(): void {
-    this.historialAltaForm = new FormGroup({
-      IdPaciente: new FormControl('', {
+    this.historialAltaForm = this.fb.group({
+      IdPaciente: ['', {
         validators: [Validators.required],
-        asyncValidators: [
-          asyncPatientIdExistsValidator(this.apiService), 
-          asyncConsultaExistsValidator(this.apiService)
-        ],
-        updateOn: 'blur' 
-      }),
-      FechaAlta: new FormControl('', [
-        Validators.required,
-        CustomValidators.noWhitespaceValidator()
-      ]),
-      Diagnostico: new FormControl('', [
-        Validators.required,
-        CustomValidators.noWhitespaceValidator()
-      ]),
-      Tratamiento: new FormControl('', [
-        Validators.required,
-        CustomValidators.noWhitespaceValidator()
-      ])
+        asyncValidators: [asyncPatientIdExistsValidator(this.apiService), asyncConsultaExistsValidator(this.apiService)],
+        updateOn: 'blur'
+      }],
+      FechaAlta: ['', [Validators.required, CustomValidators.noWhitespaceValidator()]],
+      Diagnostico: ['', [Validators.required, CustomValidators.noWhitespaceValidator()]],
+      Tratamiento: ['', [Validators.required, CustomValidators.noWhitespaceValidator()]]
     });
   }
 
-  configurarValidaciones(): void {
-    if (!this.historialAltaParaActualizar) {
-      this.historialAltaForm.get('IdPaciente')?.setAsyncValidators([
-        asyncPatientIdExistsValidator(this.apiService), 
-        asyncConsultaExistsValidator(this.apiService)
-      ]);
-    } else {
-      this.historialAltaForm.get('IdPaciente')?.clearAsyncValidators();
-    }
-    this.historialAltaForm.get('IdPaciente')?.updateValueAndValidity();
-  }
-
-  obtenerPacientes() {
+  obtenerPacientes(): void {
     this.apiService.getPacientes().subscribe({
-      next: (data: Paciente[]) => {
-        this.pacientes = data;
-        console.log('Pacientes:', this.pacientes);
-      },
-      error: (error: any) => {
-        console.error('Error al obtener pacientes', error);
-      }
+      next: (data: Paciente[]) => this.pacientes = data,
+      error: (error: any) => this.handleError('Error al obtener pacientes', error)
     });
-  }
-
-  filtrarPorFecha() {
-    if (this.fechaAltaFiltro) {
-      this.historialAltas = this.historialAltas.filter(historial => {
-        // Convertir la fecha del historial a formato YYYY-MM-DD
-        const fechaHistorial = new Date(historial.FechaAlta).toISOString().slice(0, 10);
-        return fechaHistorial === this.fechaAltaFiltro;
-      });
-    } 
-  }
-
-  filtrarPorNumeroSS(): void {
-    const filtroSS = this.numSSFiltro.trim().toLowerCase(); 
-
-    if (filtroSS.length > 0) {
-      this.historialAltas = this.historialAltas.filter(historial => {
-        const paciente = this.getPacienteById(historial.IdPaciente);
-        return paciente && paciente.SeguridadSocial && 
-               paciente.SeguridadSocial.toLowerCase().includes(filtroSS); 
-      }); 
-      console.log(this.historialAltas);
-    } 
-
-  }
-
-  getPacienteById(idPaciente: number): Paciente | undefined {
-    return this.pacientes.find(paciente => paciente.IdPaciente === idPaciente);
   }
 
   obtenerHistorialAltas(): void {
     this.apiService.getHistorialAltas().subscribe({
       next: (data: HistorialAlta[]) => {
-        this.historialAltas = data;
-        this.filtrarPorFecha();
+        this.historialAltas.data = data;
+        this.historialAltas.paginator = this.paginator;
+        this.historialAltas.sort = this.sort;
       },
-      error: (error: any) => {
-        console.error('Error al obtener el historial de altas', error);
-      }
+      error: (error: any) => this.handleError('Error al obtener el historial de altas', error)
     });
-  }
-
-  onFechaAltaFiltroChange(event: any) {
-    this.fechaAltaFiltro = event.target.value; 
-    this.filtrarPorFecha();
   }
 
   agregarHistorialAlta(): void {
     if (this.historialAltaForm.valid) {
-      this.nuevoHistorialAlta = {
-        ...this.nuevoHistorialAlta,
-        IdPaciente: this.historialAltaForm.get('IdPaciente')?.value,
-        FechaAlta: this.historialAltaForm.get('FechaAlta')?.value,
-        Diagnostico: this.historialAltaForm.get('Diagnostico')?.value,
-        Tratamiento: this.historialAltaForm.get('Tratamiento')?.value
+      const nuevoHistorialAlta: HistorialAlta = {
+        IdHistorial: 0, 
+        IdPaciente: this.historialAltaForm.value.IdPaciente,
+        IdMedico: 1,
+        FechaAlta: this.historialAltaForm.value.FechaAlta,
+        Diagnostico: this.historialAltaForm.value.Diagnostico,
+        Tratamiento: this.historialAltaForm.value.Tratamiento
       };
 
-      this.apiService.addHistorialAlta(this.nuevoHistorialAlta).subscribe({
+      this.apiService.addHistorialAlta(nuevoHistorialAlta).subscribe({
         next: (nuevoHistorialAlta: HistorialAlta) => {
-          this.historialAltas.push(nuevoHistorialAlta);
-          this.filtrarPorFecha(); 
-          this.nuevoHistorialAlta = this.inicializarHistorialAlta();
+          this.historialAltas.data.push(nuevoHistorialAlta);
           this.historialAltaForm.reset();
-          this.cd.detectChanges();
+          this.snackbar.showNotification('success', 'Historial de alta creado con éxito');
         },
-        error: (error: any) => {
-          console.error('Error al agregar el historial de alta', error);
-        }
+        error: (error: any) => this.handleError('Error al agregar el historial de alta', error)
       });
     } else {
-      console.warn('El formulario es inválido.');
+      this.snackbar.showNotification('error', 'Por favor, completa todos los campos requeridos.');
     }
   }
+
+  filtrarHistoriales(event: { type: string; term: string }): void {
+    const { term } = event;
+    this.historialAltas.filter = term.trim().toLowerCase();
+
+    if (this.historialAltas.paginator) {
+        this.historialAltas.paginator.firstPage();
+    }
+}
 
   toggleActualizarHistorialAlta(historialAlta: HistorialAlta): void {
     if (this.historialAltaParaActualizar?.IdHistorial === historialAlta.IdHistorial) {
@@ -179,53 +113,80 @@ export class HistorialAltasComponent implements OnInit {
       this.historialAltaForm.reset();
     } else {
       this.historialAltaParaActualizar = { ...historialAlta };
+      this.historialAltaForm.patchValue({
+        IdPaciente: historialAlta.IdPaciente,
+        FechaAlta: new Date(historialAlta.FechaAlta), 
+        Diagnostico: historialAlta.Diagnostico,
+        Tratamiento: historialAlta.Tratamiento
+      });
       this.configurarValidaciones();
-      this.historialAltaForm.patchValue(this.historialAltaParaActualizar);
     }
   }
 
   actualizarHistorialAlta(): void {
-    if (this.historialAltaParaActualizar) {
-      this.apiService.updateHistorialAlta(this.historialAltaParaActualizar).subscribe({
-        next: (historialAltaActualizado: HistorialAlta) => {
+    if (this.historialAltaParaActualizar && this.historialAltaForm.valid) {
+      const historialAltaActualizado: HistorialAlta = { 
+        ...this.historialAltaParaActualizar, 
+        ...this.historialAltaForm.value,
+        FechaAlta: this.historialAltaForm.value.FechaAlta instanceof Date 
+          ? this.historialAltaForm.value.FechaAlta.toISOString() 
+          : new Date(this.historialAltaForm.value.FechaAlta).toISOString()
+      };
+  
+  
+      this.apiService.updateHistorialAlta(historialAltaActualizado).subscribe({
+        next: () => {
           this.obtenerHistorialAltas();
           this.historialAltaParaActualizar = null;
-          this.mostrarFormularioActualizar = false;
-          this.notificacion = "Historial Alta actualizado con éxito";
-          this.cd.detectChanges();
           this.historialAltaForm.reset();
+          this.snackbar.showNotification('success', 'Historial de alta actualizado con éxito');
         },
         error: (error: any) => {
-          console.error('Error al actualizar el historial de alta', error);
+          this.handleError('Error al actualizar el historial de alta', error);
         }
+      });
+    } else {
+      this.snackbar.showNotification('error', 'Por favor, completa todos los campos requeridos.');
+    }
+  }
+  
+  borrarHistorialAlta(id: number): void {
+    this.apiService.deleteHistorialAlta(id).subscribe({
+      next: () => {
+        this.historialAltas.data = this.historialAltas.data.filter(historial => historial.IdHistorial !== id);
+        this.snackbar.showNotification('success', 'Historial de alta eliminado con éxito.');
+      },
+      error: (error: any) => this.handleError('Error al borrar el historial de alta', error)
+    });
+  }
+
+  filtrarPorNumeroSS(): void {
+    const filtroSS = this.numSSFiltro.trim().toLowerCase(); 
+
+    if (filtroSS.length > 0) {
+      this.historialAltas.data = this.historialAltas.data.filter(historial => {
+        const paciente = this.getPacienteById(historial.IdPaciente);
+        return paciente?.SeguridadSocial?.toLowerCase().includes(filtroSS) ?? false; 
       });
     }
   }
 
-  borrarHistorialAlta(id: number): void {
-    this.apiService.deleteHistorialAlta(id).subscribe({
-      next: () => {
-        this.historialAltas = this.historialAltas.filter(historialAlta => historialAlta.IdHistorial !== id);
-        this.notificacion = "Historial Alta eliminado con éxito.";
-        this.cd.detectChanges();
-      },
-      error: (error: any) => {
-        console.error('Error al borrar el historial de alta', error);
-      }
-    });
+  getPacienteById(idPaciente: number): Paciente | undefined {
+    return this.pacientes.find(paciente => paciente.IdPaciente === idPaciente);
   }
 
-  ordenar(columna: keyof HistorialAlta): void {
-    this.columnaOrdenada = this.columnaOrdenada === columna ? columna : columna;
-    this.orden = this.columnaOrdenada === columna && this.orden === 'asc' ? 'desc' : 'asc';
+  configurarValidaciones(): void {
+    const idPacienteControl = this.historialAltaForm.get('IdPaciente');
+    if (!this.historialAltaParaActualizar) {
+      idPacienteControl?.setAsyncValidators([asyncPatientIdExistsValidator(this.apiService), asyncConsultaExistsValidator(this.apiService)]);
+    } else {
+      idPacienteControl?.clearAsyncValidators();
+    }
+    idPacienteControl?.updateValueAndValidity();
   }
 
-  aplicarFiltro(filtro: string): void {
-    this.filtro = filtro;
-    // Aplicar filtros si es necesario
-  }
-
-  cerrarPopup(): void {
-    this.historialSeleccionado = null;
+  handleError(message: string, error: any): void {
+    console.error(message, error);
+    this.snackbar.showNotification('error', message);
   }
 }
