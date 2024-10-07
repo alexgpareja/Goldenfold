@@ -1,17 +1,19 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit,ViewChild } from '@angular/core';
 import { ApiService, Paciente } from '../../../services/api.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
+import { SnackbarComponent } from '../../../shared/snackbar/snackbar.component';
 
 @Component({
   selector: 'app-pacientes',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule,SnackbarComponent],
   templateUrl: './pacientes.component.html',
   styleUrls: ['./pacientes.component.css'],
 })
 export class PacientesComponent implements OnInit {
+
   pacientes: Paciente[] = [];
   pacientesPaginados: Paciente[] = [];
   nuevoPaciente: Paciente = {
@@ -27,7 +29,7 @@ export class PacientesComponent implements OnInit {
     Email: '',
     HistorialMedico: '',
   };
-  pacienteSeleccionado: Paciente | null = null;  
+  pacienteSeleccionado: Paciente | null = null;
 
   mostrarDetallesPaciente(paciente: Paciente): void {
     this.pacienteSeleccionado = paciente;
@@ -48,7 +50,7 @@ export class PacientesComponent implements OnInit {
   columnaOrdenada: keyof Paciente | '' = '';
 
   constructor(private apiService: ApiService) {}
-
+  @ViewChild(SnackbarComponent) snackbar!: SnackbarComponent;
   ngOnInit(): void {
     this.obtenerPacientes();
   }
@@ -146,28 +148,26 @@ irALaUltimaPagina(): void {
         // Manejar el paciente agregado exitosamente
         this.pacientes.push(paciente);
         this.mostrarFormularioAgregar = false;
-        this.notificacion = 'Paciente agregado con éxito';
-        this.nuevoPaciente = {
-          IdPaciente: 0,
-          Nombre: '',
-          Dni: '',
-          FechaNacimiento: new Date(),
-          Estado: 'Registrado',
-          FechaRegistro: new Date(),
-          SeguridadSocial: '',
-          Direccion: '',
-          Telefono: '',
-          Email: '',
-          HistorialMedico: '',
-        };
+
+        // Restablecer el formulario
+        this.resetForm();
+
+        // Recargar la lista de pacientes después de agregar
+        this.obtenerPacientes();
+
+        // Mostrar la notificación de éxito después de un breve retraso
+        setTimeout(() => {
+          this.snackbar.showNotification("success", "Paciente agregado con éxito!");
+        }, 2000); // Espera 2 segundos antes de mostrar la notificación
       },
       (err) => {
         // Manejar errores
         console.error('Error al agregar paciente', err);
-        this.notificacion = 'Error al agregar paciente';
+        this.snackbar.showNotification("error", "Error al agregar paciente"); // Notificación de error
       }
     );
   }
+
   registerPatient(event: Event) {
     event.preventDefault();
 
@@ -195,13 +195,17 @@ irALaUltimaPagina(): void {
     // Llamada al API para registrar el paciente
     this.apiService.addPaciente(this.nuevoPaciente).subscribe({
       next: () => {
+        // Recargar la página o la lista de pacientes después de agregar
+        this.obtenerPacientes(); // o usa window.location.reload();
 
-        alert('Paciente registrado exitosamente');
-
+        // Restablecer el formulario y cerrar el formulario de agregar
         this.resetForm();
         this.mostrarFormularioAgregar = false;
 
-        window.location.reload();
+        // Mostrar la notificación de éxito después de un breve retraso
+        setTimeout(() => {
+          this.snackbar.showNotification("success", "Paciente agregado con éxito!");
+        }, 300);
       },
       error: (error: HttpErrorResponse) => {
         const errorMessage = this.getErrorMessageFromResponse(error);
@@ -209,6 +213,7 @@ irALaUltimaPagina(): void {
       }
     });
   }
+
 
   getErrorMessageFromResponse(error: HttpErrorResponse): string {
     if (error.error instanceof Object) {
@@ -278,13 +283,15 @@ irALaUltimaPagina(): void {
 
           this.pacienteParaActualizar = null;
           this.mostrarFormularioActualizar = false;
-          this.notificacion = 'Paciente actualizado con éxito';
+          this.snackbar.showNotification("success", "Paciente actualizado con éxito!"); // Notificación de éxito
         },
         error: (error: any) => {
           console.error('Error al actualizar el paciente', error);
+          this.snackbar.showNotification("error", "Error al actualizar el paciente"); // Notificación de error
         },
       });
     }
+
 
     // Ocultar la notificación después de 2 segundos
     setTimeout(() => {

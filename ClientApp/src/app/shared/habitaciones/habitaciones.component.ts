@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ApiService, Habitacion } from '../../services/api.service';
-import { SnackbarComponent } from '../notification/snackbar.component'; // Importar el componente standalone
+import { SnackbarComponent } from '../snackbar/snackbar.component'; // Importar el componente standalone
 import { MatTableModule, MatTableDataSource } from '@angular/material/table'; // Módulo de tabla de Angular Material
 import { MatPaginatorModule, MatPaginator } from '@angular/material/paginator'; // Módulo de paginación de Angular Material
 import { MatSortModule, MatSort } from '@angular/material/sort'; // Módulo de ordenación de Angular Material

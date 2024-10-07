@@ -22,7 +22,6 @@ namespace HospitalApi.Controllers
             [FromQuery] string? tipo)
         {
             var camas = await _camaService.GetCamasAsync(ubicacion, estado, tipo);
-
             return Ok(camas);
         }
 
@@ -30,10 +29,6 @@ namespace HospitalApi.Controllers
         public async Task<ActionResult<CamaDTO>> GetCamaById(int id)
         {
             var cama = await _camaService.GetCamaByIdAsync(id);
-
-            if (cama == null)
-                return NotFound("No se ha encontrado ninguna cama con el ID proporcionado.");
-
             return Ok(cama);
         }
 

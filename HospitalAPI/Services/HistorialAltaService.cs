@@ -60,14 +60,29 @@ namespace HospitalApi.Services
             if (medico == null)
                 throw new ArgumentException("El médico especificado no existe.");
 
+            // Cambiar el estado del paciente a "Alta"
             paciente.Estado = EstadoPaciente.Alta;
 
+            // Eliminar el ingreso relacionado si existe
+            var ingresoRelacionado = await _context.Ingresos
+                .FirstOrDefaultAsync(i => i.IdPaciente == historialAltaDTO.IdPaciente);
+
+            if (ingresoRelacionado != null)
+            {
+                _context.Ingresos.Remove(ingresoRelacionado);
+            }
+
+            // Crear el historial de alta
             var historialAlta = _mapper.Map<HistorialAlta>(historialAltaDTO);
             _context.HistorialesAltas.Add(historialAlta);
+
+            // Guardar los cambios
             await _context.SaveChangesAsync();
 
+            // Retornar el historial de alta creado
             return _mapper.Map<HistorialAltaDTO>(historialAlta);
         }
+
 
         // Actualizar un historial de alta existente
         public async Task<bool> UpdateHistorialAltaAsync(int id, HistorialAltaUpdateDTO historialAltaDTO)

@@ -11,7 +11,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-
+ 
 @Component({
   selector: 'app-roles',
   standalone: true,
@@ -26,30 +26,30 @@ export class RolesComponent implements OnInit {
   displayedColumns: string[] = ['IdRol', 'NombreRol', 'Actions'];
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
-
-
+ 
+ 
   // Formularios Reactivos
   agregarRolForm!: FormGroup;
   actualizarRolForm!: FormGroup;
   searchRolForm!: FormGroup;
-
+ 
   rolParaActualizar: Rol | null = null;
-
-
+ 
+ 
   constructor(private apiService: ApiService) { }
-
+ 
   ngOnInit(): void {
     this.obtenerRoles();
     this.initForms();
   }
-
+ 
   // Inicializa los formularios
   initForms(): void {
     this.searchRolForm = new FormGroup({
       searchTerm: new FormControl(''),
       searchType: new FormControl('nombreRol'), // Valor por defecto para buscar
     });
-
+ 
     this.agregarRolForm = new FormGroup({
       NombreRol: new FormControl(
         '',
@@ -57,7 +57,7 @@ export class RolesComponent implements OnInit {
         [asyncRolNameExistsValidator(this.apiService)]
       ),
     });
-
+ 
     this.actualizarRolForm = new FormGroup({
       IdRol: new FormControl({ value: '', disabled: true }),
       NombreRol: new FormControl(
@@ -67,7 +67,7 @@ export class RolesComponent implements OnInit {
       ),
     });
   }
-
+ 
   obtenerRoles(): void {
     this.apiService.getRoles().subscribe({
       next: (roles: Rol[]) => {
@@ -78,19 +78,19 @@ export class RolesComponent implements OnInit {
       error: (error) => console.error('Error al obtener los roles', error),
     });
   }
-
+ 
   // Método para filtrar roles desde el searchbox
   filtrarRoles(event: { type: string; term: string }): void {
     const { term } = event;
-
+ 
     // Aplica el filtro al MatTableDataSource en lugar de filtrar manualmente
     this.roles.filter = term.trim().toLowerCase();
-
+ 
     if (this.roles.paginator) {
       this.roles.paginator.firstPage();  // Resetea a la primera página si hay un filtro activo
     }
   }
-
+ 
   agregarRol(): void {
     if (this.agregarRolForm.valid) {
       const nombreFormateado = this.formatearNombreRol(this.agregarRolForm.value.NombreRol); // formatear nombre
@@ -111,7 +111,7 @@ export class RolesComponent implements OnInit {
       alert('Por favor, completa todos los campos requeridos.');
     }
   }
-
+ 
   borrarRol(id: number): void {
     if (confirm('¿Estás seguro de que quieres eliminar este rol?')) {
       this.apiService.deleteRol(id).subscribe({
@@ -123,7 +123,7 @@ export class RolesComponent implements OnInit {
       });
     }
   }
-
+ 
   actualizarRol(): void {
     if (this.rolParaActualizar && this.actualizarRolForm.valid) {
       const nombreFormateado = this.formatearNombreRol(this.actualizarRolForm.value.NombreRol); // formatear nombre
@@ -140,17 +140,17 @@ export class RolesComponent implements OnInit {
         },
       });
     }
-
+ 
   }
-
+ 
   onEdit(rol: Rol): void {
     this.toggleActualizarRol(rol);
   }
-
+ 
   onDelete(rol: Rol): void {
     this.borrarRol(rol.IdRol);
   }
-
+ 
   toggleActualizarRol(rol: Rol): void {
     if (this.rolParaActualizar && this.rolParaActualizar.IdRol === rol.IdRol) {
       this.rolParaActualizar = null;
@@ -160,30 +160,30 @@ export class RolesComponent implements OnInit {
       this.actualizarRolForm.patchValue({ IdRol: rol.IdRol, NombreRol: rol.NombreRol });
     }
   }
-
-
-
+ 
+ 
+ 
   private formatearNombreRol(nombreRol: string): string {
     nombreRol = nombreRol.trim();
     return nombreRol.charAt(0).toUpperCase() + nombreRol.slice(1).toLowerCase();
   }
-
+ 
   limpiarFormulario(): void {
     this.rolParaActualizar = null;
-
+ 
     // Limpiar el formulario de agregar
     this.agregarRolForm.reset();
     this.agregarRolForm.markAsPristine();
     this.agregarRolForm.markAsUntouched();
-
+ 
     // Actualizar los validadores y el estado del formulario
     this.agregarRolForm.get('NombreRol')?.setErrors(null); // Restablecer errores específicos si es necesario
-
+ 
     // Limpiar el formulario de actualizar
     this.actualizarRolForm.reset();
     this.actualizarRolForm.markAsPristine();
     this.actualizarRolForm.markAsUntouched();
     this.actualizarRolForm.get('NombreRol')?.setErrors(null); // Restablecer errores específicos si es necesario
   }
-
+ 
 }

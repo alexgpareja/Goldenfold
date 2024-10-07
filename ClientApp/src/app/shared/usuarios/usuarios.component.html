@@ -1,12 +1,16 @@
 <div class="usuarios-section">
   <h2>Usuarios</h2>
+  <app-snackbar #snackbar></app-snackbar>
+
   <!-- Caja de búsqueda -->
-  <app-search-box [searchOptions]="[
+  <app-search-box
+  [searchOptions]="[
   { label: 'ID Usuario', value: 'IdUsuario' },
   { label: 'Nombre', value: 'Nombre' },
   { label: 'Nombre Usuario', value: 'NombreUsuario' },
   { label: 'ID Rol', value: 'IdRol' }
-]" [defaultSearchType]="'IdUsuario'" placeholder="Escribe para buscar..." (search)="filtrarUsuarios($event)">
+]"
+   [defaultSearchType]="'IdUsuario'" placeholder="Escribe para buscar..." (search)="filtrarUsuarios($event)">
   </app-search-box>
 
   <!--Tabla Angular Material-->
@@ -104,8 +108,8 @@
   <!--Agregar usuario form-->
   <mat-card *ngIf="!usuarioParaActualizar">
     <mat-card-title>Agregar Usuario</mat-card-title>
-    <br />
-    <form [formGroup]="usuarioForm" (ngSubmit)="agregarUsuario()">
+    <br/>
+    <form [formGroup]="usuarioForm" (ngSubmit)="agregarUsuario()" >
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>Nombre:*</mat-label>
         <input matInput formControlName="Nombre" />
@@ -126,7 +130,7 @@
       </mat-form-field>
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>Contraseña:</mat-label>
-        <input matInput formControlName="Contrasenya" />
+        <input matInput formControlName="Contrasenya" type="password" />
         <mat-error *ngIf="usuarioForm.get('Contrasenya')?.hasError('required')">Introduzca una contraseña</mat-error>
       </mat-form-field>
       <mat-form-field appearance="outline" class="full-width">

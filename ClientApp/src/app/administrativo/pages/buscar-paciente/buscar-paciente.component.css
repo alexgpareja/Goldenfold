@@ -265,3 +265,39 @@ h2 {
     width: 100%;
   }
 }
+
+/* Posiciona el snackbar en la parte superior y centrado */
+.mat-snack-bar-container {
+  top: 20px !important; /* Ajusta la posición desde la parte superior */
+  left: 50% !important; /* Asegura que esté centrado horizontalmente */
+  transform: translateX(-50%) !important; /* Compensa el desplazamiento por el 50% de su ancho */
+  width: auto !important; /* Asegura que el snackbar no ocupe todo el ancho */
+  min-width: 300px !important; /* Ajusta el ancho mínimo del snackbar */
+  max-width: 500px !important; /* Ajusta el ancho máximo del snackbar */
+  text-align: center;
+}
+
+/* Cambia el color del snackbar según el tipo de notificación */
+.snack-bar-success {
+  background-color: #28a745 !important; /* Verde para el éxito */
+  color: white !important;
+}
+
+.snack-bar-error {
+  background-color: #dc3545 !important; /* Rojo para los errores */
+  color: white !important;
+}
+
+.snack-bar-warning {
+  background-color: #ffc107 !important; /* Amarillo para las advertencias */
+  color: black !important;
+}
+
+/* Diseño responsivo para el snackbar */
+@media (max-width: 768px) {
+  .mat-snack-bar-container {
+    max-width: 90% !important; /* Reduce el ancho máximo en pantallas pequeñas */
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+  }
+}
